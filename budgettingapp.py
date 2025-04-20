@@ -4,16 +4,6 @@ import numpy as np
 import time
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:', layout='wide')
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #ffffff;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 st.title('New Budgetting App')
 
 imported_file = st.file_uploader('Upload your CSV file', type='csv')
