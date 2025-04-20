@@ -3,8 +3,18 @@ import streamlit as st
 import numpy as np
 import time
 
-st.title('New App')
-st.subheader('Budgetting App')
+st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:', layout='wide')
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #f0f2f5;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.title('New Budgetting App')
 
 imported_file = st.file_uploader('Upload your CSV file', type='csv')
 if imported_file is not None:
@@ -13,6 +23,3 @@ if imported_file is not None:
     st.write(df)
 else:
     st.write('Please upload a CSV file to get started.')
-
-st.write('This is a change')
-st.write('This is a change 2')
