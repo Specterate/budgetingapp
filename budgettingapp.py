@@ -18,4 +18,4 @@ else:
 button_clicked = st.button("click me")
 
 if button_clicked:
-    st.write('button is clicked')
+    st.write('I love you my mangu')
