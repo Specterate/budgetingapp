@@ -3,7 +3,7 @@ import streamlit as st
 import numpy as np
 import time
 
-st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:', layout='wide')
+st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('New Budgetting App')
 
 imported_file = st.file_uploader('Upload your CSV file', type='csv')
