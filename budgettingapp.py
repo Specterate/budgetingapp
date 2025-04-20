@@ -15,4 +15,7 @@ if imported_file is not None:
 else:
     st.write('Warning: Please upload a CSV file to get started.', style='color: red;')
 
-st.button("click me")
+button_clicked = st.button("click me")
+
+if button_clicked:
+    st.write('button is clicked')
