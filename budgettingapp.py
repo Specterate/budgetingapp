@@ -8,7 +8,7 @@ st.subheader('Budgetting App')
 
 imported_file = st.file_uploader('Upload your CSV file', type='csv')
 if imported_file is not None:
-    df = pd.read_csv(imported_file)
+    df = pd.read_csv(imported_file,index_col= 0)
     st.write('Data Preview:')
     st.write(df)
 else:
