@@ -3,7 +3,7 @@ import streamlit as st
 import numpy as np
 import time
 
-button_clicked_count = 0
+button_clicked_count = 1
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('New Budgetting App')
@@ -17,10 +17,10 @@ if imported_file is not None:
 else:
     st.write('Warning: Please upload a CSV file to get started.', style='color: red;')
 
+while button_clicked_count > 0:
+   button_clicked = st.button("click me")
 
-button_clicked = st.button("click me")
-
-if button_clicked:
-    button_clicked_count +=1
-    st.write('I love you my mangu')
-    st.write(button_clicked_count)
+   if button_clicked:
+       button_clicked_count +=1
+       st.write('I love you my mangu')
+       st.write(button_clicked_count)
