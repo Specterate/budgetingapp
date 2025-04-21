@@ -17,10 +17,9 @@ if imported_file is not None:
 else:
     st.write('Warning: Please upload a CSV file to get started.', style='color: red;')
 
-while button_clicked_count > 0:
-   button_clicked = st.button("click me")
 
-   if button_clicked:
-       button_clicked_count +=1
-       st.write('I love you my mangu')
-       st.write(button_clicked_count)
+button_clicked = st.button("click me")
+if button_clicked:
+    button_clicked_count += 1
+    st.write('I love you my mangu')
+    st.write(button_clicked_count)
