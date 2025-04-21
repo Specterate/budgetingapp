@@ -18,7 +18,7 @@ else:
     st.write('Warning: Please upload a CSV file to get started.', style='color: red;')
 
 
-button_clicked = st.button("click me")
+button_clicked = st.button("click me", key=one)
 if button_clicked:
     button_clicked_count += 1
     st.write('I love you my mangu')
