@@ -22,5 +22,5 @@ button_clicked = st.button("click me")
 
 if button_clicked:
     button_clicked_count +=1
-    while button_clicked_count >0:
-        st.write('I love you my mangu')
+    st.write('I love you my mangu')
+    st.write(button_clicked_count)
