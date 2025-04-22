@@ -15,7 +15,7 @@ if imported_file is not None:
     st.write('Data Preview:')
     st.write(df)
 else:
-    st.write('Warning: Please upload a CSV file to get started.', style='color: red;')
+    st.write('Warning: Please upload a CSV file to get started.')
 
 
 button_clicked = st.button("click me")
