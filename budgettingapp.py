@@ -2,8 +2,9 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 import time
-import psycopg2
+import psycopg2-binary
 import sqlalchemy
+import os
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('New Budgetting App')
