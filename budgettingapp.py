@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 import time
-import psycopg
+import psycopg2
 import sqlalchemy
 
 button_clicked_count = 1
