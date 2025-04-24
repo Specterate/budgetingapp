@@ -5,10 +5,10 @@ import time
 import psycopg2
 import sqlalchemy
 
-button_clicked_count = 1
-
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('New Budgetting App')
+
+conn=st.connection("neon",type="sql")
 
 st.subheader('Upload your CSV file')
 imported_file = st.file_uploader('', type='csv')
@@ -19,9 +19,14 @@ if imported_file is not None:
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
+df = conn.query("SELECT * FROM home", ttl="10minutes")
 
-button_clicked = st.button("click me")
-if button_clicked:
-    button_clicked_count += 1
-    st.write('I love you my mangu')
-    st.write(button_clicked_count)
+for row in df.itertuples():
+    st.write(f"Row {row.name}: {row.pet}")
+
+# Add a button to the app
+# button_clicked = st.button("click me")
+# if button_clicked:
+#     button_clicked_count += 1
+#     st.write('I love you my mangu')
+#     st.write(button_clicked_count)
