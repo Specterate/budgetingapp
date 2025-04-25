@@ -37,7 +37,7 @@ if imported_file is not None:
         st.write(f'Name: {name}, Pet: {pet}')
     # Insert the values into the database
         with conn.session as session:
-            new_data = str(name, pet)
+            new_data = (name, pet)
             st.write(f'The new data is {new_data}')
             st.write(f'Waiting for 5 seconds....') 
             time.sleep(5)
