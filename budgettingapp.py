@@ -17,6 +17,11 @@ df = conn.query("SELECT name, pet FROM home")
 df.reset_index(drop=True, inplace=True)
 st.data_editor(df)
 
+update_df = st.button('Update Data')
+if update_df:
+    # Update the database with new data
+    conn.execute("UPDATE home SET name = 'John Doe' WHERE id = 1")
+    st.success('Data updated successfully!')
 
 # with conn.session as session:
 #     st.subheader('Upload your CSV file')
