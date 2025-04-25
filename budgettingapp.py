@@ -43,10 +43,10 @@ if imported_file is not None:
         time.sleep(5)
         # Define the SQL query to insert the data
         query = text("""
-                    INSERT INTO home ("name", "pet") 
-                    VALUES (?, ?)
-                    """)
-        session.execute(text(query), (name, pet))
+		INSERT INTO home ("name", "pet") 
+		VALUES (:name, :pet)
+		""")
+        session.execute(text(query).bindparams(name=name, pet=pet))
         # Commit the transaction
         session.commit()
         st.write("Row inserted successfully!")
