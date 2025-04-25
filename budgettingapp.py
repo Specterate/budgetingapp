@@ -22,7 +22,7 @@ if button_insert_query:
                                 INSERT INTO home (name, pet) 
                                 VALUES ('tyler', 'jack')
                                 """))
-    session.commit()
+        session.commit()
     st.write("Row inserted successfully!")     
         
 
