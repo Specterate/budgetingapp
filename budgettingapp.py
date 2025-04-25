@@ -33,7 +33,7 @@ if file_upload:
         st.write('Warning: Please upload a CSV file to get started.')
 
 show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon1", on_click=update_session_state_for_buttons)
-
+reset_data = st.button("Click to reset data", key="reset_data", on_click=reset)
 
 # Add a button to the app
 # button_clicked = st.button("click me")
