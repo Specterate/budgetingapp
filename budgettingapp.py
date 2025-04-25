@@ -38,9 +38,13 @@ if imported_file is not None:
     # Insert the values into the database
     with conn.session as session:
         new_data = (name, pet)
+        st.write(f'The new data is {new_data}')
+        st.write(f'Waiting for 5 seconds....') 
+        time.sleep(5)
+        # Define the SQL query to insert the data
         query = text("""
                     INSERT INTO home ("name", "pet") 
-                    VALUES (:name, :pet)
+                    VALUES (?, ?)
                     """)
         session.execute(text(query), new_data)
         # Commit the transaction
