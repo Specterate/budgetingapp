@@ -12,9 +12,10 @@ st.title('Budgetting App')
 
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
+# Query the database
 df = conn.query("SELECT name, pet FROM home")
 df.reset_index(drop=True, inplace=True)
-st.dataframe(df)
+st.dataeditor(df)
 
 
 # with conn.session as session:
