@@ -18,7 +18,7 @@ def update_session_state_for_buttons():
         st.write(f"Row {row.name}: {row.pet}")
 
 def reset():
-    st.session_state.show_data_from_neon1 = False
+    del st.session_state.show_data_from_neon1
          
 file_upload = st.button("Click to upload a CSV file", key="file_upload")
 if file_upload:
