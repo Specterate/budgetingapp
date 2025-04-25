@@ -24,7 +24,7 @@ if update_df:
         session.execute(text("""
                              INSERT INTO home 
                              VALUES (:name, :pet);"), {'name': 'John', 'pet': 'Dog'}
-                             """)
+                             """))
         session.commit()
         st.success('Data updated successfully!')
 
