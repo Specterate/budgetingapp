@@ -37,7 +37,7 @@ if imported_file is not None:
         # Insert the values into the database
         with conn.session as session:
             session.execute(text("""
-                                 INSERT INTO home (name, pet)
+                                 INSERT INTO home (id, name, pet)
                                  VALUES (NULL, {name},{pet})
                                  """.format(name=name, pet=pet)))
             session.commit()
