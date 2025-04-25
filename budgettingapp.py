@@ -5,14 +5,15 @@ import time
 import os
 
 def update_session_state_for_buttons():
-    if st.session_state.show_data_from_neon == True:
-        st.session_state.show_data_from_neon = False
-    else:    
-         st.session_state.show_data_from_neon = True
-         if show_data_from_neon:
+    if st.session_state.show_data_from_neon not in st.session_state:
+        st.session_state.show_data_from_neon = True
+        if show_data_from_neon:
             df = conn.query("SELECT * FROM home", ttl="10minutes")
             for row in df.itertuples():
                 st.write(f"Row {row.name}: {row.pet}")
+    else:    
+         st.session_state.show_data_from_neon = False
+         
     
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
