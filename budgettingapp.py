@@ -36,10 +36,11 @@ if imported_file is not None:
         name, pet = row[1], row[2]
         # Insert the values into the database
         with conn.session as session:
-            session.execute(text("""
-                                 INSERT INTO home (id, name, pet)
-                                 VALUES (NULL, {name},{pet})
-                                 """.format(name=name, pet=pet)))
+            session.execute('home', df, if_exists='append', index=False)
+            # session.execute(text("""
+            #                      INSERT INTO home (id, name, pet)
+            #                      VALUES (NULL, {name},{pet})
+            #                      """.format(name=name, pet=pet)))
             session.commit()
 else:
     st.write('Warning: Please upload a CSV file to get started.')
