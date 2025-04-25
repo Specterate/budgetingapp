@@ -9,6 +9,7 @@ st.title('Budgetting App')
 
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
+st.write(conn)
 
 st.subheader('Upload your CSV file')
 imported_file = st.file_uploader('', type='csv')
@@ -19,7 +20,7 @@ if imported_file is not None:
     for row in df.itertuples():
         name, pet = row[0], row[1]
         # Insert the values into the database
-        df2 = conn.execute("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
+        conn.execute("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
