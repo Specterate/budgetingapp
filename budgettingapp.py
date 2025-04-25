@@ -10,14 +10,12 @@ st.title('Budgetting App')
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
 
-file_upload = st.button("Click to upload a CSV file", key="file_upload")
-if file_upload:
-    st.subheader('Upload your CSV file')
-    imported_file = st.file_uploader('', type='csv')
-    if imported_file is not None:
-        df = pd.read_csv(imported_file,index_col= 0)
-        st.write('Data Preview:')
-        st.write(df)
-    else:
-        st.write('Warning: Please upload a CSV file to get started.')
+st.subheader('Upload your CSV file')
+imported_file = st.file_uploader('', type='csv')
+if imported_file is not None:
+    df = pd.read_csv(imported_file,index_col= 0)
+    st.write('Data Preview:')
+    st.write(df)
+else:
+    st.write('Warning: Please upload a CSV file to get started.')
 
