@@ -9,6 +9,10 @@ def update_session_state_for_buttons():
         st.session_state.show_data_from_neon = False
     else:    
          st.session_state.show_data_from_neon = True
+         if show_data_from_neon:
+            df = conn.query("SELECT * FROM home", ttl="10minutes")
+            for row in df.itertuples():
+                st.write(f"Row {row.name}: {row.pet}")
     
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
@@ -29,10 +33,7 @@ if file_upload:
         st.write('Warning: Please upload a CSV file to get started.')
 
 show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon", on_click=update_session_state_for_buttons)
-if show_data_from_neon:
-    df = conn.query("SELECT * FROM home", ttl="10minutes")
-    for row in df.itertuples():
-        st.write(f"Row {row.name}: {row.pet}")
+
 
 # Add a button to the app
 # button_clicked = st.button("click me")
