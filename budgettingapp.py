@@ -42,7 +42,8 @@ if imported_file is not None:
                     INSERT INTO home ("name", "pet") 
                     VALUES (:name, :pet)
                     """)
-        session.execute(text(query), {'name': name, 'pet': pet})
+        session.execute(text(query), new_data)
+        # Commit the transaction
         session.commit()
         st.write("Row inserted successfully!")
 else:
