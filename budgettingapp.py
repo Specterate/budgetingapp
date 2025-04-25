@@ -35,15 +35,18 @@ if imported_file is not None:
     for row in df.itertuples():
         name, pet = row[1], row[2]
         st.write(f'Name: {name}, Pet: {pet}')
-    # st.write('Data Preview:')
     # Insert the values into the database
-    # with conn.session as session:
-    #     session.execute('home', df, if_exists='append', index=False)
-    #     # session.execute(text("""
-    #     #                      INSERT INTO home (id, name, pet)
-    #     #                      VALUES (NULL, {name},{pet})
-    #     #                      """.format(name=name, pet=pet)))
-    #     session.commit()
+    with conn.session as session:
+        new_data = (name, pet)
+        query = text("""
+                    INSERT INTO home ("name", "pet") 
+                    VALUES (:name, :pet)
+                    """)
+        session.execute(text(query), {'name': name, 'pet': pet})
+        session.commit()
+        st.write("Row inserted successfully!")
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
+st.cache_data.clear()
+st.rerun()
