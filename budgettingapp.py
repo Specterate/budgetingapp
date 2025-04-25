@@ -20,7 +20,7 @@ def update_session_state_for_buttons():
         df = conn.query("SELECT * FROM home", ttl="10minutes")
         for row in df.itertuples():
             st.write(f"Row {row.name}: {row.pet}")
-        st.session_state.show_data_from_neon1 = False
+        del st.session_state.show_data_from_neon1
          
 file_upload = st.button("Click to upload a CSV file", key="file_upload")
 if file_upload:
