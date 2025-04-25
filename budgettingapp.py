@@ -20,7 +20,7 @@ if button_insert_query:
     with conn.session as session:
         df = session.execute(text("""
                                 INSERT INTO home (name, pet) 
-                                VALUES ('tyler', 'jack);
+                                VALUES ('tyler', 'jack')
                                 """))
     session.commit()
     st.write(df)
