@@ -14,7 +14,7 @@ st.title('Budgetting App')
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
 
-button_insert_query = st.button('Insert Query')
+button_insert_query = st.button('Insert Query', key='insert_query')
 if button_insert_query:
     # Insert a row into the table
     with conn.session as session:
