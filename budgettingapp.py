@@ -15,7 +15,7 @@ conn=st.connection("neon",type="sql")
 # Query the database
 df = conn.query("SELECT name, pet FROM home")
 df.reset_index(drop=True, inplace=True)
-st.dataeditor(df)
+st.data_editor(df)
 
 
 # with conn.session as session:
