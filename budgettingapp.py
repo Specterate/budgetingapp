@@ -13,9 +13,10 @@ conn=st.connection("neon",type="sql")
 st.write(st.session_state)
 
 def update_session_state_for_buttons():
-    if st.session_state.show_data_from_neon1 not in st.session_state:
+    if st.session_state.show_data_from_neon1 == False:
         st.write("Else Option Selected")
         del st.session_state.show_data_from_neon1
+        st.rerun()
     else:    
         df = conn.query("SELECT * FROM home", ttl="10minutes")
         for row in df.itertuples():
