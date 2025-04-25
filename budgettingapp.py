@@ -11,7 +11,7 @@ st.title('Budgetting App')
 conn=st.connection("neon",type="sql")
 
 def update_session_state_for_buttons():
-    if st.session_state.show_data_from_neon not in st.session_state:
+    if 'show_data_from_neon1' not in st.session_state:
         if show_data_from_neon:
             df = conn.query("SELECT * FROM home", ttl="10minutes")
             for row in df.itertuples():
@@ -31,7 +31,7 @@ if file_upload:
     else:
         st.write('Warning: Please upload a CSV file to get started.')
 
-show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon", on_click=update_session_state_for_buttons)
+show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon1", on_click=update_session_state_for_buttons)
 
 
 # Add a button to the app
