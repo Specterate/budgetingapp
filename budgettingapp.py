@@ -5,8 +5,6 @@ import time
 import os
 
 def update_session_state_for_buttons():
-    if file_upload not in st.session_state:
-        st.session_state.file_upload = False
     if show_data_from_neon not in st.session_state:
         st.session_state.show_data_from_neon = False
     
