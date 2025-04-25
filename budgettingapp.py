@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import time
 import os
+from sqlalchemy import create_engine, text
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('Budgetting App')
@@ -20,7 +21,7 @@ if imported_file is not None:
         name, pet = row[0], row[1]
         # Insert the values into the database
         with conn.session as session:
-            session.execute(f"INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
+            session.execute(text("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet)))
             session.commit()
 else:
     st.write('Warning: Please upload a CSV file to get started.')
