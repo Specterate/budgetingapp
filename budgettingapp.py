@@ -32,8 +32,8 @@ if imported_file is not None:
     df = pd.read_csv(imported_file)
     st.write('Data Preview:')
     st.write(df)
-    for row in df.itertuples():
-        name, pet = row["name"], row["pet"]
+    for row in df.iterrows():
+        name, pet = row[0], row[1]
         st.write(f'Name: {name}, Pet: {pet}')
     # Insert the values into the database
         with conn.session as session:
