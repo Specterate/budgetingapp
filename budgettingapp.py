@@ -33,7 +33,7 @@ if imported_file is not None:
     st.write('Data Preview:')
     st.write(df)
     for row in df.itertuples():
-        name, pet = row[1], row[2]
+        name, pet = row["name"], row["pet"]
         st.write(f'Name: {name}, Pet: {pet}')
     # Insert the values into the database
         with conn.session as session:
