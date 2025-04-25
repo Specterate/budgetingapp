@@ -19,7 +19,6 @@ def update_session_state_for_buttons():
 
 def reset():
     st.session_state.show_data_from_neon1 = False
-    st.session_state.file_upload = False        
          
 file_upload = st.button("Click to upload a CSV file", key="file_upload")
 if file_upload:
