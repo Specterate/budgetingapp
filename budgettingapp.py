@@ -15,10 +15,6 @@ st.title('Budgetting App')
 conn=st.connection("neon",type="sql")
 
 with conn.session as session:
-    insert_items = """CREATE TABLE IF NOT EXISTS home.values (name VARCHAR(50), pet VARCHAR(50));"""
-    session.execute(text(insert_items))
-    session.commit()
-
     # Insert a row into the table
     df = session.execute(text("""INSERT INTO home.values (name, pet) VALUES ('sponge', 'bob');"""))
     session.commit()
