@@ -46,7 +46,7 @@ if imported_file is not None:
                     INSERT INTO home ("name", "pet") 
                     VALUES (?, ?)
                     """)
-        session.execute(text(query), new_data)
+        session.execute(text(query), (name, pet))
         # Commit the transaction
         session.commit()
         st.write("Row inserted successfully!")
