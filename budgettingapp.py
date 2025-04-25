@@ -14,14 +14,18 @@ st.title('Budgetting App')
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
 
-with conn.session as session:
+button_insert_query = st.button('Insert Query')
+if button_insert_query:
     # Insert a row into the table
-    df = session.execute(text("""
-                              INSERT INTO home (name, pet) 
-                              VALUES ('sponge', 'bob');
-                              """))
+    with conn.session as session:
+        df = session.execute(text("""
+                                INSERT INTO home (name, pet) 
+                                VALUES ('tyler', 'jack);
+                                """))
     session.commit()
     st.write(df)
+    st.write("Row inserted successfully!")     
+        
 
 # st.subheader('Upload your CSV file')
 # imported_file = st.file_uploader('', type='csv')
