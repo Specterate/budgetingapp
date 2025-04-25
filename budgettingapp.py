@@ -36,19 +36,19 @@ if imported_file is not None:
         name, pet = row[1], row[2]
         st.write(f'Name: {name}, Pet: {pet}')
     # Insert the values into the database
-    with conn.session as session:
-        new_data = (name, pet)
-        st.write(f'The new data is {new_data}')
-        st.write(f'Waiting for 5 seconds....') 
-        time.sleep(5)
-        # Define the SQL query to insert the data
-        query = text("""
-		INSERT INTO home ("name", "pet") 
-		VALUES (:name, :pet)
-		""")
-        session.execute(text(query).bindparams(name=name, pet=pet))
-        # Commit the transaction
-        session.commit()
-        st.write("Row inserted successfully!")
+        with conn.session as session:
+            new_data = (name, pet)
+            st.write(f'The new data is {new_data}')
+            st.write(f'Waiting for 5 seconds....') 
+            time.sleep(5)
+            # Define the SQL query to insert the data
+            query = text("""
+            INSERT INTO home ("name", "pet") 
+            VALUES (:name, :pet)
+            """)
+            session.execute(text(query).bindparams(name=name, pet=pet))
+            # Commit the transaction
+            session.commit()
+            st.write("Row inserted successfully!")
 else:
     st.write('Warning: Please upload a CSV file to get started.')
