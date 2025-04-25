@@ -21,7 +21,7 @@ if imported_file is not None:
         name, pet = row[0], row[1]
         # Insert the values into the database
         with conn.session as session:
-            session.execute(text(f"INSERT INTO home (name, pet) VALUES {name}, {pet}"))
+            session.execute(text(f"INSERT INTO home (name, pet) VALUES {name}, {pet};"))
             session.commit()
 else:
     st.write('Warning: Please upload a CSV file to get started.')
