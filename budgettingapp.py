@@ -32,16 +32,18 @@ if imported_file is not None:
     df = pd.read_csv(imported_file)
     st.write('Data Preview:')
     st.write(df)
-    # for row in df.itertuples():
-    #     name, pet = row[1], row[2]
-    #     # Insert the values into the database
-    with conn.session as session:
-        session.execute('home', df, if_exists='append', index=False)
-        # session.execute(text("""
-        #                      INSERT INTO home (id, name, pet)
-        #                      VALUES (NULL, {name},{pet})
-        #                      """.format(name=name, pet=pet)))
-        session.commit()
+    for row in df.itertuples():
+        name, pet = row[1], row[2]
+        st.write(f'Name: {name}, Pet: {pet}')
+    # st.write('Data Preview:')
+    # Insert the values into the database
+    # with conn.session as session:
+    #     session.execute('home', df, if_exists='append', index=False)
+    #     # session.execute(text("""
+    #     #                      INSERT INTO home (id, name, pet)
+    #     #                      VALUES (NULL, {name},{pet})
+    #     #                      """.format(name=name, pet=pet)))
+    #     session.commit()
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
