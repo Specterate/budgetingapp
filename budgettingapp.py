@@ -11,14 +11,13 @@ st.title('Budgetting App')
 conn=st.connection("neon",type="sql")
 
 def update_session_state_for_buttons():
-    if 'show_data_from_neon1' not in st.session_state:
-        if 'show_data_from_neon1':
-            df = conn.query("SELECT * FROM home", ttl="10minutes")
-            for row in df.itertuples():
-                st.write(f"Row {row.name}: {row.pet}")
+    if st.session_state.show_data_from_neon1 not in st.session_state:
+        df = conn.query("SELECT * FROM home", ttl="10minutes")
+        for row in df.itertuples():
+            st.write(f"Row {row.name}: {row.pet}")
     else:    
          st.write("Else Option Selected")
-         del st.session_state.show_data_from_neon
+         del st.session_state.show_data_from_neon1
          
 file_upload = st.button("Click to upload a CSV file", key="file_upload")
 if file_upload:
