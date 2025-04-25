@@ -10,7 +10,7 @@ st.title('Budgetting App')
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
 
-file_upload = st.button("Upload CSV")
+file_upload = st.button("Click to upload a CSV file")
 if file_upload:
     st.subheader('Upload your CSV file')
     imported_file = st.file_uploader('', type='csv')
@@ -21,10 +21,11 @@ if file_upload:
     else:
         st.write('Warning: Please upload a CSV file to get started.')
 
-df = conn.query("SELECT * FROM home", ttl="10minutes")
-
-for row in df.itertuples():
-    st.write(f"Row {row.name}: {row.pet}")
+show_data_from_neon = st.button("Click to show data from Neon")
+if show_data_from_neon:
+    df = conn.query("SELECT * FROM home", ttl="10minutes")
+    for row in df.itertuples():
+        st.write(f"Row {row.name}: {row.pet}")
 
 # Add a button to the app
 # button_clicked = st.button("click me")
