@@ -17,7 +17,7 @@ def update_session_state_for_buttons():
             for row in df.itertuples():
                 st.write(f"Row {row.name}: {row.pet}")
     else:    
-         st.session_state.show_data_from_neon = False
+         del st.session_state.show_data_from_neon
          
 file_upload = st.button("Click to upload a CSV file", key="file_upload")
 if file_upload:
