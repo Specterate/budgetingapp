@@ -16,6 +16,10 @@ if imported_file is not None:
     df = pd.read_csv(imported_file,index_col= 0)
     st.write('Data Preview:')
     st.write(df)
+    for row in df.itertuples():
+        name, pet = row[0], row[1]
+        # Insert the values into the database
+        df2 = conn.execute("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
