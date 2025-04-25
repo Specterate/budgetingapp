@@ -21,7 +21,7 @@ update_df = st.button('Update Data')
 if update_df:
     with conn.session as session:
         # Update the database with new data
-        session.execute(text("UPDATE home SET name = 'John Doe' WHERE id = 1"))
+        session.execute(text("INSERT INTO home VALUES (:name, :pet);"), {'name': 'John', 'pet': 'Dog'})
         session.commit()
         st.success('Data updated successfully!')
 
