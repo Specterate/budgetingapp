@@ -26,18 +26,21 @@ if button_insert_query:
     st.write("Row inserted successfully!")     
         
 
-# st.subheader('Upload your CSV file')
-# imported_file = st.file_uploader('', type='csv')
-# if imported_file is not None:
-#     df = pd.read_csv(imported_file,index_col= 0)
-#     st.write('Data Preview:')
-#     st.write(df)
-#     for row in df.itertuples():
-#         name, pet = row[0], row[1]
-#         # Insert the values into the database
-#         with conn.session as session:
-#             session.execute(text(f"INSERT home.values VALUES {name}, {pet};"))
-#             session.commit()
-# else:
-#     st.write('Warning: Please upload a CSV file to get started.')
+st.subheader('Upload your CSV file')
+imported_file = st.file_uploader('', type='csv')
+if imported_file is not None:
+    df = pd.read_csv(imported_file)
+    st.write('Data Preview:')
+    st.write(df)
+    for row in df.itertuples():
+        name, pet = row[1], row[2]
+        # Insert the values into the database
+        with conn.session as session:
+            session.execute(text("""
+                                 INSERT INTO home (name, pet)
+                                 VALUES {name}, {pet}
+                                 """.format(name=name, pet=pet)))
+            session.commit()
+else:
+    st.write('Warning: Please upload a CSV file to get started.')
 
