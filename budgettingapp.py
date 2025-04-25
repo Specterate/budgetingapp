@@ -33,3 +33,5 @@ if show_data_from_neon:
 #     button_clicked_count += 1
 #     st.write('I love you my mangu')
 #     st.write(button_clicked_count)
+
+st.write(st.session_stage)
