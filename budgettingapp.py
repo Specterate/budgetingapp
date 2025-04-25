@@ -20,7 +20,9 @@ if imported_file is not None:
     for row in df.itertuples():
         name, pet = row[0], row[1]
         # Insert the values into the database
-        conn.execute("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
+        with conn.session as session:
+            session.execute("INSERT INTO home (name, pet) VALUES (%s, %s)", (name, pet))
+            session.commit()
 else:
     st.write('Warning: Please upload a CSV file to get started.')
 
