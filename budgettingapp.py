@@ -5,18 +5,21 @@ import time
 import os
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
-st.title('New Budgetting App')
+st.title('Budgetting App')
 
+# Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
 
-st.subheader('Upload your CSV file')
-imported_file = st.file_uploader('', type='csv')
-if imported_file is not None:
-    df = pd.read_csv(imported_file,index_col= 0)
-    st.write('Data Preview:')
-    st.write(df)
-else:
-    st.write('Warning: Please upload a CSV file to get started.')
+file_upload = st.button("Upload CSV")
+if file_upload:
+    st.subheader('Upload your CSV file')
+    imported_file = st.file_uploader('', type='csv')
+    if imported_file is not None:
+        df = pd.read_csv(imported_file,index_col= 0)
+        st.write('Data Preview:')
+        st.write(df)
+    else:
+        st.write('Warning: Please upload a CSV file to get started.')
 
 df = conn.query("SELECT * FROM home", ttl="10minutes")
 
