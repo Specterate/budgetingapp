@@ -47,6 +47,3 @@ if imported_file is not None:
         st.write("Row inserted successfully!")
 else:
     st.write('Warning: Please upload a CSV file to get started.')
-
-st.cache_data.clear()
-st.rerun()
