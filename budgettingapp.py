@@ -33,11 +33,11 @@ if imported_file is not None:
     st.write('Data Preview:')
     st.write(df)
     for row in df.iterrows():
-        name, pet = row[0], row[1]
+        name, pet = str(row[1]), str(row[2])
         st.write(f'Name: {name}, Pet: {pet}')
     # Insert the values into the database
         with conn.session as session:
-            new_data = (name, pet)
+            new_data = str(name, pet)
             st.write(f'The new data is {new_data}')
             st.write(f'Waiting for 5 seconds....') 
             time.sleep(5)
@@ -46,7 +46,7 @@ if imported_file is not None:
             INSERT INTO home ("name", "pet") 
             VALUES (:name, :pet)
             """)
-            session.execute(text(query).bindparams(name=name, pet=pet))
+            session.execute(text(query), {'name': name, 'pet': pet})
             # Commit the transaction
             session.commit()
             st.write("Row inserted successfully!")
