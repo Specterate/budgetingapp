@@ -5,8 +5,10 @@ import time
 import os
 
 def update_session_state_for_buttons():
-    if show_data_from_neon not in st.session_state:
-        st.session_state.show_data_from_neon = True
+    if st.session_state.show_data_from_neon == True:
+        st.session_state.show_data_from_neon = False
+    else:    
+         st.session_state.show_data_from_neon = True
     
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
