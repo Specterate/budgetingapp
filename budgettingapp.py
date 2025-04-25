@@ -4,6 +4,13 @@ import numpy as np
 import time
 import os
 
+def update_session_state_for_buttons():
+    if file_upload not in st.session_state:
+        st.session_state.file_upload = False
+    if show_data_from_neon not in st.session_state:
+        st.session_state.show_data_from_neon = False
+    
+
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('Budgetting App')
 
@@ -21,7 +28,7 @@ if file_upload:
     else:
         st.write('Warning: Please upload a CSV file to get started.')
 
-show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon")
+show_data_from_neon = st.button("Click to show data from Neon", key="show_data_from_neon", on_click=update_session_state_for_buttons)
 if show_data_from_neon:
     df = conn.query("SELECT * FROM home", ttl="10minutes")
     for row in df.itertuples():
