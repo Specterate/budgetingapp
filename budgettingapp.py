@@ -21,4 +21,4 @@ with conn.session as session:
         df = pd.read_csv(imported_file)
         st.write('Data Preview:')
         st.write(df)
-        df.to_sql('name', session, if_exists='append', index=False)
+        df.to_sql('name', engine, if_exists='append', index=False)
