@@ -9,7 +9,6 @@ st.title('Budgetting App')
 
 # Creae a connection to Neon PostgreSQL database
 conn=st.connection("neon",type="sql")
-st.write(conn)
 
 st.subheader('Upload your CSV file')
 imported_file = st.file_uploader('', type='csv')
