@@ -7,9 +7,6 @@ import os
 def update_session_state_for_buttons():
     if show_data_from_neon not in st.session_state:
         st.session_state.show_data_from_neon = True
-    else:
-        st.session_state.show_data_from_neon = False
-        st.rerun()
     
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
