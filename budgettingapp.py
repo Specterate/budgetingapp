@@ -16,7 +16,10 @@ conn=st.connection("neon",type="sql")
 
 with conn.session as session:
     # Insert a row into the table
-    df = session.execute(text("""INSERT INTO home.values (name, pet) VALUES ('sponge', 'bob');"""))
+    df = session.execute(text("""
+                              INSERT INTO home (name, pet) 
+                              VALUES ('sponge', 'bob');
+                              """))
     session.commit()
     st.write(df)
 
