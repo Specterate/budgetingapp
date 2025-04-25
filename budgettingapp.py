@@ -23,7 +23,6 @@ if button_insert_query:
                                 VALUES ('tyler', 'jack')
                                 """))
     session.commit()
-    st.write(df)
     st.write("Row inserted successfully!")     
         
 
