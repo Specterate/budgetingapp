@@ -26,12 +26,13 @@ if st.button('Add Name and Pet'):
         .execute()
     )
 
-# Perform query.
-rows = conn.table("mytable").select("*").execute()
+show_data = st.button('Show Data')
+if show_data:
+    st.write('Data Preview:')
+    # Perform query.
+    rows = conn.table("mytable").select("*").execute()
+    st.write(rows.data)
 
-# Print results.
-for row in rows.data:
-    st.write(f"{row['name']} has a :{row['pet']}:")
 
 # # Creae a connection to Neon PostgreSQL database
 # conn=st.connection("neon",type="sql")
