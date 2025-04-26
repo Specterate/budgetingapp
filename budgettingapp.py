@@ -20,7 +20,7 @@ capture_new_name = st.text_input("Enter person name", "enter name")
 if st.button('Update Name'):
     response = (
         conn.table("mytable")
-        .update({"name": f'{name}'})
+        .update({"name": capture_new_name})
         .eq("id", 1)
         .execute()
     )
