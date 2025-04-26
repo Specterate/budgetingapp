@@ -14,7 +14,7 @@ st.title('Budgetting App')
 conn = st.connection("supabase",type=SupabaseConnection)
 
 # Perform query.
-rows = conn.query("*", table="mytable", ttl="10m").execute()
+rows = conn.table("mytable").select("*", ttl="10m").execute()
 
 # Print results.
 for row in rows.data:
