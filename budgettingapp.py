@@ -28,7 +28,7 @@ if st.button('Add Name and Pet'):
     response = (
         conn.table("mytable")
         .insert({"name": capture_new_name, 
-                 "pet": capture_new_name})
+                 "pet": capture_new_pet})
         .execute()
     )
 
