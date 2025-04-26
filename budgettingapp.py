@@ -22,20 +22,22 @@ with col2:
     capture_new_pet = st.text_input("Enter pet name", help="Enter pet name")
     st.write(f'The pet entered is {capture_new_pet}')
 
+with col1:
+    if st.button('Add Name and Pet'):
+        response = (
+            conn.table("mytable")
+            .insert({"name": capture_new_name, 
+                    "pet": capture_new_pet})
+            .execute()
+        )
+
+with col2:
+    show_data = st.button('Show Data')
+    if show_data:
+        st.write('Data Preview:')
+        # Perform query.
+        rows = conn.table("mytable").select("*").execute()
+        for row in rows.data:
+            st.write(f"{row['name']}, {row['pet']}")
 
 
-if st.button('Add Name and Pet'):
-    response = (
-        conn.table("mytable")
-        .insert({"name": capture_new_name, 
-                 "pet": capture_new_pet})
-        .execute()
-    )
-
-show_data = st.button('Show Data')
-if show_data:
-    st.write('Data Preview:')
-    # Perform query.
-    rows = conn.table("mytable").select("*").execute()
-    for row in rows.data:
-        st.write(f"{row['name']}, {row['pet']}")
