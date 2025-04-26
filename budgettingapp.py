@@ -16,14 +16,14 @@ conn = st.connection("supabase",type=SupabaseConnection)
 # Perform query.
 rows = conn.table("mytable").select("*").execute()
 
-st.text_input("Enter person name", "name")
-# if st.button('Update Name'):
-#     response = (
-#         conn.table("mytable")
-#         .update({"name": "Johnathon"})
-#         .eq("id", 1)
-#         .execute()
-#     )
+capture_new_name = st.text_input("Enter person name", "enter name")
+if st.button('Update Name'):
+    response = (
+        conn.table("mytable")
+        .update({"name": f'{name}'})
+        .eq("id", 1)
+        .execute()
+    )
 
 # Print results.
 for row in rows.data:
