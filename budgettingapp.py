@@ -13,17 +13,18 @@ st.title('Budgetting App')
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
-# Perform query.
-rows = conn.table("mytable").select("*").execute()
-
 capture_new_name = st.text_input("Enter person name", "enter name")
 st.write(f'The name enteres is {capture_new_name}')
 if st.button('Update Name'):
     response = (
         conn.table("mytable")
-        .insert({"name": capture_new_name})
+        .insert({"name": capture_new_name, 
+                 "pet": "dog"})
         .execute()
     )
+
+# Perform query.
+rows = conn.table("mytable").select("*").execute()
 
 # Print results.
 for row in rows.data:
