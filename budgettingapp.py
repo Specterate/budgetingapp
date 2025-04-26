@@ -14,7 +14,7 @@ st.title('Budgetting App')
 conn = st.connection("supabase",type=SupabaseConnection)
 
 col1, col2 = st.columns(2, border=True)
-col3 = st.columns(1, border=True)
+col3, col4 = st.columns(2, border=True)
 
 with col1:
     # Add new name to the database
