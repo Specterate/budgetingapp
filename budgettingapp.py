@@ -16,7 +16,7 @@ conn = st.connection("supabase",type=SupabaseConnection)
 # Perform query.
 rows = conn.table("mytable").select("*").execute()
 
-st.textinput("Enter person name", "name")
+st.text_input("Enter person name", "name")
 # if st.button('Update Name'):
 #     response = (
 #         conn.table("mytable")
