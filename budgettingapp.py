@@ -5,30 +5,40 @@ import time
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
-
+from st_supabase_connection import SupabaseConnection
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('Budgetting App')
 
-# Creae a connection to Neon PostgreSQL database
-conn=st.connection("neon",type="sql")
-# Query the database
-df = conn.query("SELECT name, pet FROM home")
-df.reset_index(drop=True, inplace=True)
-st.data_editor(df)
+# Initialize connection.
+conn = st.connection("supabase",type=SupabaseConnection)
 
-update_df = st.button('Update Data')
-if update_df:
-    with conn.session as session:
-        # Update the database with new data
-        session.execute(text("""
-                             INSERT INTO home 
-                             VALUES (?,?)), {'name': 'John', 'pet': 'Dog'}
-                             """))
-        session.commit()
-        st.success('Data updated successfully!')
+# Perform query.
+rows = conn.query("*", table="mytable", ttl="10m").execute()
 
-# with conn.session as session:
+# Print results.
+for row in rows.data:
+    st.write(f"{row['name']} has a :{row['pet']}:")
+
+# # Creae a connection to Neon PostgreSQL database
+# conn=st.connection("neon",type="sql")
+# # Query the database
+# df = conn.query("SELECT name, pet FROM home")
+# df.reset_index(drop=True, inplace=True)
+# st.data_editor(df)
+
+# update_df = st.button('Update Data')
+# if update_df:
+#     with conn.session as session:
+#         # Update the database with new data
+#         session.execute(text("""
+#                              INSERT INTO home 
+#                              VALUES (?,?)), {'name': 'John', 'pet': 'Dog'}
+#                              """))
+#         session.commit()
+#         st.success('Data updated successfully!')
+
+# # with conn.session as session:
 #     st.subheader('Upload your CSV file')
 #     imported_file = st.file_uploader('', type='csv')
 #     if imported_file is not None:
