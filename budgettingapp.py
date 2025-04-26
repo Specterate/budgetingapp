@@ -15,12 +15,14 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 # Add new name to the database
 capture_new_name = st.text_input("Enter person name", help="Enter name")
+capture_new_pet = st.text_input("Enter pet name", help="Enter pet name")
 st.write(f'The name entered is {capture_new_name}')
-if st.button('Update Name'):
+st.write(f'The pet entered is {capture_new_pet}')
+if st.button('Add Name and Pet'):
     response = (
         conn.table("mytable")
         .insert({"name": capture_new_name, 
-                 "pet": "dog"})
+                 "pet": capture_new_name})
         .execute()
     )
 
