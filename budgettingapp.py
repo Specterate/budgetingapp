@@ -14,6 +14,7 @@ st.title('Budgetting App')
 conn = st.connection("supabase",type=SupabaseConnection)
 
 col1, col2 = st.columns(2, border=True)
+col3 = st.columns(1, border=True)
 with col1:
     # Add new name to the database
     capture_new_name = st.text_input("Enter person name", help="Enter name")
@@ -22,7 +23,7 @@ with col2:
     capture_new_pet = st.text_input("Enter pet name", help="Enter pet name")
     st.write(f'The pet entered is {capture_new_pet}')
 
-with col1:
+with col3:
     if st.button('Add Name and Pet'):
         response = (
             conn.table("mytable")
@@ -31,7 +32,7 @@ with col1:
             .execute()
         )
 
-with col1:
+with col3:
     show_data = st.button('Show Data')
     if show_data:
         st.write('Data Preview:')
