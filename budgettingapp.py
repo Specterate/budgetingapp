@@ -31,7 +31,7 @@ with col1:
             .execute()
         )
 
-with col2:
+with col1:
     show_data = st.button('Show Data')
     if show_data:
         st.write('Data Preview:')
