@@ -38,4 +38,4 @@ if show_data:
     # Perform query.
     rows = conn.table("mytable").select("*").execute()
     for row in rows.data:
-        st.write(row)
+        st.write(f"{row['name'], row['pet']}")
