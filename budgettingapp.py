@@ -13,7 +13,7 @@ st.title('Budgetting App')
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
-col1, col2 = st.columns(2, bordered=True)
+col1, col2 = st.columns(2, border=True)
 with col1:
     # Add new name to the database
     capture_new_name = st.text_input("Enter person name", help="Enter name")
