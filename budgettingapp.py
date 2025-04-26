@@ -37,32 +37,5 @@ if show_data:
     st.write('Data Preview:')
     # Perform query.
     rows = conn.table("mytable").select("*").execute()
-    st.write(rows.data)
-
-
-# # Creae a connection to Neon PostgreSQL database
-# conn=st.connection("neon",type="sql")
-# # Query the database
-# df = conn.query("SELECT name, pet FROM home")
-# df.reset_index(drop=True, inplace=True)
-# st.data_editor(df)
-
-# update_df = st.button('Update Data')
-# if update_df:
-#     with conn.session as session:
-#         # Update the database with new data
-#         session.execute(text("""
-#                              INSERT INTO home 
-#                              VALUES (?,?)), {'name': 'John', 'pet': 'Dog'}
-#                              """))
-#         session.commit()
-#         st.success('Data updated successfully!')
-
-# # with conn.session as session:
-#     st.subheader('Upload your CSV file')
-#     imported_file = st.file_uploader('', type='csv')
-#     if imported_file is not None:
-#         df = pd.read_csv(imported_file)
-#         st.write('Data Preview:')
-#         st.write(df)
-#         df.to_sql('name', engine, if_exists='append', index=False)
+    for row in rows.data:
+        st.write(row)
