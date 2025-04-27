@@ -30,7 +30,7 @@ st.data_editor(
         "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
         "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
     },               
-    hide_index=True,
+    # hide_index=True,
     num_rows="dynamic",
     height=500,
     key="my_categories",
