@@ -6,42 +6,66 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
+from streamlit import session_state as ss
 
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
-data = {
-    "Animal": ["Lion", "Crocodile", "Elephant", "Giraffe", "Penguin"],
-    "Weight (kg)": [190, 430, 5000, 800, 4],
-    "Is Endangered": [True, True, True, False, False],
-    "Classification": ["Mammal", "Reptile", "Mammal", "Mammal", "Bird"],
-    "Average Lifespan (years)": [12, 70, 70, 25, 20],
-    "Habitat": ["Grassland", "Water", "Savannah", "Savannah", "Antarctica"],
-}
-df = pd.DataFrame(data)
-st.write("Original DataFrame")
-st.dataframe(df)
+# Create a variable to hold the counter. See to it
+# that the key `cnt` is not yet in session state.
+# Intialize it with a value of 0.
+if 'cnt' not in ss:
+    ss.cnt = 0  # okay we are good
 
-st.session_state.df_copy = df.copy()
 
-edited_df = st.data_editor(
-    df,
-    num_rows="dynamic",
-    use_container_width=True,
-    hide_index=True,
-    column_config={
-        "Animal": st.column_config.TextColumn(),
-        "Weight (kg)": st.column_config.NumberColumn(),
-        "Is Endangered": st.column_config.CheckboxColumn(),
-        "Classification": st.column_config.SelectboxColumn(
-            options=["Mammal", "Reptile", "Bird"]
-        ),
-        "Average Lifespan (years)": st.column_config.NumberColumn(),
-        "Habitat": st.column_config.SelectboxColumn(
-            options=["Grassland", "Water", "Savannah", "Antarctica"]
-        ),
-    },
-)
+def prev_callback():
+    ss.cnt -= 1  # decrement properly
+
+
+def next_callback():
+    ss.cnt += 1  # increment properly
+
+
+left, center, right = st.columns([1, 1, 1], gap='small')
+
+left.button('Previous', type='secondary', on_click=prev_callback)
+center.button(f'{ss.cnt}', type='primary')
+right.button('Next', type='secondary', on_click=next_callback)
+
+
+
+# data = {
+#     "Animal": ["Lion", "Crocodile", "Elephant", "Giraffe", "Penguin"],
+#     "Weight (kg)": [190, 430, 5000, 800, 4],
+#     "Is Endangered": [True, True, True, False, False],
+#     "Classification": ["Mammal", "Reptile", "Mammal", "Mammal", "Bird"],
+#     "Average Lifespan (years)": [12, 70, 70, 25, 20],
+#     "Habitat": ["Grassland", "Water", "Savannah", "Savannah", "Antarctica"],
+# }
+# df = pd.DataFrame(data)
+# st.write("Original DataFrame")
+# st.dataframe(df)
+
+# st.session_state.df_copy = df.copy()
+
+# edited_df = st.data_editor(
+#     df,
+#     num_rows="dynamic",
+#     use_container_width=True,
+#     hide_index=True,
+#     column_config={
+#         "Animal": st.column_config.TextColumn(),
+#         "Weight (kg)": st.column_config.NumberColumn(),
+#         "Is Endangered": st.column_config.CheckboxColumn(),
+#         "Classification": st.column_config.SelectboxColumn(
+#             options=["Mammal", "Reptile", "Bird"]
+#         ),
+#         "Average Lifespan (years)": st.column_config.NumberColumn(),
+#         "Habitat": st.column_config.SelectboxColumn(
+#             options=["Grassland", "Water", "Savannah", "Antarctica"]
+#         ),
+#     },
+# )
 
 
 
