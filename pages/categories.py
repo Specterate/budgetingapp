@@ -58,4 +58,4 @@ with col2:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
 
-st.write(st.session_stage)
+st.write(st.session_state)
