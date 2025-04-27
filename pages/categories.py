@@ -14,6 +14,9 @@ st.title("Categories")
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
+if "my_categories" not in st.session_state:
+    st.session_state["my_categories"] = pd.DataFrame(columns=["category", "subcategory", "monthly", "yearly"])
+
 def update_categories():
     conn.table("categories").upsert(st.session_state).execute()
 
