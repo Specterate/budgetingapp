@@ -20,24 +20,24 @@ def update_categories():
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
-st.write(new_row)
-# st.data_editor(
-#     new_row,
-#     key="my_categories",
-#     column_config={
-#         "category": st.column_config.TextColumn("Category"),
-#         "subcategory": st.column_config.TextColumn("Subcategory"),
-#         "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
-#         "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
-#     },               
-#     hide_index=True,
-#     num_rows="dynamic",
-#     height=500,
-# #    on_change=update_categories,
-# )
+
+st.data_editor(
+    new_row,    
+    column_config={
+        "category": st.column_config.TextColumn("Category"),
+        "subcategory": st.column_config.TextColumn("Subcategory"),
+        "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
+        "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
+    },               
+    hide_index=True,
+    num_rows="dynamic",
+    height=500,
+    key="my_categories",
+#    on_change=update_categories,
+)
                
-# st.write("Here's the value in Session State:")
-# st.write(st.session_state["my_categories"])
+st.write("Here's the value in Session State:")
+st.write(st.session_state["my_categories"])
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
