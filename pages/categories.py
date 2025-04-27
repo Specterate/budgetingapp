@@ -22,7 +22,7 @@ rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
 st.data_editor(
     new_row,
-    key="categories",
+    key="my_categories",
     column_config={
         "category": st.column_config.TextColumn("Category"),
         "subcategory": st.column_config.TextColumn("Subcategory"),
@@ -36,7 +36,7 @@ st.data_editor(
 )
                
 st.write("Here's the value in Session State:")
-st.write(st.session_state["categories"])
+st.write(st.session_state["my_categories"])
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
