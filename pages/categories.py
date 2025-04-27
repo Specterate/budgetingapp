@@ -37,8 +37,8 @@ st.data_editor(
 with st.form(key='add_category_form'):
     category = st.text_input("Category")
     subcategory = st.text_input("Subcategory")
-    monthly = st.number_input("Monthly", min_value=0.0, format="%.2f")
-    yearly = st.number_input("Yearly", min_value=0.0, format="%.2f")
+    monthly = st.number_input("Monthly", min_value=0)
+    yearly = st.number_input("Yearly", min_value=0)
     submit_button = st.form_submit_button(label='Add Category')
     if submit_button:
         conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
