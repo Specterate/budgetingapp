@@ -14,9 +14,6 @@ st.title("Categories")
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
-if "my_categories" not in st.session_state:
-    st.session_state["my_categories"] = 0
-
 def update_categories():
     conn.table("categories").upsert(st.session_state).execute()
 
@@ -26,7 +23,7 @@ rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
 
 st.data_editor(
-    rows.data,    
+    new_row,    
     column_config={
         "category": st.column_config.TextColumn("Category"),
         "subcategory": st.column_config.TextColumn("Subcategory"),
@@ -37,7 +34,7 @@ st.data_editor(
     num_rows="dynamic",
     height=500,
     key="my_categories",
-#    on_change=update_categories,
+#   on_change=update_categories,
 )
                
 st.write("Here's the value in Session State:")
