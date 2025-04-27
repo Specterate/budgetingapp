@@ -18,18 +18,19 @@ if uploaded_file is not None:
    dataframe = pd.read_csv(uploaded_file)
    st.write(dataframe)
 
-col1, col2 = st.columns(2, border=True)
-col3, col4 = st.columns(2, border=True)
+        
 
-with col1:
+if st.button('Add manual row'):
+    col1, col2 = st.columns(2, border=True)
+    with col1:
     # Add new name to the database
-    capture_new_name = st.text_input("Enter person name", help="Enter name")
-    st.write(f'The name entered is {capture_new_name}')
-with col2:
-    capture_new_pet = st.text_input("Enter pet name", help="Enter pet name")
-    st.write(f'The pet entered is {capture_new_pet}')
+        capture_new_name = st.text_input("Enter person name", help="Enter name")
+        st.write(f'The name entered is {capture_new_name}')
+    with col2:
+        capture_new_pet = st.text_input("Enter pet name", help="Enter pet name")
+        st.write(f'The pet entered is {capture_new_pet}')
 
-with col3:
+
     if st.button('Add Name and Pet'):
         response = (
             conn.table("mytable1")
@@ -38,13 +39,12 @@ with col3:
             .execute()
         )
 
-with col3:
-    show_data = st.button('Show Data')
-    if show_data:
-        st.write('Data Preview:')
-        # Perform query.
-        rows = conn.table("mytable1").select("*").execute()
-        for row in rows.data:
-            st.write(row)
+show_data = st.button('Show Data')
+if show_data:
+    st.write('Data Preview:')
+    # Perform query.
+    rows = conn.table("mytable1").select("*").execute()
+    for row in rows.data:
+        st.write(row)
 
 
