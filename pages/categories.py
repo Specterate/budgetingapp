@@ -18,12 +18,14 @@ st.subheader('Categories Preview:', divider=True)
 
 
 def get_data():
+    st.write('Getting data... ')
     # Get all the categories from the Supabase
     rows = conn.table("categories").select("*").execute()
-
+    st.write('Converting Data to Pandas DataFrame... ')
     # Convert the data into a Pandas DataFrame
     df = pd.DataFrame.from_dict(rows.data)
 
+    st.write('storing data in session state... ')
     st.session_state.data = df
     # st.data_editor(
     #     df,    
