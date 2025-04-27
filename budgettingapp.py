@@ -13,13 +13,13 @@ st.title('Budgetting App')
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
-col1, col2 = st.columns(2, border=True)
-col3, col4 = st.columns(2, border=True)
-
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
    dataframe = pd.read_csv(uploaded_file)
    st.write(dataframe)
+
+col1, col2 = st.columns(2, border=True)
+col3, col4 = st.columns(2, border=True)
 
 with col1:
     # Add new name to the database
