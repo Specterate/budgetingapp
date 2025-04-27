@@ -16,13 +16,13 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.subheader('Categories Preview:', divider=True)
 
-
-def update_preview():
+def get_data():
     # Get all the categories from the Supabase
     rows = conn.table("categories").select("*").execute()
 
     # Convert the data into a Pandas DataFrame
-    new_row = pd.DataFrame.from_dict(rows.data)
+    df = pd.DataFrame.from_dict(rows.data)
+
     st.data_editor(
         new_row,    
         column_config=
@@ -36,9 +36,10 @@ def update_preview():
         num_rows="dynamic",
         height=500,
     )
-    return new_row
 
-update_preview()
+    return df
+
+new_row = get_data()
 
 col1, col2 = st.columns(2)
 with col1:
@@ -56,15 +57,10 @@ with col1:
 with col2:
     # Delete Sub Category
     with st.form(key='delete_category_form'):
-        # Get all the categories from the Supabase
-        rows = conn.table("categories").select("*").execute()
-        # Convert the data into a Pandas DataFrame
-        new_row = pd.DataFrame.from_dict(rows.data)
         delete_subcategory = st.selectbox("Select Sub Category to Delete", new_row['subcategory'].unique())
         delete_button = st.form_submit_button(label='Delete Sub Category')
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
 
-update_preview()
-
+get_data()
