@@ -8,7 +8,7 @@ from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
-st.title('Expenses Dashboard')
+st.title('Expenses')
 
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
