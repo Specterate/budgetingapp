@@ -36,6 +36,7 @@ def update_preview():
         num_rows="dynamic",
         height=500,
     )
+    return new_row
 
 update_preview()
 
