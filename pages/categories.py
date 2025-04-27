@@ -57,3 +57,5 @@ with col2:
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
+
+st.write(st.session_stage)
