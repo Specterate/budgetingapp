@@ -56,6 +56,10 @@ with col1:
 with col2:
     # Delete Sub Category
     with st.form(key='delete_category_form'):
+        # Get all the categories from the Supabase
+        rows = conn.table("categories").select("*").execute()
+        # Convert the data into a Pandas DataFrame
+        new_row = pd.DataFrame.from_dict(rows.data)
         delete_subcategory = st.selectbox("Select Sub Category to Delete", new_row['subcategory'].unique())
         delete_button = st.form_submit_button(label='Delete Sub Category')
         if delete_button:
