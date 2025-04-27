@@ -18,7 +18,11 @@ if uploaded_file is not None:
    dataframe = pd.read_csv(uploaded_file)
    st.write(dataframe)
 
-        
+add_df_data = st.button('Add DataFrame to Database')
+if add_df_data:
+    # Add DataFrame to the database
+    conn.table("mytable1").insert(dataframe.to_dict(orient='records')).execute()
+    st.success('DataFrame added to the database!')     
 
 if st.button('Add manual row'):
     col1, col2 = st.columns(2, border=True)
