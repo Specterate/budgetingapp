@@ -23,19 +23,20 @@ def get_data():
     # Convert the data into a Pandas DataFrame
     df = pd.DataFrame.from_dict(rows.data)
 
-    st.data_editor(
-        df,    
-        column_config=
-        {
-            "category": st.column_config.TextColumn("Category"),
-            "subcategory": st.column_config.TextColumn("Subcategory"),
-            "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
-            "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
-        },               
-        hide_index=True,
-        num_rows="dynamic",
-        height=500,
-    )
+    st.write(df)
+    # st.data_editor(
+    #     df,    
+    #     column_config=
+    #     {
+    #         "category": st.column_config.TextColumn("Category"),
+    #         "subcategory": st.column_config.TextColumn("Subcategory"),
+    #         "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
+    #         "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
+    #     },               
+    #     hide_index=True,
+    #     num_rows="dynamic",
+    #     height=500,
+    # )
 
     return df
 
