@@ -37,6 +37,7 @@ def update_preview():
         height=500,
     )
 
+update_preview()
 
 col1, col2 = st.columns(2)
 with col1:
