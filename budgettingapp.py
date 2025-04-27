@@ -21,11 +21,29 @@ data = {
 df = pd.DataFrame(data)
 st.data_editor(df, key="my_key", num_rows="dynamic")
 
-if "my_key" not in st.session_state:
-    st.session_state.my_key = df.copy()
+st.session_state.df_copy = df.copy()
 
-st.write("Here's the value in Session State:")
-st.write(st.session_state.my_key)
+edited_df = st.data_editor(
+    st.session_state.df_copy,
+    key="my_key",
+    num_rows="dynamic",
+    use_container_width=True,
+    hide_index=True,
+    column_config={
+        "Animal": st.column_config.TextColumn(),
+        "Weight (kg)": st.column_config.NumberColumn(),
+        "Is Endangered": st.column_config.CheckboxColumn(),
+        "Classification": st.column_config.SelectboxColumn(
+            options=["Mammal", "Reptile", "Bird"]
+        ),
+        "Average Lifespan (years)": st.column_config.NumberColumn(),
+        "Habitat": st.column_config.SelectboxColumn(
+            options=["Grassland", "Water", "Savannah", "Antarctica"]
+        ),
+    },
+)
+
+
 
 
 # https://github.com/streamlit/docs/blob/main/python/api-examples-source/data.data_editor4.py
