@@ -27,7 +27,7 @@ with col2:
 with col3:
     if st.button('Add Name and Pet'):
         response = (
-            conn.table("mytable")
+            conn.table("mytable1")
             .insert({"name": capture_new_name, 
                     "pet": capture_new_pet})
             .execute()
@@ -38,7 +38,7 @@ with col3:
     if show_data:
         st.write('Data Preview:')
         # Perform query.
-        rows = conn.table("mytable").select("*").execute()
+        rows = conn.table("mytable1").select("*").execute()
         for row in rows.data:
             st.write(f"{row['name']}, {row['pet']}")
 
