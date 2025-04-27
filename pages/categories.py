@@ -35,12 +35,13 @@ st.data_editor(
     # hide_index=True,
     num_rows="dynamic",
     height=500,
-    key="my_categories",
+    key="my_categories1",
     # on_change=update_categories,
 )
                
 st.write("Here's the value in Session State:")
 st.write(st.session_state["my_categories"])
+st.write(st.session_state["my_categories1"])
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
