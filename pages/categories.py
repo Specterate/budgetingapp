@@ -30,4 +30,5 @@ st.data_editor(
             ),
             },
                hide_index=True,
-               num_rows="dynamic",)
+               num_rows="dynamic",
+               height=300,)
