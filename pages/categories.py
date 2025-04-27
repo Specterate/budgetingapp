@@ -16,6 +16,7 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.subheader('Categories Preview:', divider=True)
 
+
 def get_data():
     # Get all the categories from the Supabase
     rows = conn.table("categories").select("*").execute()
@@ -23,6 +24,7 @@ def get_data():
     # Convert the data into a Pandas DataFrame
     df = pd.DataFrame.from_dict(rows.data)
 
+    st.session_state.df = df
     # st.data_editor(
     #     df,    
     #     column_config=
@@ -40,7 +42,7 @@ def get_data():
     return df
 
 new_row = get_data()
-st.write(new_row)
+st.write(st.session_state.df)
 
 col1, col2 = st.columns(2)
 with col1:
