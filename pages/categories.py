@@ -14,6 +14,9 @@ st.title("Categories")
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
+def update_categories(session_state):
+    conn.table("categories").upsert(session_state).execute()
+
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
@@ -33,8 +36,7 @@ st.session_state = st.data_editor(
                hide_index=True,
                num_rows="dynamic",
                height=500,
-               )
-st.write(st.session_state)
+               on_change=update_categories(st.session_state),)
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
