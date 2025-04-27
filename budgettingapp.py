@@ -19,12 +19,13 @@ data = {
     "Habitat": ["Grassland", "Water", "Savannah", "Savannah", "Antarctica"],
 }
 df = pd.DataFrame(data)
+st.write("Original DataFrame")
 st.dataframe(df)
 
 st.session_state.df_copy = df.copy()
 
 edited_df = st.data_editor(
-    st.session_state.df_copy,
+    df,
     num_rows="dynamic",
     use_container_width=True,
     hide_index=True,
