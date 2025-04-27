@@ -6,7 +6,7 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
-import st.aggrid as AgGrid
+import st_aggrid as AgGrid
 
 st.set_page_config(page_title="Categories", page_icon="📚")
 st.title("Categories")
