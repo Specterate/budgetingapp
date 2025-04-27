@@ -26,7 +26,8 @@ def get_data():
 
     st.write("writing DF")
     st.write(df)
-    st.session_state.df = df
+    if "data" not in st.session_state:
+        st.session_state.data = df
     # st.data_editor(
     #     df,    
     #     column_config=
@@ -44,7 +45,7 @@ def get_data():
     return df
 
 new_row = get_data()
-st.write(st.session_state.df)
+st.write(st.session_state.data)
 
 col1, col2 = st.columns(2)
 with col1:
