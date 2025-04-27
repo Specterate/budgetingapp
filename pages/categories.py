@@ -16,7 +16,8 @@ conn = st.connection("supabase",type=SupabaseConnection)
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
-st.data_editor(new_row, 
+st.data_editor(new_row,
+               column_order=['category', 'subscategory', 'monthly', 'yearly']
                column_config={
                 "monthly": st.column_config.NumberColumn(
                 "Monthly",
