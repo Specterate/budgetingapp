@@ -16,7 +16,7 @@ conn = st.connection("supabase",type=SupabaseConnection)
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
    dataframe = pd.read_csv(uploaded_file)
-   st.write(dataframe)
+   st.data_editor(dataframe)
 
 add_df_data = st.button('Add DataFrame to Database')
 if add_df_data:
