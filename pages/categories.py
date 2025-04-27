@@ -34,5 +34,5 @@ st.data_editor(
             },
                hide_index=True,
                num_rows="dynamic",
-               height=1000,
+               height=500,
                on_change=updated_categories,)
