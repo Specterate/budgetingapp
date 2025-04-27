@@ -40,6 +40,6 @@ with col3:
         # Perform query.
         rows = conn.table("mytable1").select("*").execute()
         for row in rows.data:
-            st.write(f"{row['name']}, {row['pet']}")
+            st.write(row)
 
 
