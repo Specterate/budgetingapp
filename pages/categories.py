@@ -23,7 +23,6 @@ def get_data():
     # Convert the data into a Pandas DataFrame
     df = pd.DataFrame.from_dict(rows.data)
 
-    st.write(df)
     # st.data_editor(
     #     df,    
     #     column_config=
