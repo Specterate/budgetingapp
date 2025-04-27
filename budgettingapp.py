@@ -18,8 +18,6 @@ if 'df' not in st.session_state:
 def update_df():
     st.session_state['df'] = st.session_state['edited_df']
 
-st.write(st.session_state['df'])
-
 st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor")
 
 
