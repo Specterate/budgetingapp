@@ -10,6 +10,9 @@ from st_supabase_connection import SupabaseConnection
 st.set_page_config(page_title="Categories", page_icon="📚")
 st.title("Categories")
 
+def updated_categories():
+    st.write("Updated Categories")
+
 # Initialize connection.
 conn = st.connection("supabase",type=SupabaseConnection)
 
@@ -31,4 +34,5 @@ st.data_editor(
             },
                hide_index=True,
                num_rows="dynamic",
-               height=1000,)
+               height=1000,
+               on_change=updated_categories,)
