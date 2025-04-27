@@ -19,7 +19,6 @@ def update_categories():
 
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
-# st.write(rows)
 new_row = pd.DataFrame.from_dict(rows.data)
 
 st.data_editor(
@@ -34,7 +33,7 @@ st.data_editor(
     num_rows="dynamic",
     height=500,
     key="my_categories",
-#   on_change=update_categories,
+    # on_change=update_categories,
 )
                
 st.write("Here's the value in Session State:")
