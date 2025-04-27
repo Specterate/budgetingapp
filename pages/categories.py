@@ -40,6 +40,7 @@ def get_data():
     return df
 
 new_row = get_data()
+st.write(new_row)
 
 col1, col2 = st.columns(2)
 with col1:
