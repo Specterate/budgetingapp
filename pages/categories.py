@@ -15,5 +15,13 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
-new_row = pd.DataFrame.from_dict(rows.values)
-st.data_editor(new_row)
+new_row = pd.DataFrame.from_dict(rows.data)
+st.data_editor(new_row, 
+               column_config={
+                "monthly": st.column_config.NumberColumn(
+                "Monthly",
+                format="dollar"
+            ),
+            "is_widget": "Widget ?",
+            },
+               hide_index=True,)
