@@ -21,6 +21,9 @@ st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
 
+if "my_categories" not in st.session_state:
+    st.session_state["my_categories"] = new_row
+
 st.data_editor(
     new_row,    
     column_config={
