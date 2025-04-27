@@ -36,8 +36,8 @@ st.write(new_row)
 # #    on_change=update_categories,
 # )
                
-st.write("Here's the value in Session State:")
-st.write(st.session_state["my_categories"])
+# st.write("Here's the value in Session State:")
+# st.write(st.session_state["my_categories"])
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
