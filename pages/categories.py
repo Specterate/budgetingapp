@@ -16,13 +16,13 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.subheader('Categories Preview:', divider=True)
 
-# Get all the categories from the Supabase
-rows = conn.table("categories").select("*").execute()
-
-# Convert the data into a Pandas DataFrame
-new_row = pd.DataFrame.from_dict(rows.data)
 
 def update_preview():
+    # Get all the categories from the Supabase
+    rows = conn.table("categories").select("*").execute()
+
+    # Convert the data into a Pandas DataFrame
+    new_row = pd.DataFrame.from_dict(rows.data)
     st.data_editor(
         new_row,    
         column_config=
@@ -37,7 +37,6 @@ def update_preview():
         height=500,
     )
 
-update_preview()
 
 col1, col2 = st.columns(2)
 with col1:
@@ -51,7 +50,6 @@ with col1:
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
-            update_preview()
 
 with col2:
     # Delete Sub Category
@@ -61,5 +59,6 @@ with col2:
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
-            update_preview()
+
+update_preview()
 
