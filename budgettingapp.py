@@ -19,7 +19,7 @@ data = {
     "Habitat": ["Grassland", "Water", "Savannah", "Savannah", "Antarctica"],
 }
 df = pd.DataFrame(data)
-st.data_editor(df, key="my_key", num_rows="dynamic")
+st.dataframe(df)
 
 st.session_state.df_copy = df.copy()
 
