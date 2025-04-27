@@ -24,10 +24,7 @@ def get_data():
     # Convert the data into a Pandas DataFrame
     df = pd.DataFrame.from_dict(rows.data)
 
-    st.write("writing DF")
-    st.write(df)
-    if "data" not in st.session_state:
-        st.session_state.data = df
+    st.session_state.data = df
     # st.data_editor(
     #     df,    
     #     column_config=
