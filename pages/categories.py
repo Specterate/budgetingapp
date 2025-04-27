@@ -22,23 +22,23 @@ rows = conn.table("categories").select("*").execute()
 st.write(rows)
 new_row = pd.DataFrame.from_dict(rows.data)
 
-# st.data_editor(
-#     new_row,    
-#     column_config={
-#         "category": st.column_config.TextColumn("Category"),
-#         "subcategory": st.column_config.TextColumn("Subcategory"),
-#         "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
-#         "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
-#     },               
-#     hide_index=True,
-#     num_rows="dynamic",
-#     height=500,
-#     key="my_categories",
-# #    on_change=update_categories,
-# )
+st.data_editor(
+    rows.data,    
+    column_config={
+        "category": st.column_config.TextColumn("Category"),
+        "subcategory": st.column_config.TextColumn("Subcategory"),
+        "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
+        "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
+    },               
+    hide_index=True,
+    num_rows="dynamic",
+    height=500,
+    key="my_categories",
+#    on_change=update_categories,
+)
                
-# st.write("Here's the value in Session State:")
-# st.write(st.session_state["my_categories"])
+st.write("Here's the value in Session State:")
+st.write(st.session_state["my_categories"])
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
