@@ -44,7 +44,6 @@ def get_data():
     return df
 
 new_row = get_data()
-st.write(st.session_state['df'])
 
 col1, col2 = st.columns(2)
 with col1:
