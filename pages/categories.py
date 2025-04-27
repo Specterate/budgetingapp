@@ -24,7 +24,7 @@ def get_data():
     df = pd.DataFrame.from_dict(rows.data)
 
     st.data_editor(
-        new_row,    
+        df,    
         column_config=
         {
             "category": st.column_config.TextColumn("Category"),
