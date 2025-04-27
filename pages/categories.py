@@ -18,8 +18,8 @@ rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
 st.data_editor(
                 new_row,
-               column_order=['category', 'subcategory', 'monthly', 'yearly'],
-               column_config={
+                column_order=['category', 'subcategory', 'monthly', 'yearly'],
+                column_config={
                 "monthly": st.column_config.NumberColumn(
                 "Monthly",
                 format="dollar"
@@ -29,4 +29,5 @@ st.data_editor(
                 format="dollar"
             ),
             },
-               hide_index=True,)
+               hide_index=True,
+               num_rows="dynamic",)
