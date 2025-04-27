@@ -22,20 +22,23 @@ rows = conn.table("categories").select("*").execute()
 # Convert the data into a Pandas DataFrame
 new_row = pd.DataFrame.from_dict(rows.data)
 
-st.data_editor(
-    new_row,    
-    column_config=
-    {
-        "category": st.column_config.TextColumn("Category"),
-        "subcategory": st.column_config.TextColumn("Subcategory"),
-        "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
-        "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
-    },               
-    hide_index=True,
-    num_rows="dynamic",
-    height=500,
-)
-               
+def update_preview():
+    st.data_editor(
+        new_row,    
+        column_config=
+        {
+            "category": st.column_config.TextColumn("Category"),
+            "subcategory": st.column_config.TextColumn("Subcategory"),
+            "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
+            "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
+        },               
+        hide_index=True,
+        num_rows="dynamic",
+        height=500,
+    )
+
+update_preview()
+
 col1, col2 = st.columns(2)
 with col1:
     # Using a Form to add a new category
@@ -48,6 +51,7 @@ with col1:
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
+            update_preview()
 
 with col2:
     # Delete Sub Category
@@ -57,5 +61,5 @@ with col2:
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
+            update_preview()
 
-st.write(st.session_state)
