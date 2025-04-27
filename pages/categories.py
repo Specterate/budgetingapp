@@ -15,5 +15,5 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
-for row in rows.data:
-    st.data_editor(row)
+new_row = pd.DataFrame.from_dict(rows)
+st.data_editor(new_row)
