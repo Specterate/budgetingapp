@@ -59,6 +59,7 @@ with col1:
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
+            del st.session_state.data
             get_data()
 
 with col2:
@@ -69,4 +70,5 @@ with col2:
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
+            del st.session_state.data
             get_data()
