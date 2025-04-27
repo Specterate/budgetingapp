@@ -21,6 +21,13 @@ data = {
 df = pd.DataFrame(data)
 st.data_editor(df, key="my_key", num_rows="dynamic")
 
+if "my_key" not in st.session_state:
+    st.session_state["my_key"] = df.copy()
+
+st.write("Here's the value in Session State:")
+st.write(st.session_state["my_key"])
+
+
 # https://github.com/streamlit/docs/blob/main/python/api-examples-source/data.data_editor4.py
 # @st.cache_data
 # def load_data():
