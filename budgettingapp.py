@@ -25,7 +25,7 @@ if "my_key" not in st.session_state:
     st.session_state.my_key = df.copy()
 
 st.write("Here's the value in Session State:")
-st.write(st.session_state["my_key"])
+st.write(st.session_state.my_key)
 
 
 # https://github.com/streamlit/docs/blob/main/python/api-examples-source/data.data_editor4.py
