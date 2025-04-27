@@ -21,9 +21,6 @@ st.write('Categories Preview:')
 rows = conn.table("categories").select("*").execute()
 new_row = pd.DataFrame.from_dict(rows.data)
 
-if "my_categories" not in st.session_state:
-    st.session_state["my_categories"] = new_row
-
 st.data_editor(
     new_row,    
     column_config={
@@ -40,8 +37,7 @@ st.data_editor(
 )
                
 st.write("Here's the value in Session State:")
-st.write(st.session_state["my_categories"])
-st.write(st.session_state["my_categories1"])
+st.write(st.session_state.my_categories1)
 
 # Using a Form to add a new category
 # with st.form(key='add_category_form'):
