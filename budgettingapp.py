@@ -11,26 +11,38 @@ from streamlit import session_state as ss
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
+
+if 'df' not in st.session_state:
+    st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
+
+def update_df():
+    st.session_state['df'] = st.session_state['edited_df']
+
+st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor")
+
+
+
+
 # Create a variable to hold the counter. See to it
 # that the key `cnt` is not yet in session state.
 # Intialize it with a value of 0.
-if 'cnt' not in ss:
-    ss.cnt = 0  # okay we are good
+# if 'cnt' not in ss:
+#     ss.cnt = 0  # okay we are good
 
 
-def prev_callback():
-    ss.cnt -= 1  # decrement properly
+# def prev_callback():
+#     ss.cnt -= 1  # decrement properly
 
 
-def next_callback():
-    ss.cnt += 1  # increment properly
+# def next_callback():
+#     ss.cnt += 1  # increment properly
 
 
-left, center, right = st.columns([1, 1, 1], gap='small')
+# left, center, right = st.columns([1, 1, 1], gap='small')
 
-left.button('Previous', type='secondary', on_click=prev_callback)
-center.button(f'{ss.cnt}', type='primary')
-right.button('Next', type='secondary', on_click=next_callback)
+# left.button('Previous', type='secondary', on_click=prev_callback)
+# center.button(f'{ss.cnt}', type='primary')
+# right.button('Next', type='secondary', on_click=next_callback)
 
 
 

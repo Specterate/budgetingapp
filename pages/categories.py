@@ -26,7 +26,7 @@ def get_data():
     df = pd.DataFrame.from_dict(rows.data)
 
     st.write('storing data in session state... ')
-    st.session_state.data = df
+    st.session_state['df'] = df
     # st.data_editor(
     #     df,    
     #     column_config=
@@ -44,7 +44,7 @@ def get_data():
     return df
 
 new_row = get_data()
-st.write(st.session_state.data)
+st.write(st.session_state['df'])
 
 col1, col2 = st.columns(2)
 with col1:
