@@ -10,7 +10,7 @@ from st_supabase_connection import SupabaseConnection
 
 test_dict = [
                 {"name:" : "John", "age" : 30, "city" : "New York"}, 
-                {"name:" : "Jane", "age" : 25, "city" : "Los Angeles"}
+                {"name:" : "Jane", "age" : 25, "city" : "Los Angeles"},
                 {"name:" : "Mike", "age" : 35, "city" : "Chicago"},
                 {"name:" : "Emily", "age" : 28, "city" : "Houston",}
              ]
