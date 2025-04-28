@@ -25,7 +25,7 @@ st.session_state.ss_df
 
 with st.form("my_form", clear_on_submit=True, border=True):
     st.write("Inside the form")
-    name = st.text_input("Category")
+    name = st.text_input("Name", placeholder="Enter your name")
     age = st.number_input("Age", min_value=0, max_value=100)
     location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
     submitted = st.form_submit_button("Submit", type="primary")
