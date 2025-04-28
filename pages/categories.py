@@ -23,8 +23,8 @@ st.write('Converting Data to Pandas DataFrame... ')
 # Convert the data into a Pandas DataFrame
 df = pd.DataFrame.from_dict(rows.data)
 
-if "df" not in st.session_state:
-    st.session_state['df'] = df
+if "sd" not in st.session_state:
+    st.session_state['sd'] = df
 
 st.write("Session State is")
 st.write(st.session_state['df'])
