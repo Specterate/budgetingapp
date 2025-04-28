@@ -29,7 +29,7 @@ if "sd" not in st.session_state:
 st.write("Session State is")
 st.write(st.session_state['sd'])
 
-def add_new_row(category, subcategory, monthly, yearly):
+def add_new_row(df, category, subcategory, monthly, yearly):
     st.session_state.new_added_row = pd.DataFrame.from_dict([{"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}])
     df = pd.concat([df, st.session_state.new_added_row])
     del st.session_state['sd']
@@ -45,7 +45,7 @@ with col1:
         subcategory = st.text_input("Subcategory")
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
-        submit_button = st.form_submit_button(label='Add Category', on_click=add_new_row, args=(category,subcategory,monthly,yearly))        
+        submit_button = st.form_submit_button(label='Add Category', on_click=add_new_row, args=(df, category,subcategory,monthly,yearly))        
 
             
 
