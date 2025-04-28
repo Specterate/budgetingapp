@@ -27,7 +27,7 @@ def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
     st.session_state.ss_df = pd.concat([st.session_state.ss_df, new_row_df], ignore_index=True)
     
-col1, col2 = st.columns(2)
+col1, col2 = st.columns(2,border=True)
 with col1:
     with st.form("my_form", clear_on_submit=True, border=True):
             # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
