@@ -12,6 +12,10 @@ from streamlit import session_state as ss
 def update_df():
     st.session_state.editor['edited_rows']
     st.session_state['df'] = st.session_state['edited_df']
+    if st.session_state['editor']['edited_rows']:
+        for index, changes in st.session_state['editor']['edited_rows'].items():
+            for col, value in changes.items():
+                st.session_state['df'].loc[index, col] = value
 
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
