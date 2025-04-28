@@ -29,3 +29,12 @@ with st.form("my_form", clear_on_submit=True, border=True):
     age = st.number_input("Age", min_value=0, max_value=100)
     location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
     submitted = st.form_submit_button("Submit", type="primary")
+    if submitted:
+        st.session_state.ss_df = st.session_state.ss_df.append(
+            {"name": name, "age": age, "location": location}, ignore_index=True
+        )
+        st.success("Form submitted successfully!")
+        st.write(st.session_state.ss_df)
+        st.balloons()
+    else:
+        st.warning("Please fill out the form and submit.")
