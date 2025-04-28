@@ -11,18 +11,19 @@ from streamlit import session_state as ss
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
+"session state", st.session_state
 
 if 'df' not in st.session_state:
     st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
 
-def update_df():
-    st.session_state['df'] = st.session_state['edited_df']
+# def update_df():
+#     st.session_state['df'] = st.session_state['edited_df']
 
-st.write("This is a session state")
-st.write(st.session_state['df'])
+# st.write("This is a session state")
+# st.write(st.session_state['df'])
 
-st.write("This is a editable dataframe")
-st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor")
+# st.write("This is a editable dataframe")
+# st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor")
 
 
 
