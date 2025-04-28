@@ -38,7 +38,7 @@ with col1:
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
         st.session_state.new_added_row = pd.DataFrame.from_dict({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly})
-        df = pd.concat([df, st.session_state.new_added_row], ignore_index=True)
+        df = pd.concat([df, st.session_state.new_added_row])
         submit_button = st.form_submit_button(label='Add Category')        
         if submit_button:
             st.session_state['df'] = df
