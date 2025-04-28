@@ -6,6 +6,7 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
+from streamlit import session_state as ss
 
 
 test_dict = {
@@ -21,19 +22,17 @@ if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
 st.write("This is the session state")
-st.session_state
+st.ss
+
+def update_ss():
+    new_row_df = pd.DataFrame.from_dict({"0":{"name": st.ss.name, "age": st.ss.age, "location": st.ss.location}})
+    st.ss
+    pass
 
 with st.form("my_form", clear_on_submit=True, border=True):
-    st.write("Inside the form")
-    name = st.text_input("Name", placeholder="Enter your name")
-    age = st.number_input("Age", min_value=0, max_value=100)
-    location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
-    submitted = st.form_submit_button("Submit", type="primary")
-    if submitted:
-        new_row_df = pd.DataFrame.from_dict({"0":{"name": name, "age": age, "location": location}})
-        test_df = pd.concat([test_df,new_row_df], ignore_index=True)
-        st.session_state.ss_df = st.session_state.ss_df.update(test_df, join='left', overwrite=True,)
-        st.write(st.session_state.ss_df)
-        st.success("Form submitted successfully!")                
-    else:
-        st.warning("Please fill out the form and submit.")
+        st.write("Inside the form")
+        st.ss.name = st.text_input("Name", placeholder="Enter your name")
+        st.ss.age = st.number_input("Age", min_value=0, max_value=100)
+        st.ss.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
+        submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
+        
