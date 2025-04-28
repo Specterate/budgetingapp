@@ -41,6 +41,7 @@ with col1:
         if submit_button:
             st.session_state.new_added_row = pd.DataFrame.from_dict([{"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}])
             df = pd.concat([df, st.session_state.new_added_row])
+            del st.session_state['sd']
             st.session_state['sd'] = df
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
