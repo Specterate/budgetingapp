@@ -31,7 +31,7 @@ with st.form("my_form", clear_on_submit=True, border=True):
     submitted = st.form_submit_button("Submit", type="primary")
     if submitted:
         new_row_df = pd.DataFrame.from_dict("0":{"name": name, "age": age, "location": location})
-        test_df = pd.concat([df,new_row_df], ignore_index=True)
+        test_df = pd.concat([test_df,new_row_df], ignore_index=True)
         st.success("Form submitted successfully!")        
     else:
         st.warning("Please fill out the form and submit.")
