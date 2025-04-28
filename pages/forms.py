@@ -20,4 +20,5 @@ test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
+st.write("This is the session state")
 st.session_state.ss_df
