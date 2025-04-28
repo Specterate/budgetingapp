@@ -21,7 +21,7 @@ def update_df():
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
-"session state of dataframe", st.session_state
+# "session state of dataframe", st.session_state
 
 if 'df' not in st.session_state:
     st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
