@@ -54,7 +54,7 @@ with col1:
         subcategory = st.text_input("Subcategory")
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
-        submit_button = st.form_submit_button(label='Add Category', key='add_category_form')
+        submit_button = st.form_submit_button(label='Add Category')
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
@@ -64,7 +64,7 @@ with col2:
     # Delete Sub Category
     with st.form(key='delete_category_form'):
         delete_subcategory = st.selectbox("Select Sub Category to Delete", df['subcategory'].unique())
-        delete_button = st.form_submit_button(label='Delete Sub Category', on_click=get_data)
+        delete_button = st.form_submit_button(label='Delete Sub Category')
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()
             st.success(f"Category {delete_subcategory} deleted successfully!")
