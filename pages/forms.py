@@ -36,8 +36,8 @@ with st.form("my_form", clear_on_submit=True, border=True):
         # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
         # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
         # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
-        name = st.text_input("Name", placeholder="Enter your name", key="name")
-        age = st.number_input("Age", min_value=0, max_value=100, key="age")
-        location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
+        name = st.text_input("Name", placeholder="Enter your name")
+        age = st.number_input("Age", min_value=0, max_value=100)
+        location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
         submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss, args=(name, age, location))
         
