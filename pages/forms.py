@@ -42,7 +42,7 @@ with col1:
             location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
             submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
 with col2:
-     st.write("Delete entry")
-     with st.form("delete_form", clear_on_submit=True, border=True):
+    with st.form("delete_form", clear_on_submit=True, border=True):
+        st.write("Delete entry")
         st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
         st.form_submit_button("Delete", type="primary", on_click=delete_ss)
