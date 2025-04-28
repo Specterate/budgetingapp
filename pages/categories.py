@@ -27,7 +27,7 @@ if "sd" not in st.session_state:
     st.session_state['sd'] = df
 
 st.write("Session State is")
-st.write(st.session_state['sd'])
+st.write(st.session_state)
 
 def get_data():
       
@@ -54,7 +54,7 @@ with col1:
         subcategory = st.text_input("Subcategory")
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
-        submit_button = st.form_submit_button(label='Add Category')
+        submit_button = st.form_submit_button(label='Add Category', key='add_category_form')
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
