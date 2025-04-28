@@ -30,6 +30,7 @@ def update_ss():
 col1, col2 = st.columns(2,border=True)
 with col1:
     with st.form("my_form", clear_on_submit=True, border=True):
+            st.write("Add new entry")
             # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
             # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
             # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
@@ -38,4 +39,7 @@ with col1:
             location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
             submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
 with col2:
-     st.write("This is Column2")         
+     st.write("Delete entry")
+     with st.form("delete_form", clear_on_submit=True, border=True):
+        st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
+        
