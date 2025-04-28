@@ -33,6 +33,7 @@ with st.form("my_form", clear_on_submit=True, border=True):
         new_row_df = pd.DataFrame.from_dict({"0":{"name": name, "age": age, "location": location}})
         test_df = pd.concat([test_df,new_row_df], ignore_index=True)
         st.session_state.ss_df = st.session_state.ss_df.update(test_df)
+        st.write(st.session_state.ss_df)
         st.success("Form submitted successfully!")                
     else:
         st.warning("Please fill out the form and submit.")
