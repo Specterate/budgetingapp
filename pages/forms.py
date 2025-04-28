@@ -26,6 +26,9 @@ st.dataframe(st.session_state['ss_df'], hide_index=True)
 def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
     st.session_state.ss_df = pd.concat([st.session_state.ss_df, new_row_df], ignore_index=True)
+
+def delete_ss():
+    st.session_state.ss_df = st.session_state.ss_df[st.session_state.ss_df.name != st.session_state.delete_index]
     
 col1, col2 = st.columns(2,border=True)
 with col1:
@@ -42,4 +45,4 @@ with col2:
      st.write("Delete entry")
      with st.form("delete_form", clear_on_submit=True, border=True):
         st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
-        st.form_submit_button("Delete", type="primary")
+        st.form_submit_button("Delete", type="primary", on_click=delete_ss)
