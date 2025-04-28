@@ -42,4 +42,4 @@ with col2:
      st.write("Delete entry")
      with st.form("delete_form", clear_on_submit=True, border=True):
         st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
-        
+        st.form_submit_button("Delete", type="primary")
