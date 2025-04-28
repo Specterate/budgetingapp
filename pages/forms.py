@@ -30,7 +30,7 @@ with st.form("my_form", clear_on_submit=True, border=True):
     location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
     submitted = st.form_submit_button("Submit", type="primary")
     if submitted:
-        new_row_df = pd.DataFrame.from_dict({"name": name, "age": age, "location": location})
+        new_row_df = pd.DataFrame.from_dict("0":{"name": name, "age": age, "location": location})
         test_df = pd.concat([df,new_row_df], ignore_index=True)
         st.success("Form submitted successfully!")        
     else:
