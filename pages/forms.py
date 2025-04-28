@@ -8,12 +8,11 @@ from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
 
 
-test_dict = [
-                {"name:" : "John", "age" : 30, "city" : "New York"}, 
-                {"name:" : "Jane", "age" : 25, "city" : "Los Angeles"},
-                {"name:" : "Mike", "age" : 35, "city" : "Chicago"},
-                {"name:" : "Emily", "age" : 28, "city" : "Houston",}
-             ]
+test_dict = {
+    "name": ["John Doe", "Jane Smith", "Alice Johnson"],
+    "age": [30, 25, 35],
+    "location": ["New York", "Los Angeles", "Chicago"]
+}
 
 test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 
