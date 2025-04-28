@@ -21,7 +21,7 @@ if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
 st.write("This is the session state")
-st.session_state.ss_df
+st.session_state
 
 with st.form("my_form", clear_on_submit=True, border=True):
     st.write("Inside the form")
