@@ -25,7 +25,7 @@ st.session_state
 
 def update_ss():
     new_row_df = pd.DataFrame.from_dict({"0":{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}})
-    st.ss
+    st.session_state
     pass
 
 with st.form("my_form", clear_on_submit=True, border=True):
