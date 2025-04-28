@@ -22,7 +22,7 @@ test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
-with st.container:
+with st.container():
     st.title("Data Preview")
     st.dataframe(st.session_state['ss_df'], hide_index=True)
 
