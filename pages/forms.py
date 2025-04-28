@@ -21,7 +21,7 @@ if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
 st.write("This is the session state")
-st.dataframe(st.session_state['ss_df'], index=False)
+st.dataframe(st.session_state['ss_df'], hide_index=True)
 
 def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
