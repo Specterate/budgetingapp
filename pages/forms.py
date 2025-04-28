@@ -23,5 +23,5 @@ if "ss_df" not in st.session_state:
 st.write("This is the session state")
 st.session_state.ss_df
 
-with st.form("my_form", clear_on_submit=True, border_color="red"):
+with st.form("my_form", clear_on_submit=True, border=True):
     st.write("Inside the form")
