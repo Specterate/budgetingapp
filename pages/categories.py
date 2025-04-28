@@ -29,23 +29,6 @@ if "sd" not in st.session_state:
 st.write("Session State is")
 st.write(st.session_state)
 
-def get_data():
-      
-    # st.data_editor(
-    #     df,    
-    #     column_config=
-    #     {
-    #         "category": st.column_config.TextColumn("Category"),
-    #         "subcategory": st.column_config.TextColumn("Subcategory"),
-    #         "monthly": st.column_config.NumberColumn("Monthly", format="dollar"),
-    #         "yearly": st.column_config.NumberColumn("Yearly", format="dollar"),
-    #     },               
-    #     hide_index=True,
-    #     num_rows="dynamic",
-    #     height=500,
-    # )
-    pass
-
 col1, col2 = st.columns(2)
 with col1:
     # Using a Form to add a new category
@@ -54,8 +37,11 @@ with col1:
         subcategory = st.text_input("Subcategory")
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
-        submit_button = st.form_submit_button(label='Add Category')
+        st.session_state.new_added_row = pd.DataFrame.from_dict({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly})
+        df = pd.concat([df, st.session_state.new_added_row], ignore_index=True)
+        submit_button = st.form_submit_button(label='Add Category')        
         if submit_button:
+            st.session_state['df'] = df
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
             
