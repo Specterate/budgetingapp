@@ -25,3 +25,4 @@ st.session_state.ss_df
 
 with st.form("my_form", clear_on_submit=True, border=True):
     st.write("Inside the form")
+    submitted = st.form_submit_button("Submit")
