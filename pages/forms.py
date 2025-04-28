@@ -23,10 +23,7 @@ if "ss_df" not in st.session_state:
 st.write("This is the session state")
 st.session_state
 
-def update_ss(age, name, location):
-    st.session_state.name = name
-    st.session_state.age = age
-    st.session_state.location = location
+def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
     st.session_state.ss_df = pd.concat([st.session_state.ss_df, new_row_df], ignore_index=True)
     
@@ -39,5 +36,9 @@ with st.form("my_form", clear_on_submit=True, border=True):
         name = st.text_input("Name", placeholder="Enter your name")
         age = st.number_input("Age", min_value=0, max_value=100)
         location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
-        submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss, args=(name, age, location))
-        
+        submitted = st.form_submit_button("Submit", type="primary")
+        if submitted:
+            st.session_state.name = name
+            st.session_state.age = age
+            st.session_state.location = location
+            update_ss()
