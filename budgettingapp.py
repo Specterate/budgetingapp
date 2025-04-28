@@ -16,6 +16,8 @@ st.title("Budgeting App")
 if 'df' not in st.session_state:
     st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
 
+st.session_stage['df']
+
 # def update_df():
 #     st.session_state['df'] = st.session_state['edited_df']
 
