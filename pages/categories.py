@@ -41,7 +41,7 @@ with col1:
         df = pd.concat([df, st.session_state.new_added_row])
         submit_button = st.form_submit_button(label='Add Category')        
         if submit_button:
-            st.session_state['df'] = df
+            st.session_state['sd'] = df
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
             
