@@ -6,7 +6,6 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
-from streamlit import session_state as ss
 
 
 test_dict = {
@@ -18,21 +17,21 @@ test_dict = {
 
 test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 
-if "ss_df" not in st.ss:
-    st.ss.ss_df = test_df.copy()
+if "ss_df" not in st.session_state:
+    st.session_state.ss_df = test_df.copy()
 
 st.write("This is the session state")
-st.ss
+st.session_state
 
 def update_ss():
-    new_row_df = pd.DataFrame.from_dict({"0":{"name": st.ss.name, "age": st.ss.age, "location": st.ss.location}})
+    new_row_df = pd.DataFrame.from_dict({"0":{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}})
     st.ss
     pass
 
 with st.form("my_form", clear_on_submit=True, border=True):
         st.write("Inside the form")
-        st.ss.name = st.text_input("Name", placeholder="Enter your name")
-        st.ss.age = st.number_input("Age", min_value=0, max_value=100)
-        st.ss.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
+        st.session_state.name = st.text_input("Name", placeholder="Enter your name")
+        st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
+        st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
         submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
         
