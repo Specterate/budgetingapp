@@ -33,8 +33,8 @@ def update_ss():
 def delete_ss():
     st.session_state.ss_df = st.session_state.ss_df[st.session_state.ss_df.name != st.session_state.delete_index]
     
-col1, col2 = st.columns(2,border=True)
-with col1:
+tab1, tab2 = st.tabs(["Add Entry", "Delete Entry"])
+with tab1:
     with st.form("my_form", clear_on_submit=True, border=True):
             st.write("Add new entry")
             # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
@@ -44,7 +44,7 @@ with col1:
             age = st.number_input("Age", min_value=0, max_value=100, key="age")
             location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
             submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
-with col2:
+with tab2:
     with st.form("delete_form", clear_on_submit=True, border=True):
         st.write("Delete entry")
         st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
