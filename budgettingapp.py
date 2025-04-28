@@ -20,7 +20,7 @@ def update_df():
     st.session_state['df'] = st.session_state['edited_df']
 
 st.write("This is a editable dataframe")
-st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor")
+st.session_state['edited_df'] = st.data_editor(st.session_state['df'], on_change=update_df, key="editor", num_rows="dynamic")
 
 
 
