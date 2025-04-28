@@ -14,8 +14,7 @@ def update_df():
         for index, changes in st.session_state['editor']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state['df'].loc[index, col] = value
-    st.session_state.editor['edited_rows']
-    st.session_state['df'] = st.session_state['edited_df']
+    st.session_state.editor['df']
 
 
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
