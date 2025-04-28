@@ -17,4 +17,7 @@ test_dict = {
 
 test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 
-st.write(test_df)
+if "ss_df" not in st.session_state:
+    st.session_state.ss_df = test_df.copy()
+
+st.session_state.ss_df
