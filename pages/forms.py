@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
 
-
+# Create a test dictionary
 test_dict = {
     "0": {"name": "Alice", "age": 30, "location": "New York"},
     "1": {"name": "Bob", "age": 25, "location": "San Francisco"},
@@ -15,13 +15,16 @@ test_dict = {
     "3": {"name": "Diana", "age": 28, "location": "Seattle"}
 }
 
+# convert the dictionary into a pandas dataframe
 test_df = pd.DataFrame.from_dict(test_dict, orient='index')
 
+# check if key exists in session state
 if "ss_df" not in st.session_state:
     st.session_state.ss_df = test_df.copy()
 
-st.write("This is the session state")
-st.dataframe(st.session_state['ss_df'], hide_index=True)
+with st.container:
+    st.title("Data Preview")
+    st.dataframe(st.session_state['ss_df'], hide_index=True)
 
 def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
