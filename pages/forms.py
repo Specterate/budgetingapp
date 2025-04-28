@@ -27,13 +27,15 @@ def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
     st.session_state.ss_df = pd.concat([st.session_state.ss_df, new_row_df], ignore_index=True)
     
-
-with st.form("my_form", clear_on_submit=True, border=True):
-        st.write("Inside the form")
-        # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
-        # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
-        # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
-        name = st.text_input("Name", placeholder="Enter your name", key="name")
-        age = st.number_input("Age", min_value=0, max_value=100, key="age")
-        location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
-        submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
+col1, col2 = st.columns(2)
+with col1:
+    with st.form("my_form", clear_on_submit=True, border=True):
+            # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
+            # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
+            # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
+            name = st.text_input("Name", placeholder="Enter your name", key="name")
+            age = st.number_input("Age", min_value=0, max_value=100, key="age")
+            location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"], key="location")
+            submitted = st.form_submit_button("Submit", type="primary", on_click=update_ss)
+with col2:
+     st.write("This is Column2")         
