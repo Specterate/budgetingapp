@@ -27,7 +27,7 @@ if "sd" not in st.session_state:
     st.session_state['sd'] = df
 
 st.write("Session State is")
-st.write(st.session_state['df'])
+st.write(st.session_state['sd'])
 
 def get_data():
       
