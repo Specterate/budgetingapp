@@ -9,9 +9,10 @@ from st_supabase_connection import SupabaseConnection
 
 
 test_dict = {
-    "name": ["John Doe", "Jane Smith", "Alice Johnson"],
-    "age": [30, 25, 35],
-    "location": ["New York", "Los Angeles", "Chicago"]
+    "person1": {"name": "Alice", "age": 30, "location": "New York"},
+    "person2": {"name": "Bob", "age": 25, "location": "San Francisco"},
+    "person3": {"name": "Charlie", "age": 35, "location": "Chicago"},
+    "person4": {"name": "Diana", "age": 28, "location": "Seattle"}
 }
 
 test_df = pd.DataFrame.from_dict(test_dict, orient='index')
