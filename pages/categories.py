@@ -16,17 +16,21 @@ conn = st.connection("supabase",type=SupabaseConnection)
 
 st.subheader('Categories Preview:', divider=True)
 
+st.write('Getting data... ')
+# Get all the categories from the Supabase
+rows = conn.table("categories").select("*").execute()
+st.write('Converting Data to Pandas DataFrame... ')
+# Convert the data into a Pandas DataFrame
+df = pd.DataFrame.from_dict(rows.data)
+
+if "df" not in st.session_state:
+    st.session_state['df'] = df
+
+st.write("Session State is")
+st.write(st.session_state['df'])
 
 def get_data():
-    st.write('Getting data... ')
-    # Get all the categories from the Supabase
-    rows = conn.table("categories").select("*").execute()
-    st.write('Converting Data to Pandas DataFrame... ')
-    # Convert the data into a Pandas DataFrame
-    df = pd.DataFrame.from_dict(rows.data)
-
-    st.write('storing data in session state... ')
-    st.session_state['df'] = df
+      
     # st.data_editor(
     #     df,    
     #     column_config=
@@ -40,10 +44,7 @@ def get_data():
     #     num_rows="dynamic",
     #     height=500,
     # )
-
-    return df
-
-new_row = get_data()
+    pass
 
 col1, col2 = st.columns(2)
 with col1:
@@ -53,7 +54,7 @@ with col1:
         subcategory = st.text_input("Subcategory")
         monthly = st.number_input("Monthly", min_value=0)
         yearly = st.number_input("Yearly", min_value=0)
-        submit_button = st.form_submit_button(label='Add Category', on_click=get_data)
+        submit_button = st.form_submit_button(label='Add Category')
         if submit_button:
             conn.table("categories").insert({"category": category, "subcategory": subcategory, "monthly": monthly, "yearly": yearly}).execute()
             st.success(f"Category {category} added successfully!")
@@ -62,7 +63,7 @@ with col1:
 with col2:
     # Delete Sub Category
     with st.form(key='delete_category_form'):
-        delete_subcategory = st.selectbox("Select Sub Category to Delete", new_row['subcategory'].unique())
+        delete_subcategory = st.selectbox("Select Sub Category to Delete", df['subcategory'].unique())
         delete_button = st.form_submit_button(label='Delete Sub Category', on_click=get_data)
         if delete_button:
             conn.table("categories").delete().eq("subcategory", delete_subcategory).execute()

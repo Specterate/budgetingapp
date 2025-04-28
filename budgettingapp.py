@@ -8,7 +8,10 @@ from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
 from streamlit import session_state as ss
 
+st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
+st.title("Budgeting App")
 
+# ----- This works for session state with pandas dataframe -----
 def update_df():    
     if st.session_state['editor']['edited_rows']:
         for index, changes in st.session_state['editor']['edited_rows'].items():
@@ -16,18 +19,13 @@ def update_df():
                 st.session_state['df'].loc[index, col] = value
     st.session_state['df']
 
-
-st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
-st.title("Budgeting App")
-
-# "session state of dataframe", st.session_state
-
 if 'df' not in st.session_state:
     st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
 
 st.write("This is a editable dataframe")
 st.data_editor(st.session_state['df'], on_change=update_df, key="editor", num_rows="dynamic")
 
+# ===================
 
 
 
