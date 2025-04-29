@@ -17,7 +17,6 @@ conn = st.connection("supabase",type=SupabaseConnection)
 if 'conn' not in st.session_state:
     st.session_state.conn = conn
 
-
 # ----- This works for session state with pandas dataframe -----
 def update_df():    
     if st.session_state['editor']['edited_rows']:
