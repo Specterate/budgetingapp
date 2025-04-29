@@ -24,7 +24,7 @@ get_data_df = pd.DataFrame.from_dict(get_data.data)
 
 # set session state for get data
 if 'get_data_ss' not in st.session_state:
-    st.session_state.get_data = get_data_df
+    st.session_state.get_data_ss = get_data_df
 
 #display data
 st.session_state.get_data_ss
