@@ -73,7 +73,7 @@ with tab3:
         st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory, key="sub_category_select")
         st.write("Selected Sub Category is", st.session_state.sub_category_select)
         if st.session_state.sub_category_select:
-            st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(sub_category_selection)]
+            st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
             "Data Frame Edited is"
             st.write(st.session_state.edited_dataframe)
             category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
