@@ -23,7 +23,7 @@ if 'get_category_data_df' not in st.session_state:
 
 # Display the categories table
 st.subheader("Table of Categories")
-st.dataframe(st.session_state.get_category_data_ss, use_container_width=True, hide_index=True)
+st.session_state.get_category_data_ss
 
 # Update Cateogry Data
 def update_sub_category():
