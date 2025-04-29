@@ -16,11 +16,11 @@ if 'conn' not in st.session_state:
     st.session_state.conn = conn
 
 # Query categories table from supabase
-get_data = st.session_state.conn.table("categories").select("*").execute().data_frame()
+get_data = st.session_state.conn.table("categories").select("*").execute()
 
 # set session state for get data
 if 'get_data' not in st.session_state:
-    st.session_state.get_data = get_data
+    st.session_state.get_data = get_data.data
 
 #display data
 st.session_state.get_data
