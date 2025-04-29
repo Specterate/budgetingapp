@@ -21,9 +21,9 @@ if 'get_category_data_df' not in st.session_state:
     get_category_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
     st.session_state.get_category_data_ss = get_category_data_df
 
-# st.session_state.get_category_data_ss
+# Display the categories table
 st.subheader("Table of Categories")
-st.session_state.get_category_data_ss
+st.table(st.session_state.get_category_data_ss, use_container_width=True, hide_index=True)
 
 # Update Cateogry Data
 def update_sub_category():
