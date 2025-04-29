@@ -26,14 +26,16 @@ with st.container(border=True):
     st.title("Data Preview")
     st.dataframe(st.session_state['ss_df'], hide_index=True)
 
+# Add new category
 def update_ss():
     new_row_df = pd.DataFrame.from_dict([{"name": st.session_state.name, "age": st.session_state.age, "location": st.session_state.location}])
     st.session_state.ss_df = pd.concat([st.session_state.ss_df, new_row_df], ignore_index=True)
 
+# Delete category
 def delete_ss():
     st.session_state.ss_df = st.session_state.ss_df[st.session_state.ss_df.name != st.session_state.delete_index]
     
-tab1, tab2 = st.tabs(["Add Entry", "Delete Entry"])
+tab1, tab2 = st.tabs(["Add Category", "Delete Category"])
 with tab1:
     with st.form("my_form", clear_on_submit=True, border=True):
             st.write("Add new entry")
