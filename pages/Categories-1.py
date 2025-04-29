@@ -50,7 +50,7 @@ def delete_sub_category():
     st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_delete]
 
 def edit_sub_category():
-    pass
+    st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
 
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
 with tab1:
@@ -71,16 +71,11 @@ with tab2:
         st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
-    with st.form("edit_category", clear_on_submit=True, border=True):
-        st.write("Edit Existing Category")
-        selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select")
-        st.write("session state", st.session_state.sub_category_select)
-        st.write("Selected Sub Category is", selectbox_selection)
-        if selectbox_selection:
-            st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
-            "Data Frame Edited is"
-            st.write(st.session_state.edited_dataframe)
-            category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
-            monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update")
-            yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update")
-        st.form_submit_button("Update", type="secondary", on_click=update_sub_category)
+    st.write("Edit Existing Category")
+    selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category)
+    if selectbox_selection:
+        "Data Frame Edited is"
+        st.write(st.session_state.edited_dataframe)
+        category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
+        monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update")
+        yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update")
