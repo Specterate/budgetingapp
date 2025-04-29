@@ -22,7 +22,7 @@ if 'get_category_data_df' not in st.session_state:
     st.session_state.get_category_data_ss = get_category_data_df
 
 # st.session_state.get_category_data_ss
-"Data Preview"
+st.subheader("Table of Categories")
 st.session_state.get_category_data_ss
 
 # Update Cateogry Data
