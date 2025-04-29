@@ -16,18 +16,16 @@ if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
 
-# Query categories table from supabase
-get_data = st.session_state.conn.table("categories").select("*").execute()
 
-# Convert get_data to pandas dataframe
-get_data_df = pd.DataFrame.from_dict(get_data.data)
 
 # set session state for get data
 if 'get_data_ss' not in st.session_state:
-    st.session_state.get_data_ss = get_data_df
+    # Query categories table from supabase
+    get_data = st.session_state.conn.table("categories").select("*").execute()
 
-#display data
-"This is the session state data for get_data_ss"
+    # Convert get_data to pandas dataframe
+    get_data_df = pd.DataFrame.from_dict(get_data.data)
+    st.session_state.get_data_ss = get_data_df
 
 # st.session_state.get_data_ss
 st.session_state.get_data_ss
