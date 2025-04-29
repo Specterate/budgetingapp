@@ -27,12 +27,16 @@ if 'get_data_ss' not in st.session_state:
     st.session_state.get_data_ss = get_data_df
 
 #display data
-st.session_state.get_data_ss
-
+"This is the session state data for get_data_ss"
+# st.session_state.get_data_ss
+st.session_state.data_editor
+# Update data based on edits ['edited_rows'] in the data editor
 def update_data():
     if st.session_state.data_editor['edited_rows']:
         for index, changes in st.session_state.data_editor['edited_rows'].items():
             for column, value in changes.items():
                 st.session_state.get_data_ss.loc[index,column] = value
+
+# Add new dat
 
 updates = st.data_editor(st.session_state.get_data_ss, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor", on_change=update_data)
