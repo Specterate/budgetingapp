@@ -75,7 +75,7 @@ with tab3:
     st.write("Edit Existing Category")
     selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category, index=None)
     if selectbox_selection is not None:
-        st.write(st.sesson_state.edited_dataframe)
+        st.write(st.session_state.edited_dataframe)
         with st.form("edit_category", clear_on_submit=True, border=True):
             category_name_update = st.text_input("Category Name", placeholder=st.session_state.edited_dataframe['category'].values, key="category_name_update")
             monthly_expenses_update = st.number_input("Monthly Expenses", placeholder=st.session_state.edited_dataframe['monthly'].values, key="monthly_expenses_update", value=None)
