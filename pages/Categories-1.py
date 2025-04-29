@@ -64,7 +64,7 @@ with tab1:
 with tab2:
     with st.form("delete_sub_category", clear_on_submit=True, border=True):
         st.write("Delete Sub Category")
-        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_deletet")
+        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_delete")
         st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
