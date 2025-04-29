@@ -70,9 +70,9 @@ with tab2:
 with tab3:
     with st.form("edit_category", clear_on_submit=True, border=True):
         st.write("Edit Existing Category")
-        sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
-        if sub_category_name:
-            category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
-            monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
-            yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
+        sub_category_selection = st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select")
+        if sub_category_selection:
+            category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
+            monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update")
+            yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update")
         st.form_submit_button("Update", type="secondary", on_click=update_sub_category)
