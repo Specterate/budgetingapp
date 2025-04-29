@@ -49,6 +49,9 @@ def add_sub_category():
 def delete_sub_category():
     st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_delete]
 
+def edit_sub_category():
+    st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
+
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
 with tab1:
     with st.form("add_category", clear_on_submit=True, border=True):
@@ -70,10 +73,9 @@ with tab2:
 with tab3:
     with st.form("edit_category", clear_on_submit=True, border=True):
         st.write("Edit Existing Category")
-        st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory, key="sub_category_select")
+        st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory, key="sub_category_select", on_change=edit_sub_category)
         st.write("Selected Sub Category is", st.session_state.sub_category_select)
         if st.session_state.sub_category_select:
-            st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
             "Data Frame Edited is"
             st.write(st.session_state.edited_dataframe)
             category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
