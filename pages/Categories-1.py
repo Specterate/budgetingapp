@@ -16,7 +16,7 @@ if 'conn' not in st.session_state:
     st.session_state.conn = conn
 
 # Query categories table from supabase
-get_data = st.session_state.conn.table("categories").select("*").execute()
+get_data = st.session_state.conn.table("categories").select("*").execute().data
 
 # set session state for get data
 if 'get_data' not in st.session_state:
