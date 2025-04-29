@@ -77,7 +77,6 @@ with tab3:
     if selectbox_selection is not None:
         with st.form("edit_category", clear_on_submit=True, border=True):
             category_name_update = st.text_input("Category Name", placeholder=st.session_state.edited_dataframe['category'], key="category_name_update")
-            monthly_expenses_update = st.number_input("Monthly Expenses", placeholder=st.session_state.edited_dataframe['monthly'] key="monthly_expenses_update")
-            yearly_expenses_update = st.number_input("Yearly Expenses", placeholder=st.session_state.edited_dataframe['yearly'] key="yearly_expenses_update")
-            yearly_expenses_update = st.number_input("Yearly Expenses", placeholder=st.session_state.edited_dataframe['yearly'] key="yearly_expenses_update")
+            monthly_expenses_update = st.number_input("Monthly Expenses", placeholder=st.session_state.edited_dataframe['monthly'], key="monthly_expenses_update")
+            yearly_expenses_update = st.number_input("Yearly Expenses", placeholder=st.session_state.edited_dataframe['yearly'], key="yearly_expenses_update")
             st.form_submit_button("Update", type="primary", on_click=update_sub_category)
