@@ -23,9 +23,12 @@ if 'get_data' not in st.session_state:
     st.session_state.get_data = get_data
 
 #display data
-st.session_state.data_editor
+st.session_state.get_data
 
 def update_data():
-    pass
+    if st.session_state.data_editor['edited_rows']:
+        for index, changes in st.session_state.data_editor['edited_rows'].items():
+            for column, value in changes.items():
+                st.session_state.get_data.loc[index,column] = value
 
-st.data_editor(st.session_state.get_data.data, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor")
+st.data_editor(st.session_state.get_data.data, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor", on_change=update_data)
