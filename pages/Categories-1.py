@@ -16,7 +16,16 @@ if 'conn' not in st.session_state:
     st.session_state.conn = conn
 
 # Query categories table from supabase
-rows = st.session_state.conn.table("categories").select("*").execute()
+get_data = st.session_state.conn.table("categories").select("*").execute()
+
+# set session state for get data
+if 'get_data' not in st.session_state:
+    st.session_state.get_data = get_data
 
 #display data
-st.table(rows.data)
+st.session_state.get_data
+
+def update_data():
+    pass
+
+st.data_editor(st.session_state.get_data.data, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor")
