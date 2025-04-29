@@ -70,7 +70,7 @@ with tab2:
 with tab3:
     with st.form("edit_category", clear_on_submit=True, border=True):
         st.write("Edit Existing Category")
-        sub_category_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", index=None)
+        sub_category_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory, key="sub_category_select", index=None)
         st.write("Selected Sub Category is", st.session_state.sub_category_select)
         if st.session_state.sub_category_select:
             st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(sub_category_selection)]
