@@ -6,7 +6,7 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection
-from streamlit import ss as ss
+from streamlit import session_state as ss
 
 # set page configuration and title
 st.set_page_config(page_title="Categories", page_icon="📚")
