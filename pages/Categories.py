@@ -35,7 +35,6 @@ st.session_state.get_data_ss
 # Update data based on edits ['edited_rows'] in the data editor
 def update_sub_category():
     index_value = st.session_state.edited_dataframe.index.item()
-    st.write("Index Value", index_value)
     st.session_state.get_data_ss[index_value, "category"] = st.session_state.category_name_update
     st.session_state.get_data_ss[index_value, "monthly"] = st.session_state.monthly_expenses_update
     st.session_state.get_data_ss[index_value, "yearly"] = st.session_state.yearly_expenses_update
