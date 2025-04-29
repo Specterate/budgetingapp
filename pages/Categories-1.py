@@ -74,7 +74,7 @@ with tab2:
 with tab3:
     st.write("Edit Existing Category")
     selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category, index=None)
-    if selectbox_selection:
+    if selectbox_selection is not None:
         "Data Frame Edited is"
         st.write(st.session_state.edited_dataframe)
         category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
