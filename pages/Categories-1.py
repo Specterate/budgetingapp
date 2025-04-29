@@ -33,7 +33,7 @@ if 'get_data_ss' not in st.session_state:
 st.session_state.get_data_ss
 
 # Update data based on edits ['edited_rows'] in the data editor
-def update_data():
+def update_sub_category():
     # if st.session_state.data_editor['edited_rows']:
     #     for index, changes in st.session_state.data_editor['edited_rows'].items():
     #         for column, value in changes.items():
@@ -68,4 +68,10 @@ with tab2:
         st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
-    pass
+    with st.form("edit_category", clear_on_submit=True, border=True):
+        st.write("Edit Existing Category")
+        sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
+        if sub_category_name
+            category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
+            monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
+            yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
