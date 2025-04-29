@@ -23,7 +23,7 @@ if 'get_data' not in st.session_state:
     st.session_state.get_data = get_data
 
 #display data
-st.session_state.get_data
+st.session_state.data_editor
 
 def update_data():
     pass
