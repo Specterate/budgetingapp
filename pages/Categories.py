@@ -34,11 +34,8 @@ st.session_state.get_data_ss
 
 # Update data based on edits ['edited_rows'] in the data editor
 def update_sub_category():
-    # if st.session_state.data_editor['edited_rows']:
-    #     for index, changes in st.session_state.data_editor['edited_rows'].items():
-    #         for column, value in changes.items():
-    #             st.session_state.get_data_ss.loc[index,column] = value
-    pass
+    index_value = st.session_state.edited_dataframe.index.item()
+    st.write("Index Value", index_value)
 
 # Add new categories
 def add_sub_category():
