@@ -11,6 +11,13 @@ from streamlit import session_state as ss
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
+# Initialize connection with Supabase
+conn = st.connection("supabase",type=SupabaseConnection)
+# Add to session_state
+if 'conn' not in st.session_state:
+    st.session_state.conn = conn
+
+
 # ----- This works for session state with pandas dataframe -----
 def update_df():    
     if st.session_state['editor']['edited_rows']:
