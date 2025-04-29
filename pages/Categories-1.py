@@ -14,8 +14,9 @@ st.title("Categories")
 if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
-else:
-    rows = st.session_state.conn.table("categories").select("*").execute()
+
+# Query categories table from supabase
+rows = st.session_state.conn.table("categories").select("*").execute()
 
 #display data
 st.table(rows.data)
