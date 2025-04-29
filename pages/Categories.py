@@ -22,7 +22,7 @@ if 'get_category_data_df' not in st.session_state:
     st.session_state.get_category_data_ss = get_category_data_df
 
 # Display the categories table
-st.subheader("Table of Categories")
+# st.subheader("Table of Categories")
 st.session_state.get_category_data_ss
 
 # Update Cateogry Data
@@ -49,9 +49,6 @@ tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Ca
 with tab1:
     with st.form("add_category", clear_on_submit=True, border=True):
             st.write("Add new Category")
-            # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
-            # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
-            # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
             category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
             sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
             monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
