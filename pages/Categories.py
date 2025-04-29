@@ -23,30 +23,30 @@ if 'get_data_ss' not in st.session_state:
     get_category_data = st.session_state.conn.table("categories").select("*").execute()
 
     # Convert get_data to pandas dataframe
-    get_data_df = pd.DataFrame.from_dict(get_category_data.data)
-    st.session_state.get_data_ss = get_data_df
+    get_category_data_df = pd.DataFrame.from_dict(get_category_data.data)
+    st.session_state.get_category_data_df_ss = get_category_data_df
 
 st.subheader("Categories Data")
-st.session_state.get_data_ss
+st.session_state.get_category_data_df_ss
 
 # Update data based on edits ['edited_rows'] in the data editor
 def update_sub_category():
     index_value = st.session_state.edited_dataframe.index.item()
-    st.session_state.get_data_ss.at[index_value, "category"] = st.session_state.category_name_update
-    st.session_state.get_data_ss.at[index_value, "monthly"] = st.session_state.monthly_expenses_update
-    st.session_state.get_data_ss.at[index_value, "yearly"] = st.session_state.yearly_expenses_update
+    st.session_state.get_category_data_df_ss.at[index_value, "category"] = st.session_state.category_name_update
+    st.session_state.get_category_data_df_ss.at[index_value, "monthly"] = st.session_state.monthly_expenses_update
+    st.session_state.get_category_data_df_ss.at[index_value, "yearly"] = st.session_state.yearly_expenses_update
 
 # Add new categories
 def add_sub_category():
     new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses}])
-    st.session_state.get_data_ss = pd.concat([st.session_state.get_data_ss, new_row_df], ignore_index=True)
+    st.session_state.get_category_data_df_ss = pd.concat([st.session_state.get_category_data_df_ss, new_row_df], ignore_index=True)
     
 # Delete category
 def delete_sub_category():
-    st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_delete]
+    st.session_state.get_category_data_df_ss = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss.subcategory != st.session_state.sub_category_delete]
 
 def edit_sub_category():
-    edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin([st.session_state.sub_category_select])]
+    edited_dataframe = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss.subcategory.isin([st.session_state.sub_category_select])]
     st.session_state.edited_dataframe = edited_dataframe
 
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
@@ -64,12 +64,12 @@ with tab1:
 with tab2:
     with st.form("delete_sub_category", clear_on_submit=True, border=True):
         st.write("Delete Sub Category")
-        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_delete", index=None)
+        st.selectbox("Select Sub Category to delete", st.session_state.get_category_data_df_ss.subcategory.unique(), key="sub_category_delete", index=None)
         st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
     st.write("Edit Existing Category")
-    selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category, index=None)
+    selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_category_data_df_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category, index=None)
     if selectbox_selection is not None:
         st.write(st.session_state.edited_dataframe)
         with st.form("edit_category", clear_on_submit=True, border=True):
