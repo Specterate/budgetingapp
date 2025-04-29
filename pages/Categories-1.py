@@ -72,9 +72,9 @@ with tab3:
         st.write("Edit Existing Category")
         sub_category_selection = st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", index=None)
         if sub_category_selection:
-            edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(sub_category_selection)]
+            st.session_state.edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(sub_category_selection)]
             "Data Frame Edited is"
-            st.write(edited_dataframe)
+            st.write(st.session_state.edited_dataframe)
             category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
             monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update")
             yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update")
