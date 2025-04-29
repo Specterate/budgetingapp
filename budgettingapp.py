@@ -17,9 +17,9 @@ if 'conn' not in st.session_state:
     st.session_state.conn = conn
 
 # Query categories table from supabase and convert to DataFrame
-if 'get_data_df' not in st.session_state:
-    get_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
-    st.session_state.get_data_ss = get_data_df
+if 'get_category_data_df' not in st.session_state:
+    get_category_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
+    st.session_state.get_category_data_ss = get_category_data_df
 
 # ----- This works for session state with pandas dataframe -----
 # def update_df():    
