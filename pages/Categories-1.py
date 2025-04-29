@@ -41,15 +41,18 @@ def update_data():
     pass
 
 # Add new categories
-def add_category():
+def add_sub_category():
     new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses}])
     st.session_state.get_data_ss = pd.concat([st.session_state.get_data_ss, new_row_df], ignore_index=True)
     
+# Delete category
+def delete_sub_category():
+    st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_select]
 
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
 with tab1:
     with st.form("add_category", clear_on_submit=True, border=True):
-            st.write("Add new entry")
+            st.write("Add new Category")
             # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
             # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
             # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
@@ -57,12 +60,12 @@ with tab1:
             sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
             monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
             yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
-            submitted = st.form_submit_button("Submit", type="secondary", on_click=add_category)
+            submitted = st.form_submit_button("Submit", type="secondary", on_click=add_sub_category)
 with tab2:
-    with st.form("delete_form", clear_on_submit=True, border=True):
-        st.write("Delete entry")
-        st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
-        st.form_submit_button("Delete", type="primary", on_click=delete_ss)
+    with st.form("delete_sub_category", clear_on_submit=True, border=True):
+        st.write("Delete Sub Category")
+        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select")
+        st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
     pass
