@@ -75,3 +75,4 @@ with tab3:
             category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
             monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
             yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
+        st.form_submit_button("Update", type="secondary", on_click=update_sub_category)
