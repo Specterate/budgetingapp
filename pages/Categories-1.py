@@ -71,7 +71,7 @@ with tab3:
     with st.form("edit_category", clear_on_submit=True, border=True):
         st.write("Edit Existing Category")
         sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
-        if sub_category_name
+        if sub_category_name:
             category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
             monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
             yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
