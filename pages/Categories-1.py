@@ -35,4 +35,4 @@ def update_data():
             for column, value in changes.items():
                 st.session_state.get_data_ss.loc[index,column] = value
 
-updates = st.data_editor(st.session_state.get_data.data, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor", on_change=update_data)
+updates = st.data_editor(st.session_state.get_data_ss, use_container_width=True, hide_index=True, num_rows="dynamic", key="data_editor", on_change=update_data)
