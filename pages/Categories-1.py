@@ -50,7 +50,7 @@ def delete_sub_category():
     st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_delete]
 
 def edit_sub_category():
-    edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin(st.session_state.sub_category_select)]
+    edited_dataframe = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory.isin([st.session_state.sub_category_select])]
     st.session_state.edited_dataframe = edited_dataframe
 
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
