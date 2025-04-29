@@ -22,18 +22,18 @@ if 'get_data_df' not in st.session_state:
     st.session_state.get_data_ss = get_data_df
 
 # ----- This works for session state with pandas dataframe -----
-def update_df():    
-    if st.session_state['editor']['edited_rows']:
-        for index, changes in st.session_state['editor']['edited_rows'].items():
-            for col, value in changes.items():
-                st.session_state['df'].loc[index, col] = value
-    st.session_state['df']
+# def update_df():    
+#     if st.session_state['editor']['edited_rows']:
+#         for index, changes in st.session_state['editor']['edited_rows'].items():
+#             for col, value in changes.items():
+#                 st.session_state['df'].loc[index, col] = value
+#     st.session_state['df']
 
-if 'df' not in st.session_state:
-    st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
+# if 'df' not in st.session_state:
+#     st.session_state['df'] = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
 
-st.write("This is a editable dataframe")
-st.data_editor(st.session_state['df'], on_change=update_df, key="editor", num_rows="dynamic")
+# st.write("This is a editable dataframe")
+# st.data_editor(st.session_state['df'], on_change=update_df, key="editor", num_rows="dynamic")
 
 # ===================
 
