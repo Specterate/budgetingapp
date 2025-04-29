@@ -75,7 +75,7 @@ with tab3:
     st.write("Edit Existing Category")
     selectbox_selection = st.selectbox("Select Sub Category to edit", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select", on_change=edit_sub_category, index=None)
     if selectbox_selection is not None:
-        with form("edit_category", clear_on_submit=True, border=True):
+        with st.form("edit_category", clear_on_submit=True, border=True):
             category_name_update = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name_update")
             monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update")
             yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update")
