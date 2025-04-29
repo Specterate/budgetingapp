@@ -11,11 +11,15 @@ from streamlit import session_state as ss
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
 
-# Initialize connection with Supabase
-conn = st.connection("supabase",type=SupabaseConnection)
-# Add to session_state
+# Set Supabase connection and session state
 if 'conn' not in st.session_state:
+    conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
+
+# Query categories table from supabase and convert to DataFrame
+if 'get_data_df' not in st.session_state:
+    get_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
+    st.session_state.get_data_ss = get_data_df
 
 # ----- This works for session state with pandas dataframe -----
 def update_df():    
