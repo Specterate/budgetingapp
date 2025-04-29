@@ -16,18 +16,17 @@ if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
 
-
-
 # set session state for get data
 if 'get_data_ss' not in st.session_state:
+
     # Query categories table from supabase
-    get_data = st.session_state.conn.table("categories").select("*").execute()
+    get_category_data = st.session_state.conn.table("categories").select("*").execute()
 
     # Convert get_data to pandas dataframe
-    get_data_df = pd.DataFrame.from_dict(get_data.data)
+    get_data_df = pd.DataFrame.from_dict(get_category_data.data)
     st.session_state.get_data_ss = get_data_df
 
-# st.session_state.get_data_ss
+st.subheader("Categories Data")
 st.session_state.get_data_ss
 
 # Update data based on edits ['edited_rows'] in the data editor
