@@ -50,4 +50,5 @@ with tab2:
     with st.form("delete_form", clear_on_submit=True, border=True):
         st.write("Delete entry")
         st.selectbox("Select entry to delete", st.session_state.ss_df.name.unique(), key="delete_index")
+        st.write("Selected entry to delete: ", st.session_state.delete_index)
         st.form_submit_button("Delete", type="primary", on_click=delete_ss)
