@@ -47,7 +47,7 @@ def add_sub_category():
     
 # Delete category
 def delete_sub_category():
-    st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_select]
+    st.session_state.get_data_ss = st.session_state.get_data_ss[st.session_state.get_data_ss.subcategory != st.session_state.sub_category_delete]
 
 tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
 with tab1:
@@ -64,7 +64,7 @@ with tab1:
 with tab2:
     with st.form("delete_sub_category", clear_on_submit=True, border=True):
         st.write("Delete Sub Category")
-        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_select")
+        st.selectbox("Select Sub Category to delete", st.session_state.get_data_ss.subcategory.unique(), key="sub_category_deletet")
         st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
 with tab3:
