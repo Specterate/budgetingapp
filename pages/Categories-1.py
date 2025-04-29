@@ -23,7 +23,7 @@ if 'get_data' not in st.session_state:
     st.session_state.get_data = get_data
 
 #display data
-st.session_state.get_data
+st.table(session_state.get_data)
 
 def update_data():
     if st.session_state.data_editor['edited_rows']:
