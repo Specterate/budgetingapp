@@ -55,7 +55,6 @@ def main_app(user_email):
         pass
 
 def auth_screen():
-    st.title("🔐 Streamlit & Supabase Auth App")
     option = st.selectbox("Choose an action:", ["Login", "Sign Up"])
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
