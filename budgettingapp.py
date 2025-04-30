@@ -18,8 +18,8 @@ if 'conn' not in st.session_state:
 
 def sign_up():
     # Sign up a new user
-    email = st.session_state.email
-    password = st.session_state.password
+    email = st.session_state.signup_email
+    password = st.session_state.signup_password
     try:
         st.session_state.conn.auth.sign_up(dict(email=email, password=password))
         st.success("Sign up successful!")
@@ -28,8 +28,8 @@ def sign_up():
 
 def sign_in():
     # Sign in an existing user
-    email = st.session_state.email
-    password = st.session_state.password
+    email = st.session_state.signin_email
+    password = st.session_state.signin_password
     try:
         st.session_state.conn.auth.sign_in(dict(email=email, password=password))
         st.success("Sign in successful!")
@@ -39,13 +39,13 @@ def sign_in():
 col1, col2 = st.columns(2)
 with col1:
     with st.form(key='signup_form'):
-        st.text_input("Email", key='email')
-        st.text_input("Password", type="password", key='password')
+        st.text_input("Email", key='signup_email')
+        st.text_input("Password", type="password", key='signup_password')
         st.form_submit_button("Sign Up", on_click=sign_up)
 with col2:
     with st.form(key='signin_form'):
-        st.text_input("Email", key='email')
-        st.text_input("Password", type="password", key='password')
+        st.text_input("Email", key='signin_email')
+        st.text_input("Password", type="password", key='signin_password')
         st.form_submit_button("Sign In", on_click=sign_in)
     
 
