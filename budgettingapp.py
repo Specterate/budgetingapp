@@ -26,10 +26,27 @@ def sign_up():
     except Exception as e:
         st.error(f"Error signing up: {e}")
 
-with st.form(key='signup_form'):
-    st.text_input("Email", key='email')
-    st.text_input("Password", type="password", key='password')
-    st.form_submit_button("Sign Up", on_click=sign_up)
+def sign_in():
+    # Sign in an existing user
+    email = st.session_state.email
+    password = st.session_state.password
+    try:
+        st.session_state.conn.auth.sign_in(dict(email=email, password=password))
+        st.success("Sign in successful!")
+    except Exception as e:
+        st.error(f"Error signing in: {e}")
+
+col1, col2 = st.columns(2)
+with col1:
+    with st.form(key='signup_form'):
+        st.text_input("Email", key='email')
+        st.text_input("Password", type="password", key='password')
+        st.form_submit_button("Sign Up", on_click=sign_up)
+with col2:
+    with st.form(key='signin_form'):
+        st.text_input("Email", key='email')
+        st.text_input("Password", type="password", key='password')
+        st.form_submit_button("Sign In", on_click=sign_in)
     
 
 # # Query categories table from supabase and convert to DataFrame
