@@ -40,10 +40,13 @@ def sign_out():
 def main_app(user_email):
     st.title("🎉 Welcome Page")
     st.success(f"Welcome, {user_email}! 👋")
-    if st.button("Go to Categories", type="secondary"):
-        st.switch_page("pages/Categories.py")
-    if st.button("Go to Transactions:", type="secondary"):
-        st.switch_page("pages/expensesdashboard.py")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Go to Categories", type="secondary"):
+            st.switch_page("pages/Categories.py")
+    with col2:
+        if st.button("Go to Transactions:", type="secondary"):
+            st.switch_page("pages/expensesdashboard.py")
     if st.button("Logout", type="primary"):
         sign_out()
 
