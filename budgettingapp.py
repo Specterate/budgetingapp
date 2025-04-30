@@ -40,7 +40,7 @@ def sign_out():
 def main_app(user_email):
     st.title("🎉 Welcome Page")
     st.success(f"Welcome, {user_email}! 👋")
-    conn.table("mytable1").select('*').execute()
+    get_data = pd.DataFrame.from_dict(conn.table("mytable1").select('*').execute().data)
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Go to Categories", type="secondary"):
