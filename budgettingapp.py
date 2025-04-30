@@ -37,7 +37,7 @@ def sign_in():
     except Exception as e:
         st.error(f"Error signing in: {e}")
 
-tab1, tab2 = st.tabs("Sign Up", "Sign In")
+tab1, tab2 = st.tabs(["Sign Up", "Sign In"])
 with tab1:
     st.subheader("Sign Up")
     with st.form(key='signup_form'):
