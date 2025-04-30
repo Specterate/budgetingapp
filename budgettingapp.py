@@ -36,6 +36,7 @@ def sign_in():
         st.success("Sign in successful!")
     except Exception as e:
         st.error(f"Error signing in: {e}")
+        st.switch_page("pages/Categories.py")
 
 tab1, tab2 = st.tabs(["Sign Up", "Sign In"])
 with tab1:
@@ -50,7 +51,7 @@ with tab2:
         st.text_input("Email", key='signin_email')
         st.text_input("Password", type="password", key='signin_password')
         st.form_submit_button("Sign In", on_click=sign_in)
-        st.switch_page("Categories.py")
+        
     
 
 # # Query categories table from supabase and convert to DataFrame
