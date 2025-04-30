@@ -16,7 +16,19 @@ if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
 
-conn.auth.sign_up(dict(email='', password='', options=dict(data=dict(fname='',attribution=''))))
+def sign_up():
+    # Sign up a new user
+    email = st.session_state.email
+    password = st.session_state.password
+    st.session_state.conn.auth.sign_up(dict(email=email, password=password))
+
+
+st.form(key='signup_form')
+with st.form(key='signup_form'):
+    st.text_input("Email", key='email')
+    st.text_input("Password", type="password", key='password')
+    st.form_submit_button("Sign Up", on_click=sign_up)
+    
 
 # # Query categories table from supabase and convert to DataFrame
 # if 'get_category_data_df' not in st.session_state:
