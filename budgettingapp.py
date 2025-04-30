@@ -16,48 +16,59 @@ if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
 
-def sign_up():
-    # Sign up a new user
-    # email = st.session_state.signup_email
-    # password = st.session_state.signup_password
-    # try:
-    #     st.session_state.conn.auth.sign_up(dict(email=email, password=password))
-    #     st.success("Sign up successful!")
-    # except Exception as e:
-    #     st.error(f"Error signing up: {e}")
-    pass
-
-def sign_in():
-    # Sign in an existing user
-    email = st.session_state.signin_email
-    password = st.session_state.signin_password
+def sign_up(email, password):
     try:
-        st.session_state.conn.auth.sign_in_with_password(dict(email=email, password=password))
-        st.success("Sign in successful!")
-        st.switch_page("pages/Categories.py")
+        user = conn.auth.sign_up({"email": email, "password": password})
+        return user
     except Exception as e:
-        st.error(f"Error signing in: {e}")
-        
+        st.error(f"Registration failed: {e}")
 
-tab1, tab2 = st.tabs(["Sign Up", "Sign In"])
-with tab1:
-    st.subheader("Sign Up")
-    with st.form(key='signup_form'):
-        st.text_input("Email", key='signup_email')
-        st.text_input("Password", type="password", key='signup_password')
-        st.form_submit_button("Sign Up", on_click=sign_up)
-with tab2:    
-    st.subheader("Sign In")
-    if "conn.auth.sign_in_with_password" not in st.session_state:
-        with st.form(key='signin_form'):
-            st.text_input("Email", key='signin_email')
-            st.text_input("Password", type="password", key='signin_password')
-            st.form_submit_button("Sign In", on_click=sign_in)
-    else:
-        st.popup("You are already signed in!")
-        
+def sign_in(email, password):
+    try:
+        user = conn.auth.sign_in_with_password({"email": email, "password": password})
+        return user
+    except Exception as e:
+        st.error(f"Login failed: {e}")
 
-st.session_state
+def sign_out():
+    try:
+        conn.auth.sign_out()
+        st.session_state.user_email = None
+        st.rerun()
+    except Exception as e:
+        st.error(f"Logout failed: {e}")
+
+def main_app(user_email):
+    st.title("🎉 Welcome Page")
+    st.success(f"Welcome, {user_email}! 👋")
+    if st.button("Logout"):
+        sign_out()
+
+def auth_screen():
+    st.title("🔐 Streamlit & Supabase Auth App")
+    option = st.selectbox("Choose an action:", ["Login", "Sign Up"])
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+
+    if option == "Sign Up" and st.button("Register"):
+        user = sign_up(email, password)
+        if user and user.user:
+            st.success("Registration successful. Please log in.")
+
+    if option == "Login" and st.button("Login"):
+        user = sign_in(email, password)
+        if user and user.user:
+            st.session_state.user_email = user.user.email
+            st.success(f"Welcome back, {email}!")
+            st.rerun()
+
+if "user_email" not in st.session_state:
+    st.session_state.user_email = None
+
+if st.session_state.user_email:
+    main_app(st.session_state.user_email)
+else:
+    auth_screen()
 
 # # Query categories table from supabase and convert to DataFrame
 # if 'get_category_data_df' not in st.session_state:
