@@ -20,7 +20,11 @@ def sign_up():
     # Sign up a new user
     email = st.session_state.email
     password = st.session_state.password
-    st.session_state.conn.auth.sign_up(dict(email=email, password=password))
+    try:
+        st.session_state.conn.auth.sign_up(dict(email=email, password=password))
+        st.success("Sign up successful!")
+    except Exception as e:
+        st.error(f"Error signing up: {e}")
 
 with st.form(key='signup_form'):
     st.text_input("Email", key='email')
