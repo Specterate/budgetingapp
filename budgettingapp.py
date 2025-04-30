@@ -41,6 +41,7 @@ def main_app(user_email):
     st.title("🎉 Welcome Page")
     st.success(f"Welcome, {user_email}! 👋")
     get_data = pd.DataFrame.from_dict(conn.table("mytable1").select('*').execute().data)
+    st.write(get_data)
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Go to Categories", type="secondary"):
