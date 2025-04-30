@@ -40,6 +40,10 @@ def sign_out():
 def main_app(user_email):
     st.title("🎉 Welcome Page")
     st.success(f"Welcome, {user_email}! 👋")
+    if st.button("Go to Categories"):
+        st.switch_page("pages/Categories.py")
+    if st.button("Go to Transactions:"):
+        st.switch_page("pages/expensesdashboard.py")
     if st.button("Logout"):
         sign_out()
 
