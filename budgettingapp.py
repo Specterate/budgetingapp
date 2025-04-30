@@ -74,7 +74,7 @@ def auth_screen():
 
 if "get_data" not in st.session_state:
     st.session_state.get_data = None
-\
+
 "Session Data is"
 st.write(st.session_state.get_data)
 
