@@ -38,11 +38,13 @@ def sign_in():
 
 col1, col2 = st.columns(2)
 with col1:
+    st.subheader("Sign Up")
     with st.form(key='signup_form'):
         st.text_input("Email", key='signup_email')
         st.text_input("Password", type="password", key='signup_password')
         st.form_submit_button("Sign Up", on_click=sign_up)
 with col2:
+    st.subheader("Sign In")
     with st.form(key='signin_form'):
         st.text_input("Email", key='signin_email')
         st.text_input("Password", type="password", key='signin_password')
