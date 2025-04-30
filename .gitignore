@@ -1,1 +1,15 @@
-
+.streamlit/secrets.toml
+.streamlit/config.toml
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.log
+*.csv
+*.json
+*.xlsx
+*.xls
+*.pickle
+*.pkl
