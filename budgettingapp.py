@@ -44,15 +44,16 @@ def main_app(user_email):
     st.session_state.get_data = get_data
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("Go to Categories", type="secondary"):
-            st.switch_page("pages/Categories.py")
+        if st.button("Go to Dashboard", type="secondary", use_container_width=True):
+            st.switch_page("pages/01_Dashboard.py")
     with col2:
-        if st.button("Go to Transactions:", type="secondary"):
-            st.switch_page("pages/expensesdashboard.py")
-        if st.button("Logout", type="primary"):
+        if st.button("Go to Category", type="secondary", use_container_width=True):
+            st.switch_page("pages/02_Categories.py")
+        if st.button("Logout", type="primary", use_container_width=True):
             sign_out()
     with col3:
-        pass
+        if st.button("Go to Import/Export", type="secondary", use_container_width=True):
+            st.switch_page("pages/03_ImportCSV.py")
 
 def auth_screen():
     option = st.selectbox("Choose an action:", ["Login", "Sign Up"])
