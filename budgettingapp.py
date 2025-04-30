@@ -22,8 +22,6 @@ def sign_up():
     password = st.session_state.password
     st.session_state.conn.auth.sign_up(dict(email=email, password=password))
 
-
-st.form(key='signup_form')
 with st.form(key='signup_form'):
     st.text_input("Email", key='email')
     st.text_input("Password", type="password", key='password')
