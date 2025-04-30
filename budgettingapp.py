@@ -45,12 +45,15 @@ with tab1:
         st.text_input("Email", key='signup_email')
         st.text_input("Password", type="password", key='signup_password')
         st.form_submit_button("Sign Up", on_click=sign_up)
-with tab2:
+with tab2:    
     st.subheader("Sign In")
-    with st.form(key='signin_form'):
-        st.text_input("Email", key='signin_email')
-        st.text_input("Password", type="password", key='signin_password')
-        st.form_submit_button("Sign In", on_click=sign_in)
+    if "conn.auth.sign_in_with_password" not in st.session_state:
+        with st.form(key='signin_form'):
+            st.text_input("Email", key='signin_email')
+            st.text_input("Password", type="password", key='signin_password')
+            st.form_submit_button("Sign In", on_click=sign_in)
+    else:
+        st.popup("You are already signed in!")
         
     
 
