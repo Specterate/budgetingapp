@@ -42,7 +42,6 @@ def main_app(user_email):
     st.success(f"Welcome, {user_email}! 👋")
     get_data = pd.DataFrame.from_dict(conn.table("mytable1").select('*').execute().data)
     st.session_state.get_data = get_data
-    st.rerun()
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Go to Categories", type="secondary"):
@@ -54,6 +53,7 @@ def main_app(user_email):
             sign_out()
     with col3:
         pass
+    st.rerun()
 
 def auth_screen():
     st.title("🔐 Streamlit & Supabase Auth App")
