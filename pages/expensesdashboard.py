@@ -1,11 +1,11 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import numpy as np
 import time
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
-from st_supabase_connection import SupabaseConnection
+from st_supabase_connection import SupabaseConnection, execute_query
 
 st.set_page_config(page_title='Budgetting App', page_icon=':moneybag:')
 st.title('Expenses')

@@ -5,7 +5,7 @@ import time
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
-from st_supabase_connection import SupabaseConnection
+from st_supabase_connection import SupabaseConnection, execute_query
 from streamlit import session_state as ss
 
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
@@ -16,10 +16,12 @@ if 'conn' not in st.session_state:
     conn = st.connection("supabase",type=SupabaseConnection)
     st.session_state.conn = conn
 
-# Query categories table from supabase and convert to DataFrame
-if 'get_category_data_df' not in st.session_state:
-    get_category_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
-    st.session_state.get_category_data_ss = get_category_data_df
+conn.auth.sign_up(dict(email='', password='', options=dict(data=dict(fname='',attribution=''))))
+
+# # Query categories table from supabase and convert to DataFrame
+# if 'get_category_data_df' not in st.session_state:
+#     get_category_data_df = pd.DataFrame.from_dict(st.session_state.conn.table("categories").select("*").execute().data)
+#     st.session_state.get_category_data_ss = get_category_data_df
 
 # ----- This works for session state with pandas dataframe -----
 # def update_df():    

@@ -5,7 +5,7 @@ import time
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
-from st_supabase_connection import SupabaseConnection
+from st_supabase_connection import SupabaseConnection, execute_query
 
 
 # set page configuration and title
