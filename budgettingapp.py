@@ -72,7 +72,8 @@ def auth_screen():
             st.success(f"Welcome back, {email}!")
             st.rerun()
 
-st.session_state.get_data
+if "get_data" not in st.session_state:
+    st.session_state.get_data = None
 
 if "user_email" not in st.session_state:
     st.session_state.user_email = None
