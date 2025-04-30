@@ -57,7 +57,7 @@ with tab2:
         st.popup("You are already signed in!")
         
 
-st.session_state.conn.auth.sign_in_with_password    
+st.session_state
 
 # # Query categories table from supabase and convert to DataFrame
 # if 'get_category_data_df' not in st.session_state:
