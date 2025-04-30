@@ -40,15 +40,17 @@ def sign_out():
 def main_app(user_email):
     st.title("🎉 Welcome Page")
     st.success(f"Welcome, {user_email}! 👋")
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Go to Categories", type="secondary"):
             st.switch_page("pages/Categories.py")
     with col2:
         if st.button("Go to Transactions:", type="secondary"):
             st.switch_page("pages/expensesdashboard.py")
-    if st.button("Logout", type="primary"):
-        sign_out()
+        if st.button("Logout", type="primary"):
+            sign_out()
+    with col3:
+        pass
 
 def auth_screen():
     st.title("🔐 Streamlit & Supabase Auth App")
