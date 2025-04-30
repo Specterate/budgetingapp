@@ -31,7 +31,7 @@ def sign_in():
     email = st.session_state.signin_email
     password = st.session_state.signin_password
     try:
-        st.session_state.conn.auth.sign_in(dict(email=email, password=password))
+        st.session_state.conn.auth.sign_in_with_password(dict(email=email, password=password))
         st.success("Sign in successful!")
     except Exception as e:
         st.error(f"Error signing in: {e}")
