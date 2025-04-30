@@ -12,9 +12,8 @@ st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centere
 st.title("Budgeting App")
 
 # Set Supabase connection and session state
-if 'conn' not in st.session_state:
-    conn = st.connection("supabase",type=SupabaseConnection)
-    st.session_state.conn = conn
+conn = st.connection("supabase",type=SupabaseConnection)
+st.session_state.conn = conn
 
 def sign_up(email, password):
     try:
