@@ -53,7 +53,6 @@ def main_app(user_email):
             sign_out()
     with col3:
         pass
-    st.rerun()
 
 def auth_screen():
     st.title("🔐 Streamlit & Supabase Auth App")
@@ -75,9 +74,6 @@ def auth_screen():
 
 if "get_data" not in st.session_state:
     st.session_state.get_data = None
-
-"Session Data is"
-st.write(st.session_state.get_data)
 
 if "user_email" not in st.session_state:
     st.session_state.user_email = None
