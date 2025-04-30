@@ -18,13 +18,14 @@ if 'conn' not in st.session_state:
 
 def sign_up():
     # Sign up a new user
-    email = st.session_state.signup_email
-    password = st.session_state.signup_password
-    try:
-        st.session_state.conn.auth.sign_up(dict(email=email, password=password))
-        st.success("Sign up successful!")
-    except Exception as e:
-        st.error(f"Error signing up: {e}")
+    # email = st.session_state.signup_email
+    # password = st.session_state.signup_password
+    # try:
+    #     st.session_state.conn.auth.sign_up(dict(email=email, password=password))
+    #     st.success("Sign up successful!")
+    # except Exception as e:
+    #     st.error(f"Error signing up: {e}")
+    pass
 
 def sign_in():
     # Sign in an existing user
@@ -36,19 +37,20 @@ def sign_in():
     except Exception as e:
         st.error(f"Error signing in: {e}")
 
-col1, col2 = st.columns(2)
-with col1:
+tab1, tab2 = st.tabs(2)
+with tab1:
     st.subheader("Sign Up")
     with st.form(key='signup_form'):
         st.text_input("Email", key='signup_email')
         st.text_input("Password", type="password", key='signup_password')
         st.form_submit_button("Sign Up", on_click=sign_up)
-with col2:
+with tab2:
     st.subheader("Sign In")
     with st.form(key='signin_form'):
         st.text_input("Email", key='signin_email')
         st.text_input("Password", type="password", key='signin_password')
         st.form_submit_button("Sign In", on_click=sign_in)
+        st.switch_page("Categories.py")
     
 
 # # Query categories table from supabase and convert to DataFrame
