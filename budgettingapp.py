@@ -34,9 +34,10 @@ def sign_in():
     try:
         st.session_state.conn.auth.sign_in_with_password(dict(email=email, password=password))
         st.success("Sign in successful!")
+        st.switch_page("pages/Categories.py")
     except Exception as e:
         st.error(f"Error signing in: {e}")
-        st.switch_page("pages/Categories.py")
+        
 
 tab1, tab2 = st.tabs(["Sign Up", "Sign In"])
 with tab1:
@@ -55,7 +56,8 @@ with tab2:
     else:
         st.popup("You are already signed in!")
         
-    
+
+st.session_state.conn.auth.sign_in_with_password    
 
 # # Query categories table from supabase and convert to DataFrame
 # if 'get_category_data_df' not in st.session_state:
