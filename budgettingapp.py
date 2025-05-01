@@ -49,11 +49,11 @@ def main_app(user_email):
     with col2:
         if st.button("Go to Category", type="secondary", use_container_width=True):
             st.switch_page("pages/02_Categories.py")
-        if st.button("Logout", type="primary", use_container_width=True):
-            sign_out()
     with col3:
         if st.button("Go to Import/Export", type="secondary", use_container_width=True):
             st.switch_page("pages/03_ImportCSV.py")
+if st.button("Logout", type="primary", use_container_width=True):
+            sign_out()
 
 def auth_screen():
     option = st.selectbox("Choose an action:", ["Login", "Sign Up"])
