@@ -11,7 +11,7 @@ from st_supabase_connection import SupabaseConnection, execute_query
 st.set_page_config(page_title="Dashboard", page_icon="📊")
 st.title("Dashboard")
 
-if st.session_state.user_email is None:
+if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
         # Redirect to login page
