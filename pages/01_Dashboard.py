@@ -21,26 +21,30 @@ else:
     if 'conn' not in st.session_state:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
-
     
+
     # set session state for get data
-    if 'get_category_data_df_ss' not in st.session_state:
+    if 'dashboard_get_category_data_df_ss' not in st.session_state:
 
         # Query categories table from supabase
-        get_category_data = st.session_state.conn.table("categories").select("*").execute()
+        dashboard_get_category_data = st.session_state.conn.table("categories").select("*").execute()
 
         # Convert get_data to pandas dataframe
-        get_category_data_df = pd.DataFrame.from_dict(get_category_data.data)
-        st.session_state.get_category_data_df_ss = get_category_data_df
-        st.dataframe(st.session_state.get_category_data_df_ss, hide_index=True, use_container_width=True)
+        dashboard_get_category_data_df = pd.DataFrame.from_dict(dashboard_get_category_data.data)
+        st.session_state.dashboard_get_category_data_df_ss = dashboard_get_category_data_df
     
+    # st.dataframe(st.session_state.dashboard_get_category_data_df_ss.style.format({"monthly": "${:,.2f}", "yearly": "${:,.2f}"}), hide_index=True, use_container_width=True)
+
     col1, col2, col3 = st.columns(3, border=True)
     with col1:
-        debit_sum = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss['categorytype'] == 'Debit'].sum(numeric_only=True).astype(np.int64)
-        st.write(f"Total Monthly Debit: ${debit_sum['monthly']}")
+            st.write("Total Debit")
+            debit_sum = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit', 'monthly'].sum()
+            st.write(f'$ {debit_sum:,.2f}')
     with col2:
-        credit_sum = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss['categorytype'] == 'Credit'].sum(numeric_only=True).astype(np.int64)
-        st.write(f"Total Monthly Credit: ${credit_sum['monthly']}")
+        st.write("Total Credit")
+        credit_sum = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Credit', 'monthly'].sum()
+        st.write(f'$ {credit_sum:,.2f}')
     with col3:
-        balance_sum = (credit_sum['monthly'] + debit_sum['monthly'])
-        st.write(f"Total Monthly Balance: ${balance_sum}")
+        st.write("Balance")
+        balance = credit_sum - debit_sum
+        st.write(f'$ {balance:,.2f}')
