@@ -38,13 +38,13 @@ else:
 
     # Update data based on edits ['edited_rows'] in the data editor
     def update_sub_category():
-        index_value = st.session_state.edited_dataframe.index.item()
-        st.session_state.get_category_data_df_ss.at[index_value, "category"] = st.session_state.category_name_update
-        st.session_state.get_category_data_df_ss.at[index_value, "monthly"] = st.session_state.monthly_expenses_update
-        st.session_state.get_category_data_df_ss.at[index_value, "yearly"] = st.session_state.yearly_expenses_update
-        st.session_state.get_category_data_df_ss.at[index_value, "categorytype"] = st.session_state.category_type_update
         try:
             response = (st.session_state.conn.table("categories").update({"category": st.session_state.category_name_update, "monthly": st.session_state.monthly_expenses_update, "yearly": st.session_state.yearly_expenses_update, "categorytype": st.session_state.category_type_update}).eq("subcategory", st.session_state.sub_category_select).execute())
+            index_value = st.session_state.edited_dataframe.index.item()
+            st.session_state.get_category_data_df_ss.at[index_value, "category"] = st.session_state.category_name_update
+            st.session_state.get_category_data_df_ss.at[index_value, "monthly"] = st.session_state.monthly_expenses_update
+            st.session_state.get_category_data_df_ss.at[index_value, "yearly"] = st.session_state.yearly_expenses_update
+            st.session_state.get_category_data_df_ss.at[index_value, "categorytype"] = st.session_state.category_type_update
         except Exception as e:
             st.error(f"Insert failed: {e}")
 
@@ -53,21 +53,23 @@ else:
         if st.session_state.sub_category_name in st.session_state.get_category_data_df_ss.subcategory.unique(): 
             st.error("Sub Category already exists")
             return
-        elif st.session_state.category_name in None:
+        elif "category_name" not in st.session_state.category_name:
             st.error("Pleae enter Category Name")
             return
-        try:
-            response = (st.session_state.conn.table("categories").insert({"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}).execute())
-            new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}])
-            st.session_state.get_category_data_df_ss = pd.concat([st.session_state.get_category_data_df_ss, new_row_df], ignore_index=True)
-        except Exception as e:
-            st.error(f"Insert failed: {e.message}")
+        else:
+            try:
+                response = (st.session_state.conn.table("categories").insert({"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}).execute())
+                new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}])
+                st.session_state.get_category_data_df_ss = pd.concat([st.session_state.get_category_data_df_ss, new_row_df], ignore_index=True)
+            except Exception as e:
+                st.error(f"Insert failed: {e.message}")
         
     # Delete category
     def delete_sub_category():
-        st.session_state.get_category_data_df_ss = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss.subcategory != st.session_state.sub_category_delete]
         try:
-            response = (st.session_state.conn.table("categories").delete().eq("subcategory", st.session_state.sub_category_delete).execute())
+            for deleted_subcategories in st.session_state.sub_category_delete:
+                response = (st.session_state.conn.table("categories").delete().eq("subcategory", deleted_subcategories).execute())
+            st.session_state.get_category_data_df_ss = st.session_state.get_category_data_df_ss[~st.session_state.get_category_data_df_ss.subcategory.isin(st.session_state.sub_category_delete)]
         except Exception as e:
             st.error(f"Delete failed: {e}")
 
@@ -85,11 +87,11 @@ else:
                 yearly_expenses = st.number_input("Yearly Expenses", key="yearly_expenses")
                 categorytype = st.selectbox("Category Type", ["Debit","Credit","NA"], key="category_type")
                 submitted = st.form_submit_button("Submit", type="secondary", on_click=add_sub_category)
+                
 
     with tab2:
         with st.form("delete_sub_category", clear_on_submit=True, border=True):
-            st.write("Delete Sub Category")
-            st.selectbox("Select Sub Category to delete", st.session_state.get_category_data_df_ss.subcategory.unique(), key="sub_category_delete", index=None)
+            st.multiselect("Select Sub Category to delete", st.session_state.get_category_data_df_ss.subcategory.unique(), key="sub_category_delete", max_selections=5)
             st.form_submit_button("Delete", type="primary", on_click=delete_sub_category)
 
     with tab3:
@@ -98,8 +100,9 @@ else:
         if selectbox_selection is not None:
             st.write(st.session_state.edited_dataframe)
             with st.form("edit_category", clear_on_submit=True, border=True):
-                category_name_update = st.text_input("Category Name", placeholder=st.session_state.edited_dataframe['category'].values, key="category_name_update")
-                monthly_expenses_update = st.number_input("Monthly Expenses", placeholder=st.session_state.edited_dataframe['monthly'].values, key="monthly_expenses_update", value=None, format="%.0f")
-                yearly_expenses_update = st.number_input("Yearly Expenses", placeholder=st.session_state.edited_dataframe['yearly'].values, key="yearly_expenses_update", value=None, format="%.0f")
+                category_name_update = st.text_input("Category Name", key="category_name_update", value=st.session_state.edited_dataframe['category'].values[0])
+                monthly_expenses_update = st.number_input("Monthly Expenses", key="monthly_expenses_update", placeholder = st.session_state.edited_dataframe['monthly'].values[0], value=None, format="%.0f")
+                yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update", placeholder = st.session_state.edited_dataframe['yearly'].values[0], value=None, format="%.0f")
                 categorytype_update = st.selectbox("Category Type", ["Debit","Credit","NA"], placeholder=None, key="category_type_update", accept_new_options=True)
                 st.form_submit_button("Update", type="primary", on_click=update_sub_category)
+                
