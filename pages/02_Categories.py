@@ -46,16 +46,22 @@ else:
         try:
             response = (st.session_state.conn.table("categories").update({"category": st.session_state.category_name_update, "monthly": st.session_state.monthly_expenses_update, "yearly": st.session_state.yearly_expenses_update, "categorytype": st.session_state.category_type_update}).eq("subcategory", st.session_state.sub_category_select).execute())
         except Exception as e:
-            st.error(f"Update failed: {e}")
+            st.error(f"Insert failed: {e}")
 
     # Add new categories
     def add_sub_category():
-        new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}])
-        st.session_state.get_category_data_df_ss = pd.concat([st.session_state.get_category_data_df_ss, new_row_df], ignore_index=True)
+        if st.session_state.sub_category_name in st.session_state.get_category_data_df_ss.subcategory.unique(): 
+            st.error("Sub Category already exists")
+            return
+        elif st.session_state.category_name in None:
+            st.error("Pleae enter Category Name")
+            return
         try:
             response = (st.session_state.conn.table("categories").insert({"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}).execute())
+            new_row_df = pd.DataFrame.from_dict([{"category": st.session_state.category_name, "subcategory": st.session_state.sub_category_name, "monthly": st.session_state.monthly_expenses, "yearly": st.session_state.yearly_expenses, "categorytype": st.session_state.category_type}])
+            st.session_state.get_category_data_df_ss = pd.concat([st.session_state.get_category_data_df_ss, new_row_df], ignore_index=True)
         except Exception as e:
-            st.error(f"Insert failed: {e}")
+            st.error(f"Insert failed: {e.message}")
         
     # Delete category
     def delete_sub_category():
@@ -73,9 +79,6 @@ else:
     with tab1:
         with st.form("add_category", clear_on_submit=True, border=True):
                 st.write("Add new Category")
-                # st.session_state.name = st.text_input("Name", placeholder="Enter your name")
-                # st.session_state.age = st.number_input("Age", min_value=0, max_value=100)
-                # st.session_state.location = st.selectbox("Location", ["New York", "San Francisco", "Chicago", "Seattle"])
                 category_name = st.text_input("Category Name", placeholder="Enter Category Name", key="category_name")
                 sub_category_name = st.text_input("Sub Category Name", placeholder="Enter Sub Category Name (Unique)", key="sub_category_name")
                 monthly_expenses = st.number_input("Monthly Expenses", key="monthly_expenses")
