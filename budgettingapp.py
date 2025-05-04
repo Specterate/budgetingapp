@@ -22,6 +22,10 @@ def load_css(file_path):
 css_path = pathlib.Path('style.css')
 load_css(css_path)
 
+# Examples on how to run CSS styling
+# https://github.com/Sven-Bo/streamit-css-styling-demo/blob/main/assets/styles.css
+# https://www.youtube.com/watch?v=jbJpAdGlKVY
+
 # Set Supabase connection and session state
 conn = st.connection("supabase",type=SupabaseConnection)
 st.session_state.conn = conn
