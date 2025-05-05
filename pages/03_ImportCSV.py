@@ -49,27 +49,40 @@ else:
       # file_import_max_month = pd.Timestamp(maximum_date).month
 
       # Query Data from Transaction Table
-      get_data_from_database = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
-      get_data_from_database_df = pd.DataFrame.from_dict(get_data_from_database.data)
-      # st.dataframe(get_data_from_database_df)
+      get_data_from_transactions = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
+      get_data_from_transactions_df = pd.DataFrame.from_dict(get_data_from_transactions.data)
+
+      get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
+      get_data_from_categories_df = pd.DataFrame.from_dict(get_data_from_categories.data)
+      st.write(get_data_from_categories.data)
       
-      # drop index column for get_data_from_database_df
-      get_data_from_database_df_no_index = get_data_from_database_df.drop(columns=['id'])
 
-      # st.dataframe(get_data_from_database_df_no_index)
+      
+      # drop index column for get_data_from_transactions_df
+      get_data_from_transactions_df_no_index = get_data_from_transactions_df.drop(columns=['id'])
 
-      full_df = pd.concat([get_data_from_database_df_no_index, file_import_df], ignore_index=True)
+      # st.dataframe(get_data_from_transactions_df_no_index)
+
+      full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)
       # st.dataframe(full_df)
 
       full_df_drop_duplicates = full_df.drop_duplicates()
 
-      st.write('Updated')
-      st.dataframe(full_df_drop_duplicates)
+      # st.write('Updated')
+      # st.dataframe(full_df_drop_duplicates)
 
-      merged_df = pd.merge(get_data_from_database_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
+      merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
       # st.dataframe(merged_df)
       result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
-      st.dataframe(result_df)
+      st.data_editor(result_df,     column_config={
+        "subcategory": st.column_config.SelectboxColumn(
+            "App Category",
+            help="The category of the app",
+            width="medium",
+            options=[],
+            required=True,
+        )
+    },)
 
       add_df_data = st.button('Import')
       if add_df_data:
