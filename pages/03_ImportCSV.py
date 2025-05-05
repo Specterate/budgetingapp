@@ -7,11 +7,20 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection, execute_query
 import datetime
-
-#update
+import pathlib
 
 st.set_page_config(page_title='Import/Export')
 st.title('Import/Export Files')
+
+# Function to load CSS from the 'assets' folder
+def load_css(file_path):
+    with open(file_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# Load the external CSS
+css_path = pathlib.Path('style.css')
+load_css(css_path)
 
 def refresh_dashboard():
     for key in st.session_state.keys():
@@ -64,23 +73,27 @@ else:
       full_df_drop_duplicates = full_df.drop_duplicates()
       print(full_df_drop_duplicates.dtypes)
 
+      # Merge the existing data from the database with the imported file (after dropping duplicates)
       merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
+      # Only return the rows in the dataframe that are not in the database
       result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
+
+      # display the data in a dataeditor so that we can update the subcategory
       st.data_editor(
-         result_df, 
+         result_df,
          use_container_width=True,
          column_config={
          "subcategory": st.column_config.SelectboxColumn(
-           "Sub Category Category",
-            help="Add Subcateogry",
+            label="Subcategory",
+            help="Select or add a subcategory",
             width="medium",
             options=list_of_subcategories,
             required=True,
-        ), 
-        }
-        ,)
+         ),
+         },
+      )
 
-      add_df_data = st.button('Import')
+      add_df_data = st.button('Import', type="primary", use_container_width=True)
       if add_df_data:
          try:
             # Add DataFrame to the database
