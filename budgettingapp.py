@@ -7,9 +7,24 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection, execute_query
 from streamlit import session_state as ss
+import pathlib
 
 st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
 st.title("Budgeting App")
+
+# Function to load CSS from the 'assets' folder
+def load_css(file_path):
+    with open(file_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# Load the external CSS
+css_path = pathlib.Path('style.css')
+load_css(css_path)
+
+# Examples on how to run CSS styling
+# https://github.com/Sven-Bo/streamit-css-styling-demo/blob/main/assets/styles.css
+# https://www.youtube.com/watch?v=jbJpAdGlKVY
 
 # Set Supabase connection and session state
 conn = st.connection("supabase",type=SupabaseConnection)
@@ -38,13 +53,13 @@ def sign_out():
         st.error(f"Logout failed: {e}")
 
 def main_app(user_email):
-    st.title("🎉 Welcome Page")
-    st.success(f"Welcome, {user_email}! 👋")
+    st.html("<p style='font-size:20px; text-align:center'>You are logged in!</p>")
+    
     get_data = pd.DataFrame.from_dict(conn.table("mytable1").select('*').execute().data)
     st.session_state.get_data = get_data
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("Go to Dashboard", type="secondary", use_container_width=True):
+        if st.button("Go to Dashboard", type="secondary", use_container_width=True, key="dashboard_button"):
             st.switch_page("pages/01_Dashboard.py")
     with col2:
         if st.button("Go to Category", type="secondary", use_container_width=True):
