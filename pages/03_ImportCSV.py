@@ -56,10 +56,10 @@ else:
       # drop index column for get_data_from_database_df
       get_data_from_database_df_no_index = get_data_from_database_df.drop(columns=['id'])
 
-      st.dataframe(get_data_from_database_df_no_index)
+      # st.dataframe(get_data_from_database_df_no_index)
 
       full_df = pd.concat([get_data_from_database_df_no_index, file_import_df], ignore_index=True)
-      st.dataframe(full_df)
+      # st.dataframe(full_df)
 
       full_df_drop_duplicates = full_df.drop_duplicates()
 
@@ -67,7 +67,7 @@ else:
       st.dataframe(full_df_drop_duplicates)
 
       merged_df = pd.merge(get_data_from_database_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
-      st.dataframe(merged_df)
+      # st.dataframe(merged_df)
       result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
       st.dataframe(result_df)
 
