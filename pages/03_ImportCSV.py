@@ -52,11 +52,11 @@ else:
       get_data_from_transactions = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
       get_data_from_transactions_df = pd.DataFrame.from_dict(get_data_from_transactions.data)
 
+      # Query Data from Category Table
       get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
       get_data_from_categories_df = pd.DataFrame.from_dict(get_data_from_categories.data)
-      st.write(get_data_from_categories.data)
-      
-
+      key = 'subcategory'
+      list_of_subcategories = [d.get(key) for d in get_data_from_categories.data if key in d]
       
       # drop index column for get_data_from_transactions_df
       get_data_from_transactions_df_no_index = get_data_from_transactions_df.drop(columns=['id'])
@@ -79,7 +79,7 @@ else:
             "App Category",
             help="The category of the app",
             width="medium",
-            options=[],
+            options=list_of_subcategories,
             required=True,
         )
     },)
