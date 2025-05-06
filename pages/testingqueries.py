@@ -29,7 +29,13 @@ def refresh_dashboard():
             del st.session_state[key]
 
 def refresh_data_editor():
-    pass
+    if st.session_state['uncategorized']['edited_rows']:
+        for index, changes in st.session_state['uncategorized']['edited_rows'].items():
+            print(f'index is {index}')
+            print(f'changes is {changes}')
+            for col, value in changes.items():
+                st.session_state.uncategorized_df.loc[index, col] = value               
+
 
 if "user_email" not in st.session_state or st.session_state.user_email is None:
    st.write("User is not logged in")
@@ -49,7 +55,8 @@ else:
 
         # Get the lowest date from the file
         file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        file_import_df = file_import_df.fillna(value="NA")
+        values = {"subcategory": "Uncategorized"}
+        file_import_df = file_import_df.fillna(value=values)
         minimum_date = file_import_df['date'].min()
         maximum_date = file_import_df['date'].max()
 
@@ -62,7 +69,6 @@ else:
         # Query Data from Transaction Table
         get_data_from_transactions = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
         if get_data_from_transactions.data == []:
-            st.write("no data")
             get_data_from_transactions_df_no_index = pd.DataFrame(columns=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'])
         else:
             get_data_from_transactions_df = pd.DataFrame.from_dict(get_data_from_transactions.data)
@@ -72,13 +78,19 @@ else:
         # Query data from category_assignment
         get_data_from_category_assignment = st.session_state.conn.table('category_assignment').select("*").execute()
         if get_data_from_category_assignment == []:
-            st.write('no data')
             get_data_from_category_assignment_df = pd.DataFrame(columns=['description', 'subcategory'])
         else:
             get_data_from_category_assignment_df = pd.DataFrame.from_dict(get_data_from_category_assignment.data)
+
+        if "get_data_from_category_assignment_df" not in st.session_state:
+            st.session_state.get_data_from_category_assignment_df = get_data_from_category_assignment_df
             
+        # Check if the dataframe from the database is empty and then
         # merge dataframe from import and dataframe from database
-        full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)        
+        if get_data_from_transactions_df_no_index.empty:
+            full_df = file_import_df
+        else:
+            full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)        
 
         # drop duplicates from the full_df
         full_df_drop_duplicates = full_df.drop_duplicates()
@@ -90,17 +102,20 @@ else:
 
         # show categorized data
         if "categorized_df" not in st.session_state:
-            st.session_state.categorized_df = result_df.loc[result_df['subcategory'] != "NA"]
+            st.session_state.categorized_df = result_df.loc[result_df['subcategory'] != "Uncategorized"]
 
         # show uncategorized data   
         if "uncategorized_df" not in st.session_state:
-            st.session_state.uncategorized_df = result_df.loc[result_df['subcategory'] == "NA"]
-
+            st.session_state.uncategorized_df = result_df.loc[result_df['subcategory'] == "Uncategorized"]
 
         # display the data in a dataeditor so that we can update the subcategory
+        st.subheader('Review data before importing')
         st.data_editor(
             st.session_state.uncategorized_df,
             use_container_width=True,
+            num_rows="dynamic",
+            key="uncategorized",
+            on_change=refresh_data_editor,
             column_config={
             "subcategory": st.column_config.SelectboxColumn(
                 label="Subcategory",
@@ -108,14 +123,16 @@ else:
                 width="medium",
                 options=list_of_subcategories,
                 required=True,
-            ),
+                ),
             },
-            on_change=refresh_data_editor
         )
 
         # To check if the final dataframe is empty to avoid sending random empty data to database
         if st.session_state.uncategorized_df.empty:
             st.html("<p><span style='color:red; font-size:30px'>No data to import!</span></p>")
+            button_disabled = True
+        elif (st.session_state.uncategorized_df['subcategory'] =="").any:
+            st.html("<p><span style='color:red; font-size:30px'>Missing categories</span></p>")
             button_disabled = True
         else:
             button_disabled = False
@@ -131,3 +148,5 @@ else:
 
 
         st.button("Refresh", type="secondary", use_container_width=True, on_click=refresh_dashboard)
+
+st.session_state
