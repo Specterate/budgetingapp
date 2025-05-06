@@ -61,6 +61,14 @@ else:
             get_data_from_transactions_df_no_index = get_data_from_transactions_df.drop(columns=['id'])
 
         # Query data from category_assignment
+        get_data_from_category_assignment = st.session_state.conn.table('category_assignment').select("*").execute()
+        if get_data_from_category_assignment == []:
+            st.write('no data')
+            get_data_from_category_assignment_df = pd.DataFrame(columns=['description', 'subcategory'])
+        else:
+            get_data_from_category_assignment_df = pd.DataFrame.from_dict(get_data_from_category_assignment.data)
+            # drop index column for get_data_from_category_assignment_df
+            get_data_from_category_assignment_df = get_data_from_category_assignment_df.drop(columns=['id'])
 
 
         # Get the lowest date from the file
