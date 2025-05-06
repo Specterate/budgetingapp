@@ -28,6 +28,9 @@ def refresh_dashboard():
         else:
             del st.session_state[key]
 
+def refresh_data_editor():
+    pass
+
 if "user_email" not in st.session_state or st.session_state.user_email is None:
    st.write("User is not logged in")
    if st.button("Go to Login Page", type="primary"):
@@ -43,6 +46,12 @@ else:
    uploaded_file = st.file_uploader("Choose a file")
    if uploaded_file is not None:
         file_import_df = pd.read_csv(uploaded_file)
+
+        # Get the lowest date from the file
+        file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
+        file_import_df = file_import_df.fillna(value="NA")
+        minimum_date = file_import_df['date'].min()
+        maximum_date = file_import_df['date'].max()
 
         # Query Data from Category Table
         get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
@@ -67,32 +76,30 @@ else:
             get_data_from_category_assignment_df = pd.DataFrame(columns=['description', 'subcategory'])
         else:
             get_data_from_category_assignment_df = pd.DataFrame.from_dict(get_data_from_category_assignment.data)
-            # drop index column for get_data_from_category_assignment_df
-            get_data_from_category_assignment_df = get_data_from_category_assignment_df.drop(columns=['id'])
+            
+        # merge dataframe from import and dataframe from database
+        full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)        
 
-
-        # Get the lowest date from the file
-        file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        file_import_df = file_import_df.fillna(value="NA")
-        minimum_date = file_import_df['date'].min()
-        maximum_date = file_import_df['date'].max()
-
-
-
-        full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)
-
-        # drop duplicates
+        # drop duplicates from the full_df
         full_df_drop_duplicates = full_df.drop_duplicates()
-        print(full_df_drop_duplicates.dtypes)
 
         # Merge the existing data from the database with the imported file (after dropping duplicates)
         merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
         # Only return the rows in the dataframe that are not in the database
         result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
 
+        # show categorized data
+        if "categorized_df" not in st.session_state:
+            st.session_state.categorized_df = result_df.loc[result_df['subcategory'] != "NA"]
+
+        # show uncategorized data   
+        if "uncategorized_df" not in st.session_state:
+            st.session_state.uncategorized_df = result_df.loc[result_df['subcategory'] == "NA"]
+
+
         # display the data in a dataeditor so that we can update the subcategory
         st.data_editor(
-            result_df,
+            st.session_state.uncategorized_df,
             use_container_width=True,
             column_config={
             "subcategory": st.column_config.SelectboxColumn(
@@ -103,15 +110,24 @@ else:
                 required=True,
             ),
             },
+            on_change=refresh_data_editor
         )
 
-        add_df_data = st.button('Import', type="primary", use_container_width=True)
+        # To check if the final dataframe is empty to avoid sending random empty data to database
+        if st.session_state.uncategorized_df.empty:
+            st.html("<p><span style='color:red; font-size:30px'>No data to import!</span></p>")
+            button_disabled = True
+        else:
+            button_disabled = False
+
+        add_df_data = st.button('Import', type="primary", use_container_width=True, disabled=button_disabled)
         if add_df_data:
             try:
                 # Add DataFrame to the database
-                st.session_state.conn.table("transactions").insert(file_import_df.to_dict(orient='records')).execute()
-                st.success('DataFrame added to the database!')     
+                st.session_state.conn.table("transactions").insert(st.session_state.uncategorized_df.to_dict(orient='records')).execute()
+                st.success('Added to Database!')     
             except Exception as e:
                 st.write(e)
 
 
+        st.button("Refresh", type="secondary", use_container_width=True, on_click=refresh_dashboard)

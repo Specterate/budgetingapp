@@ -55,8 +55,6 @@ def sign_out():
 def main_app(user_email):
     st.html("<p style='font-size:20px; text-align:center'>You are logged in!</p>")
     
-    get_data = pd.DataFrame.from_dict(conn.table("mytable1").select('*').execute().data)
-    st.session_state.get_data = get_data
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Go to Dashboard", type="secondary", use_container_width=True, key="dashboard_button"):
@@ -86,9 +84,6 @@ def auth_screen():
             st.session_state.user_email = user.user.email
             st.success(f"Welcome back, {email}!")
             st.rerun()
-
-if "get_data" not in st.session_state:
-    st.session_state.get_data = None
 
 if "user_email" not in st.session_state:
     st.session_state.user_email = None
