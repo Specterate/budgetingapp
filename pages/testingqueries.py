@@ -26,7 +26,6 @@ def refresh_dashboard():
         if key == 'user_email':
             pass
         else:
-            print(st.session_state[key])
             del st.session_state[key]
 
 def refresh_uncategorized_table():
