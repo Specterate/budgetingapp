@@ -9,7 +9,7 @@ from st_supabase_connection import SupabaseConnection, execute_query
 from streamlit import session_state as ss
 import pathlib
 
-st.set_page_config(page_title="Budgeting App", page_icon="💰", layout="centered")
+st.set_page_config(page_title="Budgeting App", page_icon="💰", layout='wide', initial_sidebar_state='expanded')
 st.title("Budgeting App")
 
 # Function to load CSS from the 'assets' folder

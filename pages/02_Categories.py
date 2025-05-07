@@ -9,7 +9,7 @@ from st_supabase_connection import SupabaseConnection, execute_query
 
 
 # set page configuration and title
-st.set_page_config(page_title="Categories", page_icon="📚")
+st.set_page_config(page_title="Categories", page_icon="📚", layout='wide', initial_sidebar_state='expanded')
 st.title("Categories")
 
 if "user_email" not in st.session_state or st.session_state.user_email is None:

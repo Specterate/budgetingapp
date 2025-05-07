@@ -8,7 +8,7 @@ from sqlalchemy.engine import URL
 from st_supabase_connection import SupabaseConnection, execute_query
 
 # set page configuration and title
-st.set_page_config(page_title="Dashboard", page_icon="📊")
+st.set_page_config(page_title="Dashboard", page_icon="📊", layout='wide', initial_sidebar_state='expanded')
 st.title("Dashboard")
 
 def refresh_dashboard():
