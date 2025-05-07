@@ -29,26 +29,12 @@ def refresh_dashboard():
         else:
             del st.session_state[key]
 
-def refresh_uncategorized_table():
-    if st.session_state['uncategorized']['edited_rows']:
-        for index, changes in st.session_state['uncategorized']['edited_rows'].items():
-            print(f'index is {index}')
-            print(f'changes is {changes}')
+def data_editor_callback_for_final_result_df():
+    if st.session_state['data_editor_changes']['edited_rows']:
+        for index, changes in st.session_state['data_editor_changes']['edited_rows'].items():
             for col, value in changes.items():
-                print("st.session_state.final_result_df.loc[index, col]")
-                print(st.session_state.final_result_df.loc[index, col])
                 st.session_state.final_result_df.loc[index, col] = value
-                
-    
-def refresh_categorized_table():
-    if st.session_state['categorized']['edited_rows']:
-        for index, changes in st.session_state['categorized']['edited_rows'].items():
-            print(f'index is {index}')
-            print(f'changes is {changes}')
-            for col, value in changes.items():
-                st.session_state.final_result_df.loc[index, col] = value                
-
-
+                      
 if "user_email" not in st.session_state or st.session_state.user_email is None:
    st.write("User is not logged in")
    if st.button("Go to Login Page", type="primary"):
@@ -126,39 +112,17 @@ else:
         if "final_result_df" not in st.session_state:
             st.session_state.final_result_df = final_result_df
 
-        print('result_df')
-        print(final_result_df)
-
-        # show categorized data
-        if "categorized_df" not in st.session_state:
-            st.session_state.categorized_df = pd.DataFrame()
-        st.session_state.categorized_df = st.session_state.final_result_df.loc[st.session_state.final_result_df['subcategory'] != "Uncategorized"]
-
-        # show uncategorized data   
-        if "uncategorized_df" not in st.session_state:
-            st.session_state.uncategorized_df = pd.DataFrame()
-        st.session_state.uncategorized_df = st.session_state.final_result_df.loc[(st.session_state.final_result_df['subcategory'] == "Uncategorized") | (st.session_state.final_result_df['subcategory'].empty)]
-
-        print('st.session_state.uncategorized_df')
-        print(st.session_state.uncategorized_df)
+        st.dataframe(st.session_state.final_result_df) #st.session_state.final_result_df
 
         st.subheader('Review data before importing')
-
-        "Categorized"
-        st.data_editor(
-            st.session_state.categorized_df,
-            on_change=refresh_categorized_table,
-            key="categorized",
-        )
-
-    
+   
         # display the data in a dataeditor so that we can update the subcategory
         "Un-Categorized"
         st.data_editor(
-            st.session_state.uncategorized_df,
+            st.session_state.final_result_df,
             num_rows="dynamic",
-            key="uncategorized",
-            on_change=refresh_uncategorized_table,
+            key="data_editor_changes",
+            on_change=data_editor_callback_for_final_result_df,
             hide_index = True,
             use_container_width=True,
             column_config={
@@ -174,10 +138,10 @@ else:
         )
 
         # To check if the final dataframe is empty to avoid sending random empty data to database
-        if st.session_state.uncategorized_df.empty:
+        if st.session_state.final_result_df.empty:
             st.html("<p><span style='color:red; font-size:30px'>No data to import!</span></p>")
             button_disabled = True
-        elif (st.session_state.uncategorized_df['subcategory'] =="").any:
+        elif (st.session_state.final_result_df['subcategory'] =="").any:
             st.html("<p><span style='color:red; font-size:30px'>Missing categories</span></p>")
             button_disabled = True
         else:

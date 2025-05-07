@@ -30,10 +30,8 @@ def refresh_dashboard():
             del st.session_state[key]
 
 def refresh_data_1_table():
-    if st.session_state['data_1']['edited_rows']:
-        for index, changes in st.session_state['data_1']['edited_rows'].items():
-            print(f'index is {index}')
-            print(f'changes is {changes}')
+    if st.session_state['edited_data']['edited_rows']:
+        for index, changes in st.session_state['edited_data']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state.data_1.loc[index, col] = value    
 
@@ -48,20 +46,27 @@ else:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
 
-    data_1 = {'id': [1, 2, 3],'name': ['John', 'Jane', 'Doe'],'age': [28, 34, 45]}
+    data_1 = {
+        'item': ["KFC", "McDonalds", "Amazon"],
+        'subcategory': ['', '', ''],
+        'amount': [28, 34, 45]}
     data_1_df = pd.DataFrame.from_dict(data_1)
 
     if "data_1" not in st.session_state:
         st.session_state['data_1'] = data_1_df
 
+    st.write("Data Editor")
     st.data_editor(
-        data_1,
-        key=st.session_state['data_1'],
+        st.session_state['data_1'],
+        key="edited_data",
         use_container_width=True,
         hide_index=True,
-        num_rows="dynamic"
+        num_rows="dynamic",
+        on_change=refresh_data_1_table,
         )
 
-st.session_state['data_1']
+
+st.write("st.session_state")
+st.session_state
 
 st.button("Refresh Dashboard", on_click=refresh_dashboard, type="primary")
