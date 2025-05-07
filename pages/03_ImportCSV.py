@@ -112,26 +112,45 @@ else:
         if "final_result_df" not in st.session_state:
             st.session_state.final_result_df = final_result_df
 
-        st.dataframe(st.session_state.final_result_df) #st.session_state.final_result_df
+        print('final_result_df')
+        print(final_result_df)
+
+        # for index, row in st.session_state.final_result_df.iterrows():
+        #     # Check if the description is already in the category_assignment table
+        #     if row['description'] in st.session_state.get_data_from_category_assignment_df['description'].values:
+        #         # Get the corresponding subcategory from the category_assignment table
+        #         subcategory = st.session_state.get_data_from_category_assignment_df.loc[st.session_state.get_data_from_category_assignment_df['description'] == row['description'], 'subcategory'].values[0]
+        #         st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
+        #     else:
+        #         # If not found, set the subcategory to "Uncategorized"
+        #         st.session_state.final_result_df.at[index, 'subcategory'] = "Uncategorized"
 
         st.subheader('Review data before importing')
-   
+        
+        s = pd.Series(["a", "b", "c", "a"], dtype="category")
+
         # display the data in a dataeditor so that we can update the subcategory
         "Un-Categorized"
         st.data_editor(
             st.session_state.final_result_df,
             num_rows="dynamic",
             key="data_editor_changes",
-            on_change=data_editor_callback_for_final_result_df,
+            # on_change=data_editor_callback_for_final_result_df,
             hide_index = True,
             use_container_width=True,
             column_config={
-                "subcategory": st.column_config.SelectboxColumn
-                (
-                label="Subcategory",
+                "subcategory": st.column_config.SelectboxColumn(
+                "Subcategories",
                 help="Select or add a subcategory",
                 width="medium",
-                options=list_of_subcategories,
+                options=s,
+                required=True,
+                ),
+                "categorytype": st.column_config.SelectboxColumn(
+                "Category Type",
+                help="Select or add a category type",
+                width="medium",
+                options=["Debit","Credit","NA"],
                 required=True,
                 ),
             },
