@@ -26,15 +26,24 @@ def refresh_dashboard():
         if key == 'user_email':
             pass
         else:
+            print(st.session_state[key])
             del st.session_state[key]
 
-def refresh_data_editor():
+def refresh_uncategorized_table():
     if st.session_state['uncategorized']['edited_rows']:
         for index, changes in st.session_state['uncategorized']['edited_rows'].items():
             print(f'index is {index}')
             print(f'changes is {changes}')
             for col, value in changes.items():
-                st.session_state.uncategorized_df.loc[index, col] = value               
+                st.session_state.final_result_df.loc[index, col] = value
+    
+def refresh_categorized_table():
+    if st.session_state['categorized']['edited_rows']:
+        for index, changes in st.session_state['categorized']['edited_rows'].items():
+            print(f'index is {index}')
+            print(f'changes is {changes}')
+            for col, value in changes.items():
+                st.session_state.final_result_df.loc[index, col] = value                
 
 
 if "user_email" not in st.session_state or st.session_state.user_email is None:
@@ -51,14 +60,20 @@ else:
    # Upload the File
    uploaded_file = st.file_uploader("Choose a file")
    if uploaded_file is not None:
-        file_import_df = pd.read_csv(uploaded_file)
+        
+        file_import_df = pd.read_csv(uploaded_file, usecols=["Date", "Description", "Amount"])
+        file_import_df.columns = file_import_df.columns.str.lower()
 
         # Get the lowest date from the file
         file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        values = {"subcategory": "Uncategorized"}
-        file_import_df = file_import_df.fillna(value=values)
+        file_import_df["accounttype"] = "Amex"
+        file_import_df["categorytype"] = "Credit"
+        file_import_df["subcategory"] = "Uncategorized"
+        # values = {"subcategory": "Uncategorized"}
+        # file_import_df = file_import_df.fillna(value=values)
         minimum_date = file_import_df['date'].min()
         maximum_date = file_import_df['date'].max()
+        print(file_import_df)
 
         # Query Data from Category Table
         get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
@@ -90,34 +105,62 @@ else:
         if get_data_from_transactions_df_no_index.empty:
             full_df = file_import_df
         else:
-            full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)        
+            full_df = pd.concat([get_data_from_transactions_df_no_index, file_import_df], ignore_index=True)
+
+        print('full_df')     
+        print(full_df)
 
         # drop duplicates from the full_df
         full_df_drop_duplicates = full_df.drop_duplicates()
 
+        print('full_df_drop_duplicates')
+        print(full_df_drop_duplicates)
+
         # Merge the existing data from the database with the imported file (after dropping duplicates)
         merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
         # Only return the rows in the dataframe that are not in the database
-        result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
+        final_result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
+
+        if "final_result_df" not in st.session_state:
+            st.session_state.final_result_df = final_result_df
+
+        print('result_df')
+        print(final_result_df)
 
         # show categorized data
         if "categorized_df" not in st.session_state:
-            st.session_state.categorized_df = result_df.loc[result_df['subcategory'] != "Uncategorized"]
+            st.session_state.categorized_df = pd.DataFrame()
+        st.session_state.categorized_df = st.session_state.final_result_df.loc[st.session_state.final_result_df['subcategory'] != "Uncategorized"]
 
         # show uncategorized data   
         if "uncategorized_df" not in st.session_state:
-            st.session_state.uncategorized_df = result_df.loc[result_df['subcategory'] == "Uncategorized"]
+            st.session_state.uncategorized_df = pd.DataFrame()
+        st.session_state.uncategorized_df = st.session_state.final_result_df.loc[(st.session_state.final_result_df['subcategory'] == "Uncategorized") | (st.session_state.final_result_df['subcategory'].empty)]
+
+        print('st.session_state.uncategorized_df')
+        print(st.session_state.uncategorized_df)
+
+        st.subheader('Review data before importing')
+
+        "Categorized"
+        st.data_editor(
+            st.session_state.categorized_df,
+            on_change=refresh_categorized_table,
+            key="categorized",
+        )
 
         # display the data in a dataeditor so that we can update the subcategory
-        st.subheader('Review data before importing')
+        "Un-Categorized"
         st.data_editor(
             st.session_state.uncategorized_df,
             use_container_width=True,
             num_rows="dynamic",
             key="uncategorized",
-            on_change=refresh_data_editor,
+            on_change=refresh_uncategorized_table,
+            hide_index = True,
             column_config={
-            "subcategory": st.column_config.SelectboxColumn(
+                "subcategory": st.column_config.SelectboxColumn
+                (
                 label="Subcategory",
                 help="Select or add a subcategory",
                 width="medium",
@@ -147,6 +190,6 @@ else:
                 st.write(e)
 
 
-        st.button("Refresh", type="secondary", use_container_width=True, on_click=refresh_dashboard)
+st.button("Refresh", type="secondary", use_container_width=True, on_click=refresh_dashboard)
 
 st.session_state
