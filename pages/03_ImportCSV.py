@@ -34,31 +34,43 @@ def data_editor_callback_for_final_result_df():
         for index, changes in st.session_state['data_editor_changes']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state.final_result_df.loc[index, col] = value
-                      
+          
 if "user_email" not in st.session_state or st.session_state.user_email is None:
-   st.write("User is not logged in")
-   if st.button("Go to Login Page", type="primary"):
+    st.write("User is not logged in")
+    if st.button("Go to Login Page", type="primary"):
         # Redirect to login page
-        st.switch_page("Budgettingapp.py")
+        st.switch_page("Budgetingapp.py")
 else:
     # Set Supabase connection and session state
-   if 'conn' not in st.session_state:
-      conn = st.connection("supabase",type=SupabaseConnection)
-      st.session_state.conn = conn
+    if 'conn' not in st.session_state:
+        conn = st.connection("supabase",type=SupabaseConnection)
+        st.session_state.conn = conn
 
-   # Upload the File
-   uploaded_file = st.file_uploader("Choose a file")
-   if uploaded_file is not None:
-        file_import_df = pd.read_csv(uploaded_file, usecols=["Date", "Description", "Amount"])
-        file_import_df.columns = file_import_df.columns.str.lower()
+    bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'],)
+    
+    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns")
+    if uploaded_file is not None:
+        try:
+            file_import_df = pd.read_csv(uploaded_file, usecols=['Date', 'Description', 'Amount'])
+        except ValueError as e:
+            print(f"Error reading file: {e}")
+            st.error("Error reading file, please ensure the following columns are present - Date, Description, Amount")
+            st.stop()
 
         # Get the lowest date from the file
+        file_import_df.columns = file_import_df.columns.str.lower()
         file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        file_import_df["accounttype"] = "Amex"
-        file_import_df["categorytype"] = "Credit"
+        if bank_type == 'Amex':
+            file_import_df["accounttype"] = "Amex"
+            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+        elif bank_type == 'ANZ':
+            file_import_df["accounttype"] = "ANZ"
+            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+        elif bank_type == 'Westpac':
+            file_import_df["accounttype"] = "Westpac"
+            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
         file_import_df["subcategory"] = "Uncategorized"
-        # values = {"subcategory": "Uncategorized"}
-        # file_import_df = file_import_df.fillna(value=values)
+        
         minimum_date = file_import_df['date'].min()
         maximum_date = file_import_df['date'].max()
         print(file_import_df)
@@ -68,6 +80,7 @@ else:
         get_data_from_categories_df = pd.DataFrame.from_dict(get_data_from_categories.data)
         key = 'subcategory'
         list_of_subcategories = [d.get(key) for d in get_data_from_categories.data if key in d]
+        list_of_subcategories.sort()
 
         # Query Data from Transaction Table
         get_data_from_transactions = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
@@ -126,8 +139,6 @@ else:
         #         st.session_state.final_result_df.at[index, 'subcategory'] = "Uncategorized"
 
         st.subheader('Review data before importing')
-        
-        s = pd.Series(["a", "b", "c", "a"], dtype="category")
 
         # display the data in a dataeditor so that we can update the subcategory
         "Un-Categorized"
@@ -135,7 +146,7 @@ else:
             st.session_state.final_result_df,
             num_rows="dynamic",
             key="data_editor_changes",
-            # on_change=data_editor_callback_for_final_result_df,
+            on_change=data_editor_callback_for_final_result_df,
             hide_index = True,
             use_container_width=True,
             column_config={
@@ -143,7 +154,7 @@ else:
                 "Subcategories",
                 help="Select or add a subcategory",
                 width="medium",
-                options=s,
+                options=list_of_subcategories,
                 required=True,
                 ),
                 "categorytype": st.column_config.SelectboxColumn(
@@ -152,6 +163,17 @@ else:
                 width="medium",
                 options=["Debit","Credit","NA"],
                 required=True,
+                ),
+                "description": st.column_config.TextColumn(
+                "Description",
+                help="Enter a description",
+                width="medium",
+                ),
+                "amount": st.column_config.NumberColumn(
+                "Amount",
+                help="Enter an amount",
+                width="small",
+                format="dollar",
                 ),
             },
         )
