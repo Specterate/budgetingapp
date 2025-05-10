@@ -126,6 +126,9 @@ else:
         print('full_df')     
         print(full_df)
 
+        full_df = full_df.drop(columns=['subcategory'])
+        print('printing full_df after dropping subcategory')
+        print(full_df)
         # drop duplicates from the full_df
         full_df_drop_duplicates = full_df.drop_duplicates()
 
@@ -133,9 +136,11 @@ else:
         print(full_df_drop_duplicates)
 
         # Merge the existing data from the database with the imported file (after dropping duplicates)
-        merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'], how='right', indicator=True)
+        merged_df = pd.merge(get_data_from_transactions_df_no_index, full_df_drop_duplicates, on=['date', 'accounttype', 'description', 'categorytype', 'amount'], how='right', indicator=True)
         # Only return the rows in the dataframe that are not in the database
         final_result_df = merged_df[merged_df['_merge'] == 'right_only'].drop(columns=['_merge'])
+        final_result_df.reset_index(drop=True, inplace=True)
+        final_result_df['subcategory'] = "Uncategorized"
 
         if "final_result_df" not in st.session_state:
             st.session_state.final_result_df = final_result_df
@@ -188,7 +193,9 @@ else:
             try:
                 # Add DataFrame to the database
                 st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
-                st.success('Added to Database!')     
+                st.success('Added to Database!')
+                clear_file_upload_state()
+                st.rerun()
             except Exception as e:
                 e_exception = type(e).__name__
                 print(f"Error adding data to database: {e}")
