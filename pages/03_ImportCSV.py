@@ -34,6 +34,12 @@ def data_editor_callback_for_final_result_df():
         for index, changes in st.session_state['data_editor_changes']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state.final_result_df.loc[index, col] = value
+
+def clear_file_upload_state():
+    if 'uploaded_file' in st.session_state:
+        del st.session_state['uploaded_file']
+        del st.session_state['final_result_df']
+                
           
 if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
@@ -48,7 +54,7 @@ else:
 
     bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'],)
     
-    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns")
+    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file')
     if uploaded_file is not None:
         try:
             file_import_df = pd.read_csv(uploaded_file, usecols=['Date', 'Description', 'Amount'])
@@ -57,20 +63,29 @@ else:
             st.error("Error reading file, please ensure the following columns are present - Date, Description, Amount")
             st.stop()
 
-        # Get the lowest date from the file
+        # Set the column names to lower case
         file_import_df.columns = file_import_df.columns.str.lower()
-        file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        if bank_type == 'Amex':
-            file_import_df["accounttype"] = "Amex"
-            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
-        elif bank_type == 'ANZ':
-            file_import_df["accounttype"] = "ANZ"
-            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
-        elif bank_type == 'Westpac':
-            file_import_df["accounttype"] = "Westpac"
-            file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
-        file_import_df["subcategory"] = "Uncategorized"
+
+        try:
+            # Assign values to the columns
+            file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
+            print(file_import_df['date'].dtypes)
+            if bank_type == 'Amex':
+                file_import_df["accounttype"] = "Amex"
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+            elif bank_type == 'ANZ':
+                file_import_df["accounttype"] = "ANZ"
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+            elif bank_type == 'Westpac':
+                file_import_df["accounttype"] = "Westpac"
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+            file_import_df["subcategory"] = "Uncategorized"
+        except Exception as e:
+            print(f"Error processing file: {e}")
+            st.error("Error processing file, please ensure the following columns are present - Date, Description, Amount")
+            st.stop()
         
+        # Get the lowest date from the file
         minimum_date = file_import_df['date'].min()
         maximum_date = file_import_df['date'].max()
         print(file_import_df)
@@ -128,16 +143,6 @@ else:
         print('final_result_df')
         print(final_result_df)
 
-        # for index, row in st.session_state.final_result_df.iterrows():
-        #     # Check if the description is already in the category_assignment table
-        #     if row['description'] in st.session_state.get_data_from_category_assignment_df['description'].values:
-        #         # Get the corresponding subcategory from the category_assignment table
-        #         subcategory = st.session_state.get_data_from_category_assignment_df.loc[st.session_state.get_data_from_category_assignment_df['description'] == row['description'], 'subcategory'].values[0]
-        #         st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
-        #     else:
-        #         # If not found, set the subcategory to "Uncategorized"
-        #         st.session_state.final_result_df.at[index, 'subcategory'] = "Uncategorized"
-
         st.subheader('Review data before importing')
 
         # display the data in a dataeditor so that we can update the subcategory
@@ -178,26 +183,22 @@ else:
             },
         )
 
-        # To check if the final dataframe is empty to avoid sending random empty data to database
-        if st.session_state.final_result_df.empty:
-            st.html("<p><span style='color:red; font-size:30px'>No data to import!</span></p>")
-            button_disabled = True
-        elif (st.session_state.final_result_df['subcategory'] =="").any:
-            st.html("<p><span style='color:red; font-size:30px'>Missing categories</span></p>")
-            button_disabled = True
-        else:
-            button_disabled = False
-
-        add_df_data = st.button('Import', type="primary", use_container_width=True, disabled=button_disabled)
+        add_df_data = st.button('Import', type="primary", use_container_width=True)
         if add_df_data:
             try:
                 # Add DataFrame to the database
-                st.session_state.conn.table("transactions").insert(st.session_state.uncategorized_df.to_dict(orient='records')).execute()
+                st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
                 st.success('Added to Database!')     
             except Exception as e:
-                st.write(e)
+                e_exception = type(e).__name__
+                print(f"Error adding data to database: {e}")
+                if e_exception == 'APIError':
+                    st.error("Error adding data to database, please check the logs for more details")
+                else:
+                    st.error("Re-check logs for exception")
+                st.stop()
 
-
-st.button("Refresh", type="secondary", use_container_width=True, on_click=refresh_dashboard)
+with st.sidebar:
+    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
 
 st.session_state
