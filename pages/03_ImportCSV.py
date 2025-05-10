@@ -39,8 +39,10 @@ def clear_file_upload_state():
     if 'uploaded_file' in st.session_state:
         del st.session_state['uploaded_file']
         del st.session_state['final_result_df']
-                
-          
+
+with st.sidebar:
+    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
+
 if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
@@ -79,7 +81,6 @@ else:
             elif bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
-            file_import_df["subcategory"] = "Uncategorized"
         except Exception as e:
             print(f"Error processing file: {e}")
             st.error("Error processing file, please ensure the following columns are present - Date, Description, Amount")
@@ -98,13 +99,11 @@ else:
         list_of_subcategories.sort()
 
         # Query Data from Transaction Table
-        get_data_from_transactions = st.session_state.conn.table("transactions").select("*").gte("date", minimum_date).execute()
+        get_data_from_transactions = st.session_state.conn.table("transactions").select('date', 'accounttype', 'description', 'categorytype', 'amount').gte("date", minimum_date).execute()
         if get_data_from_transactions.data == []:
-            get_data_from_transactions_df_no_index = pd.DataFrame(columns=['date', 'accounttype', 'description', 'categorytype', 'subcategory', 'amount'])
+            get_data_from_transactions_df_no_index = pd.DataFrame(columns=['date', 'accounttype', 'description', 'categorytype', 'amount'])
         else:
-            get_data_from_transactions_df = pd.DataFrame.from_dict(get_data_from_transactions.data)
-            # drop index column for get_data_from_transactions_df
-            get_data_from_transactions_df_no_index = get_data_from_transactions_df.drop(columns=['id'])
+            get_data_from_transactions_df_no_index = pd.DataFrame.from_dict(get_data_from_transactions.data)
 
         # Query data from category_assignment
         get_data_from_category_assignment = st.session_state.conn.table('category_assignment').select("*").execute()
@@ -126,7 +125,7 @@ else:
         print('full_df')     
         print(full_df)
 
-        full_df = full_df.drop(columns=['subcategory'])
+        # full_df = full_df.drop(columns=['subcategory'])
         print('printing full_df after dropping subcategory')
         print(full_df)
         # drop duplicates from the full_df
@@ -150,43 +149,47 @@ else:
 
         st.subheader('Review data before importing')
 
-        # display the data in a dataeditor so that we can update the subcategory
-        "Un-Categorized"
-        st.data_editor(
-            st.session_state.final_result_df,
-            num_rows="dynamic",
-            key="data_editor_changes",
-            on_change=data_editor_callback_for_final_result_df,
-            hide_index = True,
-            use_container_width=True,
-            column_config={
-                "subcategory": st.column_config.SelectboxColumn(
-                "Subcategories",
-                help="Select or add a subcategory",
-                width="medium",
-                options=list_of_subcategories,
-                required=True,
-                ),
-                "categorytype": st.column_config.SelectboxColumn(
-                "Category Type",
-                help="Select or add a category type",
-                width="medium",
-                options=["Debit","Credit","NA"],
-                required=True,
-                ),
-                "description": st.column_config.TextColumn(
-                "Description",
-                help="Enter a description",
-                width="medium",
-                ),
-                "amount": st.column_config.NumberColumn(
-                "Amount",
-                help="Enter an amount",
-                width="small",
-                format="dollar",
-                ),
-            },
-        )
+        if st.session_state.final_result_df.empty:
+            st.warning("No new data to import")
+            st.stop()
+        else:
+            # display the data in a dataeditor so that we can update the subcategory
+            "Un-Categorized"
+            st.data_editor(
+                st.session_state.final_result_df,
+                num_rows="dynamic",
+                key="data_editor_changes",
+                on_change=data_editor_callback_for_final_result_df,
+                hide_index = True,
+                use_container_width=True,
+                column_config={
+                    "subcategory": st.column_config.SelectboxColumn(
+                    "Subcategories",
+                    help="Select or add a subcategory",
+                    width="medium",
+                    options=list_of_subcategories,
+                    required=True,
+                    ),
+                    "categorytype": st.column_config.SelectboxColumn(
+                    "Category Type",
+                    help="Select or add a category type",
+                    width="medium",
+                    options=["Debit","Credit","NA"],
+                    required=True,
+                    ),
+                    "description": st.column_config.TextColumn(
+                    "Description",
+                    help="Enter a description",
+                    width="medium",
+                    ),
+                    "amount": st.column_config.NumberColumn(
+                    "Amount",
+                    help="Enter an amount",
+                    width="small",
+                    format="dollar",
+                    ),
+                },
+            )
 
         add_df_data = st.button('Import', type="primary", use_container_width=True)
         if add_df_data:
@@ -204,8 +207,5 @@ else:
                 else:
                     st.error("Re-check logs for exception")
                 st.stop()
-
-with st.sidebar:
-    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
 
 st.session_state
