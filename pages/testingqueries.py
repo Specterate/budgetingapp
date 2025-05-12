@@ -44,29 +44,41 @@ with st.sidebar:
     st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
 
 
-# uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file')
-# if uploaded_file is not None:
-#     try:
-#         file_import_df = pd.read_csv(uploaded_file, usecols=['Date', 'Description', 'Amount'])
-#         file_import_df['Category'] = 'Uncategorized'
-#     except ValueError as e:
-#         print(f"Error reading file: {e}")
-#         st.error("Error reading file, please ensure the following columns are present - Date, Description, Amount")
-#         st.stop()
+uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file')
+if uploaded_file is not None:
+    try:
+        file_import_df = pd.read_csv(uploaded_file, usecols=['Date', 'Description', 'Amount'])
+        file_import_df['Category'] = 'Uncategorized'
+    except ValueError as e:
+        print(f"Error reading file: {e}")
+        st.error("Error reading file, please ensure the following columns are present - Date, Description, Amount")
+        st.stop()
 
-#     print('file_import_df')
-#     print(file_import_df)
+    print('file_import_df')
+    print(file_import_df)
 
-#     for index, row in file_import_df.iterrows():
-#         label = str(openai_classification(row['Description']))
-#         print(label)
-#         # file_import_df.at[index, 'Description'] = label
-#         print(str(row['Description']) + ' - ' + label)
-#         time.sleep(0.5)
+    length = len(file_import_df)
+    progress_time = int(100 / length)
+    new_progress_time = 0
+    progress_bar = st.progress(0)
+    for index, row in file_import_df.iterrows():
+        label = str(openai_classification(row['Description']))
+        print(label)
+        # file_import_df.at[index, 'Description'] = label
+        print(str(row['Description']) + ' - ' + label)    
+        if index == length - 1:
+            st.success("Loading complete!")
+            progress_bar.progress(100)
+            break
+        else:
+            progress_bar.progress(new_progress_time + progress_time)
+            new_progress_time += progress_time
+        time.sleep(0.5)
 
-capture_text =  st.text_input("Enter a description", key="description_input")
-if capture_text:
-    label = str(openai_classification(capture_text))
-    print(label)
-    st.write("Label: ", label)
-    time.sleep(0.5)
+# capture_text =  st.text_input("Enter a description", key="description_input")
+
+# if capture_text:
+#     label = str(openai_classification(capture_text))
+#     print(label)
+#     st.write("Label: ", label)
+
