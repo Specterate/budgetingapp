@@ -43,6 +43,10 @@ def clear_file_upload_state():
         del st.session_state['uploaded_file']
         del st.session_state['final_result_df']
 
+def clear_open_ai_run():
+    if 'open_ai_run' in st.session_state:
+        del st.session_state['open_ai_run']
+
 def openai_classification(desc, str_list_of_subcategories):
 
     content_system = ("I would like to classify my expenses using specific categories. In input you will have the list of categories and the description of an expense. Please associate a category to the expense. "
@@ -55,8 +59,7 @@ def openai_classification(desc, str_list_of_subcategories):
             {"role": "user", "content": "Expense description: " + str(desc)}]
 )      
     data = completion.choices[0].message
-    print("data")
-    print(data.content)
+    print(f'data is {data.content}')
     return data.content
 
 # Sidebar
@@ -251,9 +254,13 @@ else:
         if add_df_data:
             try:
                 # Add DataFrame to the database
-                st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
+                response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
+                print(f"Response from Supabase: {response}")
+                with st.spinner("Uploading to Supabase", show_time=True):
+                    time.sleep(5)
                 st.success('Added to Database!')
                 clear_file_upload_state()
+                clear_open_ai_run()
                 st.rerun()
             except Exception as e:
                 e_exception = type(e).__name__
@@ -264,4 +271,4 @@ else:
                     st.error("Re-check logs for exception")
                 st.stop()
 
-st.session_state
+print(st.session_state)

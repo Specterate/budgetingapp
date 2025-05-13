@@ -18,6 +18,10 @@ def refresh_dashboard():
         else:
             del st.session_state[key]
 
+# Sidebar
+with st.sidebar:
+    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
+
 if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
@@ -59,6 +63,32 @@ else:
     col2.metric(label="Total Credit", value=f'$ {st.session_state.credit_sum:,.2f}')
     col3.metric(label="Balance", value=f'$ {st.session_state.balance:,.2f}')
 
-    st.button("Refresh", type="primary", use_container_width=True, on_click=refresh_dashboard)
+    # set session state for get trasaction data
+    try:
+        if 'dashboard_get_transaction_data_df_ss' not in st.session_state:
+            # Query categories table from supabase
+            dashboard_get_transaction_data = st.session_state.conn.table("transactions").select("*").execute()
+
+            # Convert get_data to pandas dataframe
+            dashboard_get_transaction_data_df = pd.DataFrame.from_dict(dashboard_get_transaction_data.data)
+            st.session_state.dashboard_get_transaction_data_df_ss = dashboard_get_transaction_data_df
+    except Exception as e:
+        st.error(f"Error fetching transaction data:")
+        print(f'Error fetching transaction data: {e}')
+        st.stop()
+
+    credit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Credit' and subcategory != 'Transfer'")['amount'].sum()
+    print(f"Sum by credit: {credit_sum}")
+    debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and subcategory != 'Transfer'")['amount'].sum()
+    print(f"Sum by debit: {debit_sum}")
+    balance = credit_sum - debit_sum
+    print(f"Balance: {balance}")
+
+    col1, col2 = st.columns(2, border=True)
+    col1.metric(label="Total Debit", value=f'$ {debit_sum:,.2f}')
+    col2.metric(label="Total Credit", value=f'$ {credit_sum:,.2f}')
+
+
+
 
     # st.session_state
