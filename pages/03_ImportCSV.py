@@ -13,6 +13,7 @@ from openai import OpenAI
 st.set_page_config(page_title='Import/Export', layout='wide', initial_sidebar_state='expanded')
 st.title('Import/Export Files')
 
+print('\n\n\n')
 print('Application started -----------------------------------------------')
 
 # Function to load CSS from the 'assets' folder
@@ -89,11 +90,20 @@ else:
     # Select Bank Statements (CSV) for different formatting.
     bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'],)
     
+    if "final_result_df" in st.session_state:
+        del st.session_state['final_result_df']
+
     # Upload CSV file
-    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file')
-    if uploaded_file is not None:
+    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file', type=["csv"])
+
+    if st.session_state.uploaded_file is None:
+        if "open_ai_run" in st.session_state:
+            del st.session_state['open_ai_run']
+        if "data_editor_changes" in st.session_state:
+            del st.session_state['data_editor_changes']
+    else:
         try:
-            file_import_df = pd.read_csv(uploaded_file, usecols=['Date', 'Description', 'Amount'])
+            file_import_df = pd.read_csv(st.session_state.uploaded_file, usecols=['Date', 'Description', 'Amount'])
         except ValueError as e:
             print(f"Error reading file: {e}")
             st.error("Error reading file, please ensure the following columns are present - Date, Description, Amount")
@@ -126,13 +136,13 @@ else:
 
         # Query Data from Category Table
         get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
+        print(f'get_data_from_categories is {get_data_from_categories.data}')
         get_data_from_categories_df = pd.DataFrame.from_dict(get_data_from_categories.data)
         key = 'subcategory'
         list_of_subcategories = [d.get(key) for d in get_data_from_categories.data if key in d]
         list_of_subcategories.sort()
-        print('list_of_subcategories')
-        print(list_of_subcategories.sort())
         str_list_of_subcategories = ','.join(list_of_subcategories)
+        print(f'list_of_subcategories is {list_of_subcategories}')
 
         # Query Data from Transaction Table
         get_data_from_transactions = st.session_state.conn.table("transactions").select('date', 'accounttype', 'description', 'categorytype', 'amount').gte("date", minimum_date).execute()
@@ -171,36 +181,44 @@ else:
             st.session_state.final_result_df = final_result_df
 
         print('final_result_df')
-        print(final_result_df)
-
-
-        length = len(file_import_df)
-        progress_time = int(100 / length)
-        new_progress_time = 0
-        progress_bar = st.progress(0)
-
-        if "open_ai_run" not in st.session_state:
-            # Using OpenAI to classify the description and add the subcategories
-            for index, row in final_result_df.iterrows():
-                subcategory = openai_classification(row['description'], str_list_of_subcategories)
-                final_result_df.at[index, 'subcategory'] = subcategory
-                if index == length - 1:
-                    st.success("Loading complete!")
-                    progress_bar.progress(100)
-                    break
-                else:
-                    progress_bar.progress(new_progress_time + progress_time)
-                    new_progress_time += progress_time
-                time.sleep(0.5)
-            st.session_state.open_ai_run = True
-
-
-        st.subheader('Review data before importing')
+        print(st.session_state.final_result_df)
 
         if st.session_state.final_result_df.empty:
             st.warning("No new data to import")
             st.stop()
         else:
+            length = len(st.session_state.final_result_df)
+            print(f'length of file_import_df is {length}')
+            progress_time = int(100 / length)
+            new_progress_time = 0
+            progress_bar = st.progress(0, text="Loading...")
+
+            if length < 50:
+                data_editor_height_display = (length + 1 ) * 36
+            else:
+                data_editor_height_display = 50 * 36
+
+            if "open_ai_run" not in st.session_state:
+                # Using OpenAI to classify the description and add the subcategories
+                for index, row in final_result_df.iterrows():
+                    subcategory = openai_classification(row['description'], str_list_of_subcategories)
+                    final_result_df.at[index, 'subcategory'] = subcategory
+                    if index == length - 1:
+                        st.success("Loading complete!")
+                        progress_bar.progress(100)
+                        break
+                    else:
+                        progress_bar.progress(new_progress_time + progress_time)
+                        new_progress_time += progress_time
+                    time.sleep(0.5)
+                st.session_state.open_ai_run = True
+
+            time.sleep(1)
+            progress_bar.empty()
+
+            st.subheader('Review data before importing')
+
+
             # display the data in a dataeditor so that we can update the subcategory
             "Un-Categorized"
             st.data_editor(
@@ -210,6 +228,7 @@ else:
                 on_change=data_editor_callback_for_final_result_df,
                 hide_index = True,
                 use_container_width=True,
+                height=data_editor_height_display,
                 column_config={
                     "subcategory": st.column_config.SelectboxColumn(
                     "Subcategories",
@@ -239,25 +258,25 @@ else:
                 },
             )
 
-        add_df_data = st.button('Import', type="primary", use_container_width=True)
-        if add_df_data:
-            try:
-                # Add DataFrame to the database
-                response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
-                print(f"Response from Supabase: {response}")
-                with st.spinner("Uploading to Supabase", show_time=True):
-                    time.sleep(5)
-                st.success('Added to Database!')
-                clear_file_upload_state()
-                clear_open_ai_run()
-                st.rerun()
-            except Exception as e:
-                e_exception = type(e).__name__
-                print(f"Error adding data to database: {e}")
-                if e_exception == 'APIError':
-                    st.error("Error adding data to database, please check the logs for more details")
-                else:
-                    st.error("Re-check logs for exception")
-                st.stop()
+            add_df_data = st.button('Import', type="primary", use_container_width=True)
+            if add_df_data:
+                try:
+                    # Add DataFrame to the database
+                    response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
+                    print(f"Response from Supabase: {response}")
+                    with st.spinner("Uploading to Supabase", show_time=True):
+                        time.sleep(5)
+                    st.success('Added to Database!')
+                    clear_file_upload_state()
+                    clear_open_ai_run()
+                    st.rerun()
+                except Exception as e:
+                    e_exception = type(e).__name__
+                    print(f"Error adding data to database: {e}")
+                    if e_exception == 'APIError':
+                        st.error("Error adding data to database, please check the logs for more details")
+                    else:
+                        st.error("Re-check logs for exception")
+                    st.stop()
 
-print(st.session_state)
+st.session_state
