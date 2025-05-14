@@ -141,18 +141,7 @@ else:
         else:
             get_data_from_transactions_df_no_index = pd.DataFrame.from_dict(get_data_from_transactions.data)
 
-        # Query data from category_assignment
-        # get_data_from_category_assignment = st.session_state.conn.table('category_assignment').select("*").execute()
-        # if get_data_from_category_assignment == []:
-        #     get_data_from_category_assignment_df = pd.DataFrame(columns=['description', 'subcategory'])
-        # else:
-        #     get_data_from_category_assignment_df = pd.DataFrame.from_dict(get_data_from_category_assignment.data)
 
-        # if "get_data_from_category_assignment_df" not in st.session_state:
-        #     st.session_state.get_data_from_category_assignment_df = get_data_from_category_assignment_df
-            
-        # Check if the dataframe from the database is empty and then
-        # merge dataframe from import and dataframe from database
         if get_data_from_transactions_df_no_index.empty:
             full_df = file_import_df
         else:

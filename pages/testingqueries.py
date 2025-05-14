@@ -5,17 +5,21 @@ import os
 import time
 import datetime
 
-
 today = datetime.datetime.now()
-next_year = today.year + 1
-jan_1 = datetime.date(next_year, 1, 1)
-dec_31 = datetime.date(next_year, 12, 31)
+this_month = today.month
 
-d = st.date_input(
-    "Select your vacation for next year",
-    (jan_1, datetime.date(next_year, 1, 7)),
-    jan_1,
-    dec_31,
-    format="MM.DD.YYYY",
+date_selection = st.date_input(
+    "Select the date range",
+    value = [],
+    format="YYYY-MM-DD",
 )
-d[1]
+
+submit_date = st.button("Get Data", type="primary")
+if submit_date:
+    st.session_state.start_date = date_selection[0]
+    st.session_state.end_date = date_selection[1]
+    
+
+st.session_state
+
+
