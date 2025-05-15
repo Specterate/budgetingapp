@@ -88,10 +88,14 @@ else:
         st.session_state.conn = conn
 
     # Select Bank Statements (CSV) for different formatting.
-    bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'],)
+    st.session_state.bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'], index=None)
 
-    # Upload CSV file
-    uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file', type=["csv"])
+    if st.session_state.bank_type is None:
+        st.warning("Please select a bank account")
+        st.stop()
+    else:
+        # Upload CSV file
+        uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file', type=["csv"])
 
     if st.session_state.uploaded_file is None:
         if "open_ai_run" in st.session_state:
@@ -114,13 +118,13 @@ else:
         try:
             # Assign values to the columns
             file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
-            if bank_type == 'Amex':
+            if st.session_state.bank_type == 'Amex':
                 file_import_df["accounttype"] = "Amex"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
-            elif bank_type == 'ANZ':
+            elif st.session_state.bank_type == 'ANZ':
                 file_import_df["accounttype"] = "ANZ"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
-            elif bank_type == 'Westpac':
+            elif st.session_state.bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
         except Exception as e:
