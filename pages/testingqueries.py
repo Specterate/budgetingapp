@@ -4,22 +4,35 @@ from openai import OpenAI
 import os
 import time
 import datetime
+import numpy as np
 
-today = datetime.datetime.now()
-this_month = today.month
+data = {'col1': np.random.randint(0,106,size=106)}
+df = pd.DataFrame(data)
 
-date_selection = st.date_input(
-    "Select the date range",
-    value = [],
-    format="YYYY-MM-DD",
-)
+length = len(df)
+st.title("Testing Queries")
+st.write("Length of the DataFrame:", length)
 
-submit_date = st.button("Get Data", type="primary")
-if submit_date:
-    st.session_state.start_date = date_selection[0]
-    st.session_state.end_date = date_selection[1]
-    
+progress_bar = st.progress(0, text="Loading data...")
+progress_time = int(length / 4)
+count = 0
+new_progress_time = 0
 
-st.session_state
+for index, row in df.iterrows():
+    print(f'index: {index}, length: {length}')
+    if index == (length - 1):
+        progress_bar.progress(100)
+        with st.spinner("Finalizing..."):
+            time.sleep(2)
+            progress_bar.empty()
+            st.success("Loading complete!")
+        break
+    elif count == progress_time:
+        progress_bar.progress(new_progress_time + 25)
+        count = 0
+        new_progress_time += 25
+    else:
+        count+= 1
+    time.sleep(0.1)
 
 

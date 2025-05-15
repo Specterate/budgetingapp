@@ -89,9 +89,6 @@ else:
 
     # Select Bank Statements (CSV) for different formatting.
     bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'],)
-    
-    if "final_result_df" in st.session_state:
-        del st.session_state['final_result_df']
 
     # Upload CSV file
     uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file', type=["csv"])
@@ -101,6 +98,8 @@ else:
             del st.session_state['open_ai_run']
         if "data_editor_changes" in st.session_state:
             del st.session_state['data_editor_changes']
+        if "final_result_df" in st.session_state:
+            del st.session_state['final_result_df']
     else:
         try:
             file_import_df = pd.read_csv(st.session_state.uploaded_file, usecols=['Date', 'Description', 'Amount'])
@@ -120,7 +119,7 @@ else:
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
             elif bank_type == 'ANZ':
                 file_import_df["accounttype"] = "ANZ"
-                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
             elif bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
@@ -189,7 +188,8 @@ else:
         else:
             length = len(st.session_state.final_result_df)
             print(f'length of file_import_df is {length}')
-            progress_time = int(100 / length)
+            progress_time = int(length / 4)
+            count = 0
             new_progress_time = 0
             progress_bar = st.progress(0, text="Loading...")
 
@@ -200,16 +200,22 @@ else:
 
             if "open_ai_run" not in st.session_state:
                 # Using OpenAI to classify the description and add the subcategories
-                for index, row in final_result_df.iterrows():
+                for index, row in st.session_state.final_result_df.iterrows():
                     subcategory = openai_classification(row['description'], str_list_of_subcategories)
-                    final_result_df.at[index, 'subcategory'] = subcategory
-                    if index == length - 1:
-                        st.success("Loading complete!")
+                    st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
+                    if index == (length - 1):
                         progress_bar.progress(100)
+                        with st.spinner("Finalizing..."):
+                            time.sleep(2)
+                            progress_bar.empty()
+                            st.success("Loading complete!")
                         break
+                    elif count == progress_time:
+                        progress_bar.progress(new_progress_time + 25)
+                        count = 0
+                        new_progress_time += 25
                     else:
-                        progress_bar.progress(new_progress_time + progress_time)
-                        new_progress_time += progress_time
+                        count += 1                
                     time.sleep(0.5)
                 st.session_state.open_ai_run = True
 
@@ -218,9 +224,7 @@ else:
 
             st.subheader('Review data before importing')
 
-
             # display the data in a dataeditor so that we can update the subcategory
-            "Un-Categorized"
             st.data_editor(
                 st.session_state.final_result_df,
                 num_rows="dynamic",
