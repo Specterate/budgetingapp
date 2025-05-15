@@ -81,7 +81,46 @@ else:
         col2.metric(label="Total Credit", value=f'$ {st.session_state.category_credit_sum:,.2f}')
         col3.metric(label="Balance", value=f'$ {st.session_state.category_balance:,.2f}')
 
-        px.bar(st.session_state.dashboard_get_category_data_df_ss, x='subcategory', y='monthly', color='categorytype', title="Monthly Budget by Category", color_discrete_sequence=px.colors.qualitative.Plotly).update_layout(showlegend=False).update_traces(texttemplate='%{value:,.2f}', textposition='outside').update_yaxes(title_text="Monthly Budget", title_standoff=25).update_xaxes(title_text="Subcategory", title_standoff=25).update_traces(marker=dict(line=dict(width=1, color='DarkSlateGrey'))).show()
+
+        st.session_state.dashboard_category_debit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit']
+        fig_debit = px.bar(
+        st.session_state.dashboard_category_debit,
+        x='subcategory',
+        y='monthly',
+        color='categorytype',
+        title='Monthly Expenses by Subcategory',
+        labels={'monthly': 'Monthly Expenses', 'subcategory': 'Subcategory'},
+        hover_data=['yearly'],
+        text_auto='.2s'
+    )
+        fig_debit.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+        fig_debit.update_layout(
+            xaxis_title="Subcategory",
+            yaxis_title="Monthly Expenses",
+            title_x=0.5,
+            title_y=0.95,
+            title_font=dict(size=20),
+            margin=dict(l=20, r=20, t=50, b=20),
+            height=400,
+        )
+        st.plotly_chart(fig_debit, theme="streamlit")
+
+        # Set session state for get category data           
+            
+        st.session_state.dashboard_category_credit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Credit']
+        fig = px.bar(
+        st.session_state.dashboard_category_credit,
+        x='monthly',
+        y='subcategory',
+        color='categorytype',
+        title='Monthly Income by Subcategory',
+        labels={'monthly': 'Monthly Expenses', 'subcategory': 'Subcategory'},
+        hover_data=['yearly'],
+        orientation='h',
+        text_auto=True
+    )
+        st.plotly_chart(fig, theme="streamlit")
+
 
     with tab2:
         # Set the date range for the query
@@ -96,22 +135,21 @@ else:
         submit_date = st.button("Get Data", type="primary", on_click=get_date_selection)
             
         if submit_date:
-
             if st.session_state.dashboard_get_transaction_data_df_ss.empty:
                 st.session_state.credit_sum = 0
                 st.session_state.debit_sum = 0
                 balance = 0
             else:
                 st.session_state.credit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Credit' and subcategory != 'Transfer'")['amount'].sum()
-                print(f"Sum by credit: {credit_sum}")
+                print(f"Sum by credit: {st.session_state.credit_sum}")
                 st.session_state.debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and subcategory != 'Transfer'")['amount'].sum()
-                print(f"Sum by debit: {debit_sum}")
-                st.session_state.balance = credit_sum - debit_sum
-                print(f"Balance: {balance}")
+                print(f"Sum by debit: {st.session_state.debit_sum}")
+                st.session_state.balance = st.session_state.credit_sum - st.session_state.debit_sum
+                print(f"Balance: {st.session_state.balance }")
 
             col1, col2 = st.columns(2, border=True)
             col1.metric(label="Total Debit", value=f'$ {st.session_state.debit_sum:,.2f}')
             col2.metric(label="Total Credit", value=f'$ {st.session_state.credit_sum:,.2f}')
 
-with st.expander("See session state data"):
-    st.session_state
+    with st.expander("See session state data"):
+        st.session_state

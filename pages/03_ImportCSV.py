@@ -287,4 +287,5 @@ else:
                         st.error("Re-check logs for exception")
                     st.stop()
 
-st.session_state
+    with st.expander("Session State", expanded=False):
+        st.session_state

@@ -105,4 +105,6 @@ else:
                 yearly_expenses_update = st.number_input("Yearly Expenses", key="yearly_expenses_update", placeholder = st.session_state.edited_dataframe['yearly'].values[0], value=None, format="%.0f")
                 categorytype_update = st.selectbox("Category Type", ["Debit","Credit","NA"], placeholder=None, key="category_type_update", accept_new_options=True)
                 st.form_submit_button("Update", type="primary", on_click=update_sub_category)
-                
+
+    with st.expander("Session State", expanded=False):
+        st.session_state                
