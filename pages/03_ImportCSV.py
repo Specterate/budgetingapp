@@ -195,36 +195,40 @@ else:
             progress_time = int(length / 4)
             count = 0
             new_progress_time = 0
-            progress_bar = st.progress(0, text="Loading...")
+            
 
             if length < 50:
                 data_editor_height_display = (length + 1 ) * 36
             else:
                 data_editor_height_display = 50 * 36
 
-            if "open_ai_run" not in st.session_state:
-                # Using OpenAI to classify the description and add the subcategories
-                for index, row in st.session_state.final_result_df.iterrows():
-                    subcategory = openai_classification(row['description'], str_list_of_subcategories)
-                    st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
-                    if index == (length - 1):
-                        progress_bar.progress(100)
-                        with st.spinner("Finalizing..."):
-                            time.sleep(2)
-                            progress_bar.empty()
-                            st.success("Loading complete!")
-                        break
-                    elif count == progress_time:
-                        progress_bar.progress(new_progress_time + 25)
-                        count = 0
-                        new_progress_time += 25
-                    else:
-                        count += 1                
-                    time.sleep(0.5)
-                st.session_state.open_ai_run = True
+            # Categorize the data using OpenAI
+            categorize = st.button('Categorize', type="primary")
+            if categorize:
+                progress_bar = st.progress(0, text="Loading...")
+                if "open_ai_run" not in st.session_state:
+                    # Using OpenAI to classify the description and add the subcategories
+                    for index, row in st.session_state.final_result_df.iterrows():
+                        subcategory = openai_classification(row['description'], str_list_of_subcategories)
+                        st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
+                        if index == (length - 1):
+                            progress_bar.progress(100)
+                            with st.spinner("Finalizing..."):
+                                time.sleep(2)
+                                progress_bar.empty()
+                                st.success("Loading complete!")
+                            break
+                        elif count == progress_time:
+                            progress_bar.progress(new_progress_time + 25)
+                            count = 0
+                            new_progress_time += 25
+                        else:
+                            count += 1                
+                        time.sleep(0.5)
+                    st.session_state.open_ai_run = True
 
-            time.sleep(1)
-            progress_bar.empty()
+                time.sleep(1)
+                progress_bar.empty()
 
             st.subheader('Review data before importing')
 
@@ -233,8 +237,8 @@ else:
                 st.session_state.final_result_df,
                 num_rows="dynamic",
                 key="data_editor_changes",
-                on_change=data_editor_callback_for_final_result_df,
-                hide_index = True,
+                # on_change=data_editor_callback_for_final_result_df,
+                hide_index = False,
                 use_container_width=True,
                 height=data_editor_height_display,
                 column_config={
@@ -266,26 +270,30 @@ else:
                 },
             )
 
-            add_df_data = st.button('Import', type="primary", use_container_width=True)
-            if add_df_data:
-                try:
-                    # Add DataFrame to the database
-                    response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
-                    print(f"Response from Supabase: {response}")
-                    with st.spinner("Uploading to Supabase", show_time=True):
-                        time.sleep(5)
-                    st.success('Added to Database!')
-                    clear_file_upload_state()
-                    clear_open_ai_run()
-                    st.rerun()
-                except Exception as e:
-                    e_exception = type(e).__name__
-                    print(f"Error adding data to database: {e}")
-                    if e_exception == 'APIError':
-                        st.error("Error adding data to database, please check the logs for more details")
-                    else:
-                        st.error("Re-check logs for exception")
-                    st.stop()
+            update_data = st.button('Update Data', type="primary" , on_click=data_editor_callback_for_final_result_df)
+
+            if update_data:
+
+                add_df_data = st.button('Import', type="primary", use_container_width=True)
+                if add_df_data:
+                    try:
+                        # Add DataFrame to the database
+                        response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
+                        print(f"Response from Supabase: {response}")
+                        with st.spinner("Uploading to Supabase", show_time=True):
+                            time.sleep(5)
+                        st.success('Added to Database!')
+                        clear_file_upload_state()
+                        clear_open_ai_run()
+                        st.rerun()
+                    except Exception as e:
+                        e_exception = type(e).__name__
+                        print(f"Error adding data to database: {e}")
+                        if e_exception == 'APIError':
+                            st.error("Error adding data to database, please check the logs for more details")
+                        else:
+                            st.error("Re-check logs for exception")
+                        st.stop()
 
     with st.expander("Session State", expanded=False):
         st.session_state
