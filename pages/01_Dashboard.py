@@ -64,62 +64,94 @@ else:
             # Convert get_data to pandas dataframe
             st.session_state.dashboard_get_category_data_df_ss = pd.DataFrame.from_dict(dashboard_get_category_data.data)
         
-        category_debit_sum = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit','monthly'].sum()
+        
+        category_debit_sum = st.session_state.dashboard_get_category_data_df_ss.query("categorytype == 'Debit' and category != 'Investment' and subcategory != 'Transfer'")['monthly'].sum()
         if "category_debit_sum" not in st.session_state:
             st.session_state.category_debit_sum = category_debit_sum
 
-        category_credit_sum = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Credit','monthly'].sum()
+        category_credit_sum = st.session_state.dashboard_get_category_data_df_ss.query("categorytype == 'Credit' and category != 'Investment' and subcategory != 'Transfer'")['monthly'].sum()
         if "category_credit_sum" not in st.session_state:
             st.session_state.category_credit_sum = category_credit_sum
+
+        category_investment_sum = st.session_state.dashboard_get_category_data_df_ss.query("categorytype == 'Investment'")['monthly'].sum()
+        if "category_investment_sum" not in st.session_state:
+            st.session_state.category_investment_sum = category_investment_sum
 
         category_balance = category_credit_sum - category_debit_sum
         if "category_balance" not in st.session_state:
             st.session_state.category_balance = category_balance
 
-        col1, col2, col3 = st.columns(3, border=True)
+        # Display the metrics
+        col1, col2, col3, col4 = st.columns(4, border=True)
         col1.metric(label="Total Debit", value=f'$ {st.session_state.category_debit_sum:,.2f}')
         col2.metric(label="Total Credit", value=f'$ {st.session_state.category_credit_sum:,.2f}')
-        col3.metric(label="Balance", value=f'$ {st.session_state.category_balance:,.2f}')
+        col3.metric(label="Total Investment", value=f'$ {st.session_state.category_investment_sum:,.2f}')
+        col4.metric(label="Balance", value=f'$ {st.session_state.category_balance:,.2f}')
 
-
-        st.session_state.dashboard_category_debit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit']
-        fig_debit = px.bar(
-        st.session_state.dashboard_category_debit,
-        x='subcategory',
-        y='monthly',
-        color='categorytype',
-        title='Monthly Expenses by Subcategory',
-        labels={'monthly': 'Monthly Expenses', 'subcategory': 'Subcategory'},
-        hover_data=['yearly'],
-        text_auto='.2s'
-    )
-        fig_debit.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
-        fig_debit.update_layout(
-            xaxis_title="Subcategory",
-            yaxis_title="Monthly Expenses",
-            title_x=0.5,
-            title_y=0.95,
-            title_font=dict(size=20),
-            margin=dict(l=20, r=20, t=50, b=20),
-            height=400,
+        with st.expander("Monthly Expenses by Category"):
+            st.session_state.dashboard_category_debit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit']
+            fig_debit = px.bar(
+            st.session_state.dashboard_category_debit,
+            x='category',
+            y='monthly',
+            color='categorytype',
+            title='Monthly Expenses by Category',
+            labels={'monthly': 'Monthly Expenses', 'category': 'category'},
+            hover_data=['yearly'],
+            text_auto='.2s'
         )
-        st.plotly_chart(fig_debit, theme="streamlit")
+            fig_debit.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+            fig_debit.update_layout(
+                xaxis_title="Category",
+                yaxis_title="Monthly Expenses",
+                title_x=0.5,
+                title_y=0.95,
+                title_font=dict(size=20),
+                margin=dict(l=20, r=20, t=50, b=20),
+                height=400,
+            )
+            st.plotly_chart(fig_debit, theme="streamlit")
+
+        with st.expander("Monthly Expenses by Sub Category"):
+            st.session_state.dashboard_category_debit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Debit']
+            fig_debit = px.bar(
+            st.session_state.dashboard_category_debit,
+            x='subcategory',
+            y='monthly',
+            color='categorytype',
+            title='Monthly Expenses by SubCategory',
+            labels={'monthly': 'Monthly Expenses', 'Subcategory': 'Subcategory'},
+            hover_data=['yearly'],
+            text_auto='.2s'
+        )
+            fig_debit.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+            fig_debit.update_layout(
+                xaxis_title="SubCategory",
+                yaxis_title="Monthly Expenses",
+                title_x=0.5,
+                title_y=0.95,
+                title_font=dict(size=20),
+                margin=dict(l=20, r=20, t=50, b=20),
+                height=400,
+            )
+            st.plotly_chart(fig_debit, theme="streamlit")            
 
         # Set session state for get category data           
             
-        st.session_state.dashboard_category_credit = st.session_state.dashboard_get_category_data_df_ss.loc[st.session_state.dashboard_get_category_data_df_ss['categorytype']=='Credit']
-        fig = px.bar(
-        st.session_state.dashboard_category_credit,
-        x='monthly',
-        y='subcategory',
-        color='categorytype',
-        title='Monthly Income by Subcategory',
-        labels={'monthly': 'Monthly Expenses', 'subcategory': 'Subcategory'},
-        hover_data=['yearly'],
-        orientation='h',
-        text_auto=True
-    )
-        st.plotly_chart(fig, theme="streamlit")
+        with st.expander("Monthly Income by Category"):
+            st.session_state.dashboard_category_credit = st.session_state.dashboard_get_category_data_df_ss.query("categorytype == 'Credit' and category != 'Investment' and subcategory != 'Transfer'")
+            fig = px.bar(
+            st.session_state.dashboard_category_credit,
+            x='monthly',
+            y='subcategory',
+            color='categorytype',
+            title='Monthly Income by Subcategory',
+            labels={'monthly': 'Monthly Expenses', 'subcategory': 'Subcategory'},
+            hover_data=['yearly'],
+            orientation='h',
+            text_auto=True
+        )
+            st.plotly_chart(fig, theme="streamlit")
 
 
     with tab2:
@@ -142,7 +174,7 @@ else:
             else:
                 st.session_state.credit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Credit' and subcategory != 'Transfer'")['amount'].sum()
                 print(f"Sum by credit: {st.session_state.credit_sum}")
-                st.session_state.debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and subcategory != 'Transfer'")['amount'].sum()
+                st.session_state.debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and category != 'Investment' and subcategory != 'Transfer'")['amount'].sum()
                 print(f"Sum by debit: {st.session_state.debit_sum}")
                 st.session_state.balance = st.session_state.credit_sum - st.session_state.debit_sum
                 print(f"Balance: {st.session_state.balance }")

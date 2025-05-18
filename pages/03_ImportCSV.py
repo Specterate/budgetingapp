@@ -14,7 +14,7 @@ st.set_page_config(page_title='Import/Export', layout='wide', initial_sidebar_st
 st.title('Import/Export Files')
 
 print('\n\n\n')
-print('Application started -----------------------------------------------')
+print(f'Application started {datetime.datetime.now()} -----------------------------------------------')
 
 # Function to load CSS from the 'assets' folder
 def load_css(file_path):
@@ -38,6 +38,7 @@ def data_editor_callback_for_final_result_df():
         for index, changes in st.session_state['data_editor_changes']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state.final_result_df.loc[index, col] = value
+    st.session_state.update_data = True
 
 def clear_file_upload_state():
     if 'uploaded_file' in st.session_state:
@@ -88,7 +89,7 @@ else:
         st.session_state.conn = conn
 
     # Select Bank Statements (CSV) for different formatting.
-    st.session_state.bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac'], index=None)
+    st.session_state.bank_type = st.selectbox("Select Bank Account", ['Amex', 'ANZ', 'Westpac', 'CBA'], index=None)
 
     if st.session_state.bank_type is None:
         st.warning("Please select a bank account")
@@ -104,6 +105,10 @@ else:
             del st.session_state['data_editor_changes']
         if "final_result_df" in st.session_state:
             del st.session_state['final_result_df']
+        if "update_data" in st.session_state:
+            del st.session_state['update_data']
+        if "add_df_data" in st.session_state:
+            del st.session_state['add_df_data']
     else:
         try:
             file_import_df = pd.read_csv(st.session_state.uploaded_file, usecols=['Date', 'Description', 'Amount'])
@@ -124,8 +129,14 @@ else:
             elif st.session_state.bank_type == 'ANZ':
                 file_import_df["accounttype"] = "ANZ"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
+                # Replace specific descriptions with 'Mortgage'
+                if file_import_df.description.str.contains('PAYMENT TO ALVARES FLOYD FRAZER', case=False).any():
+                    file_import_df['description'] = file_import_df['description'].str.replace('PAYMENT TO ALVARES FLOYD FRAZER', 'Mortgage', case=False)
             elif st.session_state.bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+            elif st.session_state.bank_type == 'CBA':
+                file_import_df["accounttype"] = "CBA"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
         except Exception as e:
             print(f"Error processing file: {e}")
@@ -196,7 +207,6 @@ else:
             count = 0
             new_progress_time = 0
             
-
             if length < 50:
                 data_editor_height_display = (length + 1 ) * 36
             else:
@@ -226,7 +236,6 @@ else:
                             count += 1                
                         time.sleep(0.5)
                     st.session_state.open_ai_run = True
-
                 time.sleep(1)
                 progress_bar.empty()
 
@@ -270,12 +279,12 @@ else:
                 },
             )
 
-            update_data = st.button('Update Data', type="primary" , on_click=data_editor_callback_for_final_result_df)
+            if "update_data" not in st.session_state:
+                st.session_state.update_data = False
 
-            if update_data:
-
-                add_df_data = st.button('Import', type="primary", use_container_width=True)
-                if add_df_data:
+            if (st.button('Update Data', type="primary" , on_click=data_editor_callback_for_final_result_df) or st.session_state.update_data):
+                st.session_state.add_df_data = st.button('Import', type="primary", use_container_width=True)
+                if st.session_state.add_df_data:
                     try:
                         # Add DataFrame to the database
                         response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()

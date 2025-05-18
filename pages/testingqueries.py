@@ -9,12 +9,26 @@ from st_supabase_connection import SupabaseConnection, execute_query
 import datetime
 import pathlib
 from openai import OpenAI
+import re
 
 # Function to refresh the dashboard
 def refresh_dashboard():
     for key in st.session_state.keys():
         if key != 'user_email':
             del st.session_state[key]
+
+def clean_description(desc):
+    desc = desc.lower()
+    desc = re.sub(r'[^a-z0-9\s]', '', desc)  # Now keeps numbers!
+    # Remove 'payment to' prefix if you want to focus on the merchant
+    desc = re.sub(r'^payment to\s+', '', desc)
+    desc = re.sub(r'\s+', ' ', desc).strip()
+    # Optionally, remove trailing vendor codes, etc.
+    tokens = desc.split()
+    # If last token is not a vendor word, you could remove it:
+    if len(tokens) > 2 and len(tokens[-1]) > 2 and tokens[-1].isalpha() is False:
+        tokens = tokens[:-1]
+    return ' '.join(tokens)
 
 # Sidebar
 with st.sidebar:
@@ -38,13 +52,23 @@ else:
             # Query categories table from supabase
             dictionary_data = st.session_state.conn.table("transactions").select("description", "subcategory").execute()
             st.session_state.get_transaction_data_for_open_ai_df = pd.DataFrame.from_dict(dictionary_data.data)
-            print(dictionary_data.data)
+            print("before cleaning")
             print(st.session_state.get_transaction_data_for_open_ai_df)
+    
+        for index, row in st.session_state.get_transaction_data_for_open_ai_df.iterrows():
+            # Clean the description
+            cleaned_description = clean_description(row['description'])
+            st.session_state.get_transaction_data_for_open_ai_df.at[index, 'description'] = cleaned_description
+
+        print("after cleaning")
+        print(st.session_state.get_transaction_data_for_open_ai_df)
+
+        # Display the cleaned data
+        st.write(st.session_state.get_transaction_data_for_open_ai_df)
 
 # 1 - Drop duplicates from the transaction data
 # 2 - Feed the transaction data to Open AI and create a dictionary of descriptions and subcategories
 # 3 - Feed this data to the supabase database to "category assignment"
-# 4 - 
 
 with st.expander("Session State", expanded=False):
     st.session_state
