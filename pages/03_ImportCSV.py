@@ -9,6 +9,7 @@ from st_supabase_connection import SupabaseConnection, execute_query
 import datetime
 import pathlib
 from openai import OpenAI
+import re
 
 st.set_page_config(page_title='Import/Export', layout='wide', initial_sidebar_state='expanded')
 st.title('Import/Export Files')
@@ -51,7 +52,7 @@ def clear_open_ai_run():
 
 def openai_classification(desc, str_list_of_subcategories):
 
-    content_system = ("I would like to classify my expenses using specific categories. In input you will have the list of categories and the description of an expense. Please associate a category to the expense. "
+    content_system = ("I would like to classify my expenses using specific categories. In input you will have the list of categories and the description of an expense. Please associate a category to the expense. Try to identify key words in the description that would help you to classify the expense into a specific category. For example moomoo is for investment" +
     "Please only respond with the exact name of the category listed and nothing else. " + "Categories: \n") + str_list_of_subcategories
 
     completion = client.chat.completions.create(
@@ -63,6 +64,23 @@ def openai_classification(desc, str_list_of_subcategories):
     data = completion.choices[0].message
     print(f'data is {data.content}')
     return data.content
+
+
+def clean_description(desc):
+    desc = desc.lower()
+    desc = re.sub(r'[^a-z\s]', '', desc)  # Remove numbers and special chars
+    # Remove 'payment to' prefix if you want to focus on the merchant
+    desc = re.sub(r'^payment to\s+', '', desc)
+    desc = re.sub(r'\s+', ' ', desc).strip()
+    # Optionally, remove trailing vendor codes, etc.
+    tokens = desc.split()
+    # If last token is not a vendor word, you could remove it:
+    if len(tokens) > 2 and len(tokens[-1]) > 2 and tokens[-1].isalpha() is False:
+        tokens = tokens[:-1]
+    return ' '.join(tokens)
+
+def re_run_categorization():
+    st.session_state.categorize = True
 
 # Sidebar
 with st.sidebar:
@@ -126,18 +144,22 @@ else:
             if st.session_state.bank_type == 'Amex':
                 file_import_df["accounttype"] = "Amex"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+                file_import_df['amount'] = file_import_df['amount'].abs()
             elif st.session_state.bank_type == 'ANZ':
                 file_import_df["accounttype"] = "ANZ"
                 file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
                 # Replace specific descriptions with 'Mortgage'
                 if file_import_df.description.str.contains('PAYMENT TO ALVARES FLOYD FRAZER', case=False).any():
                     file_import_df['description'] = file_import_df['description'].str.replace('PAYMENT TO ALVARES FLOYD FRAZER', 'Mortgage', case=False)
+                file_import_df['amount'] = file_import_df['amount'].abs()
             elif st.session_state.bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
-                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
+                file_import_df['amount'] = file_import_df['amount'].abs()
             elif st.session_state.bank_type == 'CBA':
                 file_import_df["accounttype"] = "CBA"
-                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Credit', 'Debit')
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
+                file_import_df['amount'] = file_import_df['amount'].abs()
         except Exception as e:
             print(f"Error processing file: {e}")
             st.error("Error processing file, please ensure the following columns are present - Date, Description, Amount")
@@ -197,6 +219,13 @@ else:
         print('final_result_df')
         print(st.session_state.final_result_df)
 
+        # Add a new colum "cleaned_description" to the final_result_df which will be sent to OpenAI
+        for index, row in st.session_state.final_result_df.iterrows():
+            cleaned_description = clean_description(row['description'])
+            st.session_state.final_result_df.at[index, 'cleaned_description'] = cleaned_description
+        print('cleaned final_result_df')
+        print(st.session_state.final_result_df)
+
         if st.session_state.final_result_df.empty:
             st.warning("No new data to import")
             st.stop()
@@ -213,13 +242,13 @@ else:
                 data_editor_height_display = 50 * 36
 
             # Categorize the data using OpenAI
-            categorize = st.button('Categorize', type="primary")
-            if categorize:
+            st.session_state.categorize = st.button('Categorize', type="primary", on_click=re_run_categorization)
+            if st.session_state.categorize:
                 progress_bar = st.progress(0, text="Loading...")
                 if "open_ai_run" not in st.session_state:
                     # Using OpenAI to classify the description and add the subcategories
                     for index, row in st.session_state.final_result_df.iterrows():
-                        subcategory = openai_classification(row['description'], str_list_of_subcategories)
+                        subcategory = openai_classification(row['cleaned_description'], str_list_of_subcategories)
                         st.session_state.final_result_df.at[index, 'subcategory'] = subcategory
                         if index == (length - 1):
                             progress_bar.progress(100)
@@ -238,9 +267,12 @@ else:
                     st.session_state.open_ai_run = True
                 time.sleep(1)
                 progress_bar.empty()
+                
+
+            print('final_result_df after categorization')
+            print(st.session_state.final_result_df)
 
             st.subheader('Review data before importing')
-
             # display the data in a dataeditor so that we can update the subcategory
             st.data_editor(
                 st.session_state.final_result_df,
@@ -287,6 +319,7 @@ else:
                 if st.session_state.add_df_data:
                     try:
                         # Add DataFrame to the database
+                        st.session_state.final_result_df.drop(columns=['cleaned_description'], inplace=True)
                         response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
                         print(f"Response from Supabase: {response}")
                         with st.spinner("Uploading to Supabase", show_time=True):
@@ -303,6 +336,7 @@ else:
                         else:
                             st.error("Re-check logs for exception")
                         st.stop()
+                    st.session_state.add_df_data = st.button('Import', type="primary", use_container_width=True)
 
     with st.expander("Session State", expanded=False):
         st.session_state

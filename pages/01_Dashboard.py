@@ -77,7 +77,7 @@ else:
         if "category_investment_sum" not in st.session_state:
             st.session_state.category_investment_sum = category_investment_sum
 
-        category_balance = category_credit_sum - category_debit_sum
+        category_balance = category_credit_sum - category_debit_sum - category_investment_sum
         if "category_balance" not in st.session_state:
             st.session_state.category_balance = category_balance
 
@@ -165,23 +165,23 @@ else:
             )
 
         submit_date = st.button("Get Data", type="primary", on_click=get_date_selection)
-            
         if submit_date:
             if st.session_state.dashboard_get_transaction_data_df_ss.empty:
-                st.session_state.credit_sum = 0
-                st.session_state.debit_sum = 0
-                balance = 0
+                st.session_state.transaction_credit_sum = 0
+                st.session_state.transaction_debit_sum = 0
+                st.session_state.transaction_investment_sum = 0
+                st.session_state.transaction_balance = 0
             else:
-                st.session_state.credit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Credit' and subcategory != 'Transfer'")['amount'].sum()
-                print(f"Sum by credit: {st.session_state.credit_sum}")
-                st.session_state.debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and category != 'Investment' and subcategory != 'Transfer'")['amount'].sum()
-                print(f"Sum by debit: {st.session_state.debit_sum}")
-                st.session_state.balance = st.session_state.credit_sum - st.session_state.debit_sum
-                print(f"Balance: {st.session_state.balance }")
+                st.session_state.transaction_credit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Credit' and subcategory != 'Transfer'")['amount'].sum()
+                st.session_state.transaction_debit_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("categorytype == 'Debit' and subcategory != 'Investment' and subcategory != 'Transfer'")['amount'].sum()
+                st.session_state.transaction_investment_sum = st.session_state.dashboard_get_transaction_data_df_ss.query("subcategory == 'Investment'")['amount'].sum()
+                st.session_state.transaction_balance = st.session_state.transaction_credit_sum - st.session_state.transaction_debit_sum - st.session_state.transaction_investment_sum
 
-            col1, col2 = st.columns(2, border=True)
-            col1.metric(label="Total Debit", value=f'$ {st.session_state.debit_sum:,.2f}')
-            col2.metric(label="Total Credit", value=f'$ {st.session_state.credit_sum:,.2f}')
+            col1, col2, col3, col4 = st.columns(4, border=True)
+            col1.metric(label="Total Debit", value=f'$ {st.session_state.transaction_debit_sum:,.2f}')
+            col2.metric(label="Total Credit", value=f'$ {st.session_state.transaction_credit_sum:,.2f}')
+            col3.metric(label="Total Investment", value=f'$ {st.session_state.transaction_investment_sum:,.2f}')
+            col4.metric(label="Balance", value=f'$ {st.session_state.transaction_balance:,.2f}')
 
     with st.expander("See session state data"):
         st.session_state

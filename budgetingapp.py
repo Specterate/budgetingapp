@@ -17,7 +17,6 @@ def load_css(file_path):
     with open(file_path) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-
 # Load the external CSS
 css_path = pathlib.Path('style.css')
 load_css(css_path)
@@ -27,33 +26,32 @@ load_css(css_path)
 # https://www.youtube.com/watch?v=jbJpAdGlKVY
 
 # Set Supabase connection and session state
-conn = st.connection("supabase",type=SupabaseConnection)
-st.session_state.conn = conn
+st.session_state.conn = st.connection("supabase",type=SupabaseConnection)
 
 def sign_up(email, password):
     try:
-        user = conn.auth.sign_up({"email": email, "password": password})
+        user = st.session_state.conn.auth.sign_up({"email": email, "password": password})
         return user
     except Exception as e:
         st.error(f"Registration failed: {e}")
 
 def sign_in(email, password):
     try:
-        user = conn.auth.sign_in_with_password({"email": email, "password": password})
+        user = st.session_state.conn.auth.sign_in_with_password({"email": email, "password": password})
         return user
     except Exception as e:
         st.error(f"Login failed: {e}")
 
 def sign_out():
     try:
-        conn.auth.sign_out()
+        st.session_state.conn.auth.sign_out()
         st.session_state.user_email = None
         st.rerun()
     except Exception as e:
         st.error(f"Logout failed: {e}")
 
 def main_app(user_email):
-    st.html("<p style='font-size:20px; text-align:center'>You are logged in!</p>")
+    st.html("<p style='font-size:20px; text-align:center'>You are logged in! \n</p>")
     
     col1, col2, col3 = st.columns(3)
     with col1:
