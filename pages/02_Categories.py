@@ -16,7 +16,7 @@ if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
         # Redirect to login page
-        st.switch_page("Budgetingapp.py")
+        st.switch_page("budgetingapp.py")
 else:
     # Set Supabase connection and session state
     if 'conn' not in st.session_state:
