@@ -11,7 +11,7 @@ import plotly.express as px
 
 # set page configuration and title
 st.set_page_config(page_title="Dashboard", page_icon="📊", layout='wide', initial_sidebar_state='expanded')
-st.title("Dashboard")
+st.title("Dashboard Updated")
 
 # Set spacing between application runs
 print('\n\n\n')
