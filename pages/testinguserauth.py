@@ -32,7 +32,7 @@ else:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
 
-    
 
-with st.expander("Session State", expanded=False):
-    st.session_state
+if st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
+    with st.expander("Session State", expanded=False):
+        st.session_state
