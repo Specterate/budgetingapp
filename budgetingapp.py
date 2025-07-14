@@ -82,6 +82,7 @@ def auth_screen():
         user = sign_in(email, password)
         if user and user.user:
             st.session_state.user_email = user.user.email
+            st.session_state.user_id = user.user.id
             st.success(f"Welcome back, {email}!")
             st.rerun()
 

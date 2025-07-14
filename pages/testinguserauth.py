@@ -32,5 +32,7 @@ else:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
 
+    
+
 with st.expander("Session State", expanded=False):
     st.session_state
