@@ -32,7 +32,8 @@ else:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
 
-
-if st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
+if "user.id" not in st.session_state:
+    st.session_state.user_id = None
+elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
     with st.expander("Session State", expanded=False):
         st.session_state
