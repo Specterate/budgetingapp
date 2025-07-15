@@ -14,8 +14,10 @@ import re
 # Function to refresh the dashboard
 def refresh_dashboard():
     for key in st.session_state.keys():
-        if key != 'user_email':
-            del st.session_state[key]
+        print(f'key is {key}')
+        if key != 'user_email' and key != 'user_id' and key != 'conn':
+            print(f"Deleting key: {key}")
+            del st.session_state[key]   
 
 # Sidebar
 with st.sidebar:
@@ -32,8 +34,8 @@ else:
         conn = st.connection("supabase",type=SupabaseConnection)
         st.session_state.conn = conn
 
-if "user.id" not in st.session_state:
-    pass
-elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
-    with st.expander("Session State", expanded=False):
-        st.session_state
+    if "user_id" not in st.session_state:
+        pass
+    elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
+        with st.expander("Session State", expanded=False):
+            st.session_state

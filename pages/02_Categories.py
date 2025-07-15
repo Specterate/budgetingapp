@@ -12,6 +12,18 @@ from st_supabase_connection import SupabaseConnection, execute_query
 st.set_page_config(page_title="Categories", page_icon="📚", layout='wide', initial_sidebar_state='expanded')
 st.title("Categories")
 
+# Function to refresh the dashboard
+def refresh_dashboard():
+    for key in st.session_state.keys():
+        print(f'key is {key}')
+        if key != 'user_email' and key != 'user_id' and key != 'conn':
+            print(f"Deleting key: {key}")
+            del st.session_state[key]          
+
+# Sidebar
+with st.sidebar:
+    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)            
+
 if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
@@ -76,6 +88,8 @@ else:
     def edit_sub_category():
         edited_dataframe = st.session_state.get_category_data_df_ss[st.session_state.get_category_data_df_ss.subcategory.isin([st.session_state.sub_category_select])]
         st.session_state.edited_dataframe = edited_dataframe
+
+
 
     tab1, tab2, tab3 = st.tabs(["Add Category", "Delete Category", "Edit Exisitng Category"])
     with tab1:

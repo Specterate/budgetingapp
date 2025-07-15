@@ -30,8 +30,10 @@ load_css(css_path)
 # Function to refresh the dashboard
 def refresh_dashboard():
     for key in st.session_state.keys():
-        if key != 'user_email':
-            del st.session_state[key]
+        print(f'key is {key}')
+        if key != 'user_email' and key != 'user_id' and key != 'conn':
+            print(f"Deleting key: {key}")
+            del st.session_state[key]   
 
 # Function to handle data editor changes
 def data_editor_callback_for_final_result_df():

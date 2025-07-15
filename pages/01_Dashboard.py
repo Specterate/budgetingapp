@@ -17,13 +17,13 @@ st.title("Dashboard")
 print('\n\n\n')
 print('Application started -----------------------------------------------')
 
-# Function to refresh the keys in session_state
+# Function to refresh the dashboard
 def refresh_dashboard():
     for key in st.session_state.keys():
-        if key == 'user_email':
-            pass
-        else:
-            del st.session_state[key]
+        print(f'key is {key}')
+        if key != 'user_email' and key != 'user_id' and key != 'conn':
+            print(f"Deleting key: {key}")
+            del st.session_state[key]   
 
 # Function to retrieve the date selection from the user.
 def get_date_selection():

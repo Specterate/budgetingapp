@@ -14,8 +14,10 @@ import re
 # Function to refresh the dashboard
 def refresh_dashboard():
     for key in st.session_state.keys():
-        if key != 'user_email':
-            del st.session_state[key]
+        print(f'key is {key}')
+        if key != 'user_email' and key != 'user_id' and key != 'conn':
+            print(f"Deleting key: {key}")
+            del st.session_state[key]   
 
 def clean_description(desc):
     desc = desc.lower()
