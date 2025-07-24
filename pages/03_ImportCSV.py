@@ -41,7 +41,7 @@ def data_editor_callback_for_final_result_df():
         for index, changes in st.session_state['data_editor_changes']['edited_rows'].items():
             for col, value in changes.items():
                 st.session_state.final_result_df.loc[index, col] = value
-    st.session_state.update_data = True
+    st.session_state.finalize_data = True
 
 def clear_file_upload_state():
     if 'uploaded_file' in st.session_state:
@@ -126,8 +126,8 @@ else:
             del st.session_state['data_editor_changes']
         if "final_result_df" in st.session_state:
             del st.session_state['final_result_df']
-        if "update_data" in st.session_state:
-            del st.session_state['update_data']
+        if "finalize_data" in st.session_state:
+            del st.session_state['finalize_data']
         if "add_df_data" in st.session_state:
             del st.session_state['add_df_data']
     else:
@@ -249,7 +249,7 @@ else:
                 data_editor_height_display = 50 * 36
 
             # Categorize the data using OpenAI
-            st.session_state.categorize = st.button('Categorize', type="primary", on_click=re_run_categorization)
+            st.session_state.categorize = st.button('Categorize with OpenAI', type="primary", on_click=re_run_categorization)
             if st.session_state.categorize:
                 progress_bar = st.progress(0, text="Loading...")
                 if "open_ai_run" not in st.session_state:
@@ -318,10 +318,10 @@ else:
                 },
             )
 
-            if "update_data" not in st.session_state:
-                st.session_state.update_data = False
+            if "finalize_data" not in st.session_state:
+                st.session_state.finalize_data = False
 
-            if (st.button('Update Data', type="primary" , on_click=data_editor_callback_for_final_result_df) or st.session_state.update_data):
+            if (st.button('Finalize Data', type="primary" , on_click=data_editor_callback_for_final_result_df) or st.session_state.finalize_data):
                 st.session_state.add_df_data = st.button('Import', type="primary", use_container_width=True)
                 if st.session_state.add_df_data:
                     try:
