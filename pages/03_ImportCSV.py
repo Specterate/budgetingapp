@@ -118,6 +118,7 @@ else:
         # Upload CSV file
         uploaded_file = st.file_uploader("Please ensure the file is in CSV format and contains the required columns as Date, Description, Amount", label_visibility ="visible", help="Upload a CSV file with the required columns", key='uploaded_file', type=["csv"])
 
+    # Check if the uploaded file is None and delete specific keys from session state
     if st.session_state.uploaded_file is None:
         if "open_ai_run" in st.session_state:
             del st.session_state['open_ai_run']
@@ -139,6 +140,11 @@ else:
 
         # Set the column names to lower case
         file_import_df.columns = file_import_df.columns.str.lower()
+
+        try:
+            file_import_df['uuid'] = st.session_state.user_id
+        except KeyError:
+            print("UUID not found in session state, setting to None")
 
         try:
             # Assign values to the columns
@@ -340,5 +346,8 @@ else:
                         st.stop()
                     st.session_state.add_df_data = st.button('Import', type="primary", use_container_width=True)
 
-    with st.expander("Session State", expanded=False):
-        st.session_state
+    if "user_id" not in st.session_state:
+        pass
+    elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
+        with st.expander("Session State", expanded=False):
+            st.session_state
