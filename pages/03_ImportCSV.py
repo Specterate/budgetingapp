@@ -189,12 +189,11 @@ else:
         print(f'list_of_subcategories is {list_of_subcategories}')
 
         # Query Data from Transaction Table
-        get_data_from_transactions = st.session_state.conn.table("transactions").select('date', 'accounttype', 'description', 'categorytype', 'amount').gte("date", minimum_date).execute()
+        get_data_from_transactions = st.session_state.conn.table("transactions").select('date', 'accounttype', 'description', 'categorytype', 'amount').eq("uuid", st.session_state.user_id).gte("date", minimum_date).lte("date", maximum_date).order("date").execute()
         if get_data_from_transactions.data == []:
             get_data_from_transactions_df_no_index = pd.DataFrame(columns=['date', 'accounttype', 'description', 'categorytype', 'amount'])
         else:
             get_data_from_transactions_df_no_index = pd.DataFrame.from_dict(get_data_from_transactions.data)
-
 
         if get_data_from_transactions_df_no_index.empty:
             full_df = file_import_df
