@@ -31,7 +31,7 @@ def get_date_selection():
     st.session_state.end_date = st.session_state.date_selection[1]
     try:
         # Query transactions table from supabase and convert to dataframe
-        st.session_state.dashboard_get_transaction_data_df_ss = pd.DataFrame.from_dict(st.session_state.conn.table("transactions").select("*").gte("date",st.session_state.start_date).lte("date",st.session_state.end_date).execute().data)
+        st.session_state.dashboard_get_transaction_data_df_ss = pd.DataFrame.from_dict(st.session_state.conn.table("transactions").select("*").eq("uuid", st.session_state.user_id).gte("date",st.session_state.start_date).lte("date",st.session_state.end_date).execute().data)
         print(st.session_state.dashboard_get_transaction_data_df_ss)
     except Exception as e:
         st.error(f"Error fetching transaction data:")
