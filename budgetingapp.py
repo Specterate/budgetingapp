@@ -28,6 +28,12 @@ load_css(css_path)
 # Set Supabase connection and session state
 st.session_state.conn = st.connection("supabase",type=SupabaseConnection)
 
+for key in st.session_state.keys():
+    print(f'key is {key}')
+    if key != 'user_email' and key != 'user_id' and key != 'conn':
+        print(f"Deleting key: {key}")
+        del st.session_state[key]   
+
 def sign_up(email, password):
     try:
         user = st.session_state.conn.auth.sign_up({"email": email, "password": password})
@@ -51,11 +57,11 @@ def sign_out():
         st.error(f"Logout failed: {e}")
 
 def main_app(user_email):
-    st.html("<p style='font-size:20px; text-align:center'>You are logged in! \n</p>")
+    st.html(f"<p style='font-size:20px; text-align:center'>Welcome, {st.session_state.user_email} \n</p>")
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("Go to Dashboard", type="secondary", use_container_width=True, key="dashboard_button"):
+        if st.button("Go to Dashboard", type="secondary", use_container_width=True):
             st.switch_page("pages/01_Dashboard.py")
     with col2:
         if st.button("Go to Category", type="secondary", use_container_width=True):
@@ -94,7 +100,10 @@ if st.session_state.user_email:
 else:
     auth_screen()
 
-# Check if user is logged in
-if "user_email" in st.session_state and st.session_state.user_email:
+# Check if admin user is logged in
+
+if "user_id" not in st.session_state:
+    pass
+elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
     with st.expander("Session State", expanded=False):
-        st.session_state
+        st.session_state        
