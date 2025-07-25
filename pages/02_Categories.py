@@ -10,7 +10,10 @@ from st_supabase_connection import SupabaseConnection, execute_query
 
 # set page configuration and title
 st.set_page_config(page_title="Categories", page_icon="📚", layout='wide', initial_sidebar_state='expanded')
-st.title("Categories")
+if "user_email" not in st.session_state or st.session_state.user_email is None:
+    st.title("Categories - Welcome Guest")
+else:
+    st.title(f"Categories - Welcome {st.session_state.user_email}")
 
 # Function to refresh the dashboard
 def refresh_dashboard():
@@ -20,9 +23,18 @@ def refresh_dashboard():
             print(f"Deleting key: {key}")
             del st.session_state[key]          
 
+def sign_out():
+    try:
+        st.session_state.conn.auth.sign_out()
+        for keys in st.session_state.keys():
+            del st.session_state[keys]
+    except Exception as e:
+        st.error(f"Logout failed: {e}")
+
 # Sidebar
 with st.sidebar:
-    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)            
+    st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
+    st.button("Sign Out", type="primary", use_container_width=True, on_click=sign_out)
 
 if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")

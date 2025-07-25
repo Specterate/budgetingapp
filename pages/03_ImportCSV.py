@@ -12,7 +12,10 @@ from openai import OpenAI
 import re
 
 st.set_page_config(page_title='Import/Export', layout='wide', initial_sidebar_state='expanded')
-st.title('Import/Export Files')
+if "user_email" not in st.session_state or st.session_state.user_email is None:
+    st.title("Import/Export - Welcome Guest")
+else:
+    st.title(f"Import/Export - Welcome {st.session_state.user_email}")
 
 print('\n\n\n')
 print(f'Application started {datetime.datetime.now()} -----------------------------------------------')
@@ -34,6 +37,13 @@ def refresh_dashboard():
         if key != 'user_email' and key != 'user_id' and key != 'conn':
             print(f"Deleting key: {key}")
             del st.session_state[key]   
+def sign_out():
+    try:
+        st.session_state.conn.auth.sign_out()
+        for keys in st.session_state.keys():
+            del st.session_state[keys]
+    except Exception as e:
+        st.error(f"Logout failed: {e}")
 
 # Function to handle data editor changes
 def data_editor_callback_for_final_result_df():
@@ -87,6 +97,7 @@ def re_run_categorization():
 # Sidebar
 with st.sidebar:
     st.button("Refresh Page", type="primary", use_container_width=True, on_click=refresh_dashboard)
+    st.button("Sign Out", type="primary", use_container_width=True, on_click=sign_out)
 
 # Get the OpenAI key from secrets
 try:
