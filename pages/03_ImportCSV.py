@@ -62,6 +62,7 @@ def clear_open_ai_run():
     if 'open_ai_run' in st.session_state:
         del st.session_state['open_ai_run']
 
+# Function to classify expenses using OpenAI
 def openai_classification(desc, str_list_of_subcategories):
 
     content_system = ("I would like to classify my expenses using specific categories. In input you will have the list of categories and the description of an expense. Please associate a category to the expense. Try to identify key words in the description that would help you to classify the expense into a specific category. For example moomoo is for investment" +
