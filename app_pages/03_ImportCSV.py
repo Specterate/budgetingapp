@@ -147,7 +147,7 @@ else:
         # Check if the uploaded file name contains the bank type
             if uploaded_file is not None:
                 if st.session_state.bank_type.lower() not in uploaded_file.name.lower():
-                    st.error(f"Please upload a CSV file that contains '{st.session_state.bank_type}' in the file name.")
+                    st.error(f"Bank Type Mismatch! Please upload a CSV file that contains '{st.session_state.bank_type}' in the file name.")
                     st.stop()
         except AttributeError as e:
             print(f"Error checking file name: {e}")
