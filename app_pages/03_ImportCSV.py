@@ -113,7 +113,7 @@ if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
         # Redirect to login page
-        st.switch_page("budgetingapp.py")
+        st.switch_page("app_pages/00_Login.py")
 else:
     # Set Supabase connection and session state
     if 'conn' not in st.session_state:
@@ -144,6 +144,16 @@ else:
             del st.session_state['add_df_data']
     else:
         try:
+        # Check if the uploaded file name contains the bank type
+            if uploaded_file is not None:
+                if st.session_state.bank_type.lower() not in uploaded_file.name.lower():
+                    st.error(f"Please upload a CSV file that contains '{st.session_state.bank_type}' in the file name.")
+                    st.stop()
+        except AttributeError as e:
+            print(f"Error checking file name: {e}")
+            st.error("Please upload a valid CSV file.")
+            st.stop()
+        try:
             file_import_df = pd.read_csv(st.session_state.uploaded_file, usecols=['Date', 'Description', 'Amount'])
         except ValueError as e:
             print(f"Error reading file: {e}")
@@ -151,15 +161,22 @@ else:
             st.stop()
 
         # Set the column names to lower case
-        file_import_df.columns = file_import_df.columns.str.lower()
+        try:
+            file_import_df.columns = file_import_df.columns.str.lower()
+        except Exception as e:
+            print(e)
 
+        # Add a UUID column to the DataFrame
         try:
             file_import_df['uuid'] = st.session_state.user_id
         except KeyError:
             print("UUID not found in session state, setting to None")
 
-        try:
-            # Assign values to the columns
+        # Check if any amount is none or empty or Nan and replace it with 0
+        file_import_df['amount'] = file_import_df['amount'].replace([None, '', np.nan], 0)
+
+        # Assign values to the columns
+        try:    
             file_import_df['date'] = pd.to_datetime(file_import_df['date'], dayfirst=True).dt.strftime('%Y-%m-%d')
             if st.session_state.bank_type == 'Amex':
                 file_import_df["accounttype"] = "Amex"
@@ -292,7 +309,7 @@ else:
             print(st.session_state.final_result_df)
 
             st.subheader('Review data before importing')
-            # display the data in a dataeditor so that we can update the subcategory
+            # display the data in a data editor so that we can update the subcategory
             st.data_editor(
                 st.session_state.final_result_df,
                 num_rows="dynamic",
@@ -328,6 +345,7 @@ else:
                     format="dollar",
                     ),
                 },
+                column_order=["date", "accounttype", "description", "subcategory", "amount"],
             )
 
             if "finalize_data" not in st.session_state:

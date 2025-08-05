@@ -59,7 +59,7 @@ if "user_email" not in st.session_state or st.session_state.user_email is None:
     st.write("User is not logged in")
     if st.button("Go to Login Page", type="primary"):
         # Redirect to login page
-        st.switch_page("budgetingapp.py")
+        st.switch_page("app_pages/00_Login.py")
 else:
     # Set Supabase connection and session state
     if 'conn' not in st.session_state:
@@ -195,5 +195,9 @@ else:
             col3.metric(label="Total Investment", value=f'$ {st.session_state.transaction_investment_sum:,.2f}')
             col4.metric(label="Balance", value=f'$ {st.session_state.transaction_balance:,.2f}')
 
-    with st.expander("See session state data"):
-        st.session_state
+    # Check if admin user is logged in
+    if "user_id" not in st.session_state:
+        pass
+    elif st.session_state.user_id == '3ea984ac-111b-4aca-8595-2c112f4918b5':
+        with st.expander("Session State", expanded=False):
+            st.session_state
