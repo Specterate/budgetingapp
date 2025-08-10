@@ -191,7 +191,7 @@ else:
                 file_import_df['amount'] = file_import_df['amount'].abs()
             elif st.session_state.bank_type == 'Westpac':
                 file_import_df["accounttype"] = "Westpac"
-                file_import_df['categorytype'] = np.where(file_import_df['amount'] < 0, 'Debit', 'Credit')
+                file_import_df['categorytype'] = np.where(file_import_df['amount'] > 0, 'Debit', 'Credit')
                 file_import_df['amount'] = file_import_df['amount'].abs()
             elif st.session_state.bank_type == 'CBA':
                 file_import_df["accounttype"] = "CBA"
@@ -208,7 +208,7 @@ else:
         print(file_import_df)
 
         # Query Data from Category Table
-        get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").execute()
+        get_data_from_categories = st.session_state.conn.table("categories").select("subcategory").neq("subcategory", "Uncategorized").execute()
         print(f'get_data_from_categories is {get_data_from_categories.data}')
         get_data_from_categories_df = pd.DataFrame.from_dict(get_data_from_categories.data)
         key = 'subcategory'
@@ -345,7 +345,7 @@ else:
                     format="dollar",
                     ),
                 },
-                column_order=["date", "accounttype", "description", "subcategory", "amount"],
+                column_order=["date", "accounttype", "description", "subcategory", "amount", "categorytype"],
             )
 
             if "finalize_data" not in st.session_state:
@@ -359,7 +359,7 @@ else:
                         st.session_state.final_result_df.drop(columns=['cleaned_description'], inplace=True)
                         response = st.session_state.conn.table("transactions").insert(st.session_state.final_result_df.to_dict(orient='records')).execute()
                         print(f"Response from Supabase: {response}")
-                        with st.spinner("Uploading to Supabase", show_time=True):
+                        with st.spinner("Uploading to Database", show_time=True):
                             time.sleep(5)
                         st.success('Added to Database!')
                         clear_file_upload_state()
